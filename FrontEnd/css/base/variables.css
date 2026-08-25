@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap");
+
+:root {
+  --red: #c62828;
+  --red-dark: #8b0000;
+  --red-light: #ef9a9a;
+  --red-bg: #ffebee;
+  --gold: #f9a825;
+  --gold-light: #fbc02d;
+  --white: #ffffff;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #eeeeee;
+  --gray-300: #e0e0e0;
+  --gray-400: #bdbdbd;
+  /* #9e9e9e was ~2.8:1 contrast on white — fails WCAG AA even for large text (needs 3:1; body
+     text needs 4.5:1). The lightest gray that clears 4.5:1 is ~#767676, a single shade off
+     --gray-600 (#757575, ~4.6:1) — there's no room left for a visibly distinct, AA-safe step
+     between them at this contrast floor. Set equal to --gray-600 rather than a shade darker, so
+     the scale doesn't invert (500 rendering darker than 600). Kept as a separate token rather
+     than deleting it, so call sites using --gray-500 don't need to change, and so it can regain
+     a distinct lighter value later if it's ever restricted to large-text/decorative use only
+     (3:1 floor instead of 4.5:1). */
+  --gray-500: #757575;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.15);
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --nav-height: 64px;
+  --header-height: 70px;
+}

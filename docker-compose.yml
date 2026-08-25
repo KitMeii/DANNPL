@@ -1,0 +1,201 @@
+# Dev/test orchestration for all 6 services + gateway + SQL Server + Seq, per the approved
+# migration plan (Bước 5.1, DB engine switched Postgres->SQL Server per Bước 0.1-0.2). Only the
+# gateway is published to the host — every other service is reachable solely over the internal
+# "tthcm-net" network. Note this network isolation is not the authorization mechanism: every
+# service independently re-validates the caller's JWT (see AddSharedJwtAuthentication) rather
+# than trusting the X-User-Id/X-User-Role headers the gateway forwards (those are informational
+# only — see Shared.Contracts.HeaderNames remarks). The one place network isolation alone is load
+# -bearing is auth-service's admin-only user endpoints and progress-service's /record-score,
+# gated additionally by RequireInternalServiceKeyFilter/InternalService__SharedKey (set only on
+# auth-service, admin-service, progress-service, quiz-service below — every other service has no
+# use for it and doesn't hold it), since the gateway proxies every sub-path under a service's
+# route prefix and a JWT role check alone can't tell "the legitimate caller service" apart from
+# "any client with a stolen JWT of the right role" (Phần A RBAC audit finding).
+#
+# Usage: cp .env.example .env, fill in real values, then `docker compose up --build`.
+
+name: da_nnpl
+
+networks:
+  nnpl-net:
+    driver: bridge
+
+volumes:
+  nnpl-mssql-data:
+  nnpl-seq-data:
+
+x-service-defaults: &service-defaults
+  build:
+    context: .
+  networks:
+    - nnpl-net
+  restart: unless-stopped
+  depends_on:
+    mssql:
+      condition: service_healthy
+  environment:
+    &default-env
+    Jwt__Issuer: tthcm-platform
+    Jwt__Audience: tthcm-services
+    Jwt__SigningKey: ${JWT_SIGNING_KEY}
+    Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN}
+    Seq__Url: http://seq:5341
+    Database__AutoMigrate: "true"
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Express
+    volumes:
+      - nnpl-mssql-data:/var/opt/mssql
+    ports:
+      - "1434:1433"
+    networks:
+      - nnpl-net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' -b -o /dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    # Pure cache, no persistence needed — losing it on restart just means the next few AI
+    # requests recompute instead of hitting the cache, no data loss. Internal network only, no
+    # published port and no password: nothing but ai-service ever talks to it (see the network
+    # isolation note at the top of this file).
+    networks:
+      - nnpl-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  seq:
+    image: datalust/seq:latest
+    environment:
+      ACCEPT_EULA: "Y"
+      # Recent Seq versions refuse to start on first run without one of these set. Dev-only stack,
+      # not exposed beyond localhost (see the port comment below), so no-auth is intentional here.
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
+    volumes:
+      - nnpl-seq-data:/data
+    ports:
+      # Dev-only convenience to browse logs at http://localhost:8081. Bound to 127.0.0.1 only —
+      # "8081:80" alone binds 0.0.0.0 (reachable from the LAN/any interface), which combined with
+      # SEQ_FIRSTRUN_NOAUTHENTICATION above would mean anyone on the same network can read every
+      # log line (including request bodies Serilog captures). Do not remove this loopback binding
+      # without adding real auth. On a real deploy (Railway, Phần 5): do not give this service a
+      # public domain/port at all — only the gateway should be internet-reachable.
+      - "127.0.0.1:8091:80"
+    networks:
+      - nnpl-net
+
+  auth-service:
+    <<: *service-defaults
+    build:
+      context: .
+      dockerfile: services/auth-service/AuthService.Api/Dockerfile
+    environment:
+      <<: *default-env
+      ConnectionStrings__AuthDb: Server=mssql,1433;Database=tthcm;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      Seed__Enabled: ${SEED_DEMO_ACCOUNTS:-false}
+      # Enforces RequireInternalServiceKeyFilter on GET /users and PUT /users/{id}/role — only
+      # admin-service is a legitimate caller. Scoped to just the 4 services that need it (not the
+      # shared default-env block) so ai-service/content-service/gateway don't hold a secret they
+      # have no use for (Phần G follow-up to the Phần A RBAC audit finding).
+      InternalService__SharedKey: ${INTERNAL_SERVICE_KEY}
+      # Avatar upload — cùng 1 Cloudinary account platform-owned với content-service (thư mục
+      # riêng "tthcm/avatars", xem CloudinaryOptions remarks), không cần secret riêng.
+      Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME}
+      Cloudinary__ApiKey: ${CLOUDINARY_API_KEY}
+      Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET}
+
+  content-service:
+    <<: *service-defaults
+    build:
+      context: .
+      dockerfile: services/content-service/ContentService.Api/Dockerfile
+    environment:
+      <<: *default-env
+      ConnectionStrings__ContentDb: Server=mssql,1433;Database=tthcm;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME}
+      Cloudinary__ApiKey: ${CLOUDINARY_API_KEY}
+      Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET}
+
+  quiz-service:
+    <<: *service-defaults
+    build:
+      context: .
+      dockerfile: services/quiz-service/QuizService.Api/Dockerfile
+    environment:
+      <<: *default-env
+      ConnectionStrings__QuizDb: Server=mssql,1433;Database=tthcm;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      # quiz-service is the one legitimate caller of progress-service's POST /record-score —
+      # see InternalService__SharedKey remarks on auth-service above.
+      InternalService__SharedKey: ${INTERNAL_SERVICE_KEY}
+
+  ai-service:
+    <<: *service-defaults
+    build:
+      context: .
+      dockerfile: services/ai-service/AiService.Api/Dockerfile
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      <<: *default-env
+      Groq__ApiKey: ${GROQ_API_KEY}
+      Redis__ConnectionString: redis:6379
+
+  progress-service:
+    <<: *service-defaults
+    build:
+      context: .
+      dockerfile: services/progress-service/ProgressService.Api/Dockerfile
+    environment:
+      <<: *default-env
+      ConnectionStrings__ProgressDb: Server=mssql,1433;Database=tthcm;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      # Enforces RequireInternalServiceKeyFilter on POST /record-score — see
+      # InternalService__SharedKey remarks on auth-service above.
+      InternalService__SharedKey: ${INTERNAL_SERVICE_KEY}
+
+  admin-service:
+    <<: *service-defaults
+    build:
+      context: .
+      dockerfile: services/admin-service/AdminService.Api/Dockerfile
+    environment:
+      <<: *default-env
+      ConnectionStrings__AdminDb: Server=mssql,1433;Database=tthcm;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      # admin-service is the one legitimate caller of auth-service's GET /users and PUT
+      # /users/{id}/role — see InternalService__SharedKey remarks on auth-service above.
+      InternalService__SharedKey: ${INTERNAL_SERVICE_KEY}
+
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Gateway/Dockerfile
+    networks:
+      - nnpl-net
+    restart: unless-stopped
+    depends_on:
+      - auth-service
+      - content-service
+      - quiz-service
+      - ai-service
+      - progress-service
+      - admin-service
+    environment:
+      Jwt__Issuer: tthcm-platform
+      Jwt__Audience: tthcm-services
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+      Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN}
+      Seq__Url: http://seq:5341
+      RateLimiting__Ai__PermitLimit: ${AI_RATE_LIMIT_PER_MINUTE:-10}
+    ports:
+      - "8090:8080"

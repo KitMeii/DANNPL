@@ -1,0 +1,52 @@
+/* ===== CHAPTER LIST (tiến độ) ===== */
+.chapter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.chapter-row:last-child {
+  border-bottom: none;
+}
+.ch-info {
+  flex: 1;
+}
+.ch-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.ch-prog {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+.ch-pct {
+  font-family: "Oswald", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--red);
+  min-width: 40px;
+  text-align: right;
+}
+.ch-pct.done {
+  color: #2e7d32;
+}
+.ch-pct.empty {
+  color: var(--gray-400);
+}
+
+/* ===== PROGRESS BAR ===== */
+.prog-track {
+  background: var(--gray-200);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), #ef5350);
+  border-radius: 10px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}

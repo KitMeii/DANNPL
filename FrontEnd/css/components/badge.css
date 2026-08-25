@@ -1,0 +1,40 @@
+/* ===== BADGE ===== */
+.badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 70px;
+}
+.badge-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, var(--red), #ef5350);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 10px rgba(198, 40, 40, 0.3);
+}
+.badge-icon.gold {
+  background: linear-gradient(135deg, #f57f17, var(--gold));
+  box-shadow: 0 4px 10px rgba(249, 168, 37, 0.4);
+}
+.badge-icon.silver {
+  background: linear-gradient(135deg, #607d8b, #90a4ae);
+}
+.badge-label {
+  font-size: 0.65rem;
+  text-align: center;
+  color: var(--gray-600);
+  line-height: 1.3;
+}

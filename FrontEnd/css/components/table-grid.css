@@ -1,0 +1,62 @@
+/* ===== STATS GRID ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  transition: transform 0.15s;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.stat-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1;
+}
+.stat-unit {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  margin-top: 3px;
+}
+
+/* ===== 2-COL GRID ===== */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 500px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* NOTE (Phần G(4a)): các lưới thẻ dạng "grid tự co giãn theo màn rộng"
+   (.mat-grid ở giang-bai.html, #questionsList/#oralList ở admin/quan-tri-he-thong.html và
+   teacher/quan-ly-noi-dung.html) hiện vẫn định nghĩa trong <style> riêng từng trang, CHƯA
+   chuyển vào đây — xem ghi chú "chưa quyết" trong báo cáo Bước 2 trước khi di chuyển, vì mỗi
+   trang dùng minmax() khác nhau (280px cho thẻ tài liệu, 360px cho thẻ câu hỏi 4 đáp án). */

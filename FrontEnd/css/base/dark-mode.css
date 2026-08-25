@@ -1,0 +1,42 @@
+/* ===== DARK MODE ===== */
+body.dark {
+  background: #121212;
+  color: #e0e0e0;
+}
+body.dark .card,
+body.dark .stat-card,
+body.dark .chapter-btn,
+body.dark .option-btn,
+body.dark .chat-wrap,
+body.dark .modal-box {
+  background: #1e1e1e;
+  border-color: #333;
+}
+body.dark .chat-body {
+  background: #181818;
+}
+body.dark .msg.bot .msg-bubble {
+  background: #2a2a2a;
+  color: #e0e0e0;
+}
+body.dark .chat-footer,
+body.dark .chat-input {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #444;
+}
+body.dark .bottom-nav {
+  background: #1e1e1e;
+  border-color: #333;
+}
+body.dark .prog-track {
+  background: #333;
+}
+body.dark .gray-text {
+  color: #aaa;
+}
+body.dark .form-input {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}

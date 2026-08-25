@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 7 - JavaScript Nâng cao</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 10px; }
+        h2 { color: #667eea; }
+        button { background: #667eea; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; margin: 5px; }
+        button:hover { background: #764ba2; }
+        .result { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 5px; min-height: 50px; }
+        .loading { color: #667eea; font-style: italic; }
+        .error { background: #ffebee; color: #c62828; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .product-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .product-card h4 { margin: 0 0 10px 0; color: #333; }
+        .product-card .price { color: #667eea; font-weight: bold; }
+        pre { background: #263238; color: #aed581; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        input { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Bài 7: JavaScript Nâng cao</h1>
+
+    <!-- 1. ES6 Features -->
+    <div class="section">
+        <h2>1. ES6+ Features</h2>
+        <button onclick="demoES6()">Demo ES6</button>
+        <div id="es6Result" class="result"></div>
+    </div>
+
+    <!-- 2. Promise -->
+    <div class="section">
+        <h2>2. Promise</h2>
+        <button onclick="demoPromise()">Demo Promise</button>
+        <button onclick="demoPromiseAll()">Promise.all</button>
+        <div id="promiseResult" class="result"></div>
+    </div>
+
+    <!-- 3. Async/Await -->
+    <div class="section">
+        <h2>3. Async/Await</h2>
+        <button onclick="demoAsyncAwait()">Demo Async/Await</button>
+        <div id="asyncResult" class="result"></div>
+    </div>
+
+    <!-- 4. Fetch API - Gọi API thực -->
+    <div class="section">
+        <h2>4. Fetch API - Lấy dữ liệu từ Server</h2>
+        <p>Gọi API từ: <code>http://localhost:5001/api/products</code></p>
+        <button onclick="fetchProducts()">Lấy danh sách sản phẩm</button>
+        <button onclick="fetchCategories()">Lấy danh mục</button>
+        <div id="fetchResult" class="result">
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+    </div>
+
+    <!-- 5. POST Request -->
+    <div class="section">
+        <h2>5. POST Request - Đăng nhập</h2>
+        <input type="text" id="loginUsername" placeholder="Username" value="admin">
+        <input type="password" id="loginPassword" placeholder="Password" value="admin123">
+        <button onclick="login()">Đăng nhập</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+
+    <!-- 6. Code Example -->
+    <div class="section">
+        <h2>6. Code Example - Fetch API</h2>
+        <pre id="codeExample">
+// Fetch GET request
+async function getProducts() {
+    try {
+        const response = await fetch('/api/products');
+        if (!response.ok) throw new Error('Network error');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Fetch POST request với JWT
+async function login(username, password) {
+    const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    });
+    return await response.json();
+}
+
+// Gọi API có authentication
+async function getProtectedData(token) {
+    const response = await fetch('/api/orders', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    return await response.json();
+}
+        </pre>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+/* ===== SETTING ITEM ===== */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+}
+.setting-row:last-child {
+  border-bottom: none;
+}
+.setting-row:hover .setting-label {
+  color: var(--red);
+}
+.setting-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.setting-label.danger {
+  color: #c62828;
+}

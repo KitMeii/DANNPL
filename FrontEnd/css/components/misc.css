@@ -1,0 +1,57 @@
+/* ===== SUGGESTION LIST ===== */
+.suggest-list {
+  list-style: none;
+}
+.suggest-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.82rem;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.suggest-item:last-child {
+  border-bottom: none;
+}
+.suggest-item:hover {
+  color: var(--red);
+}
+.suggest-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--red-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--red);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: var(--gray-400);
+  font-size: 0.9rem;
+}
+.empty i {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* ===== PAGE TITLE ===== */
+.page-title {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  padding-top: 4px;
+}

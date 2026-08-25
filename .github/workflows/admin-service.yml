@@ -1,0 +1,96 @@
+name: admin-service CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/admin-service/**"
+      - "shared/**"
+      - ".github/workflows/admin-service.yml"
+  pull_request:
+    paths:
+      - "services/admin-service/**"
+      - "shared/**"
+      - ".github/workflows/admin-service.yml"
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    # Real SQL Server for integration tests — see AdminApiFactory / auth-service.yml for the
+    # full rationale. No Docker-level --health-cmd on the mssql service (proved unreliable in CI
+    # regardless of quoting) — explicit polling step instead. Shares the CI_MSSQL_SA_PASSWORD
+    # secret with every other service's workflow.
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_MSSQL_SA_PASSWORD }}
+        ports:
+          - 1433:1433
+    env:
+      TEST_MSSQL_CONNECTION: Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Wait for SQL Server
+        env:
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_MSSQL_SA_PASSWORD }}
+        run: |
+          container=$(docker ps -q --filter "ancestor=mcr.microsoft.com/mssql/server:2022-latest")
+          echo "mssql container id: $container"
+          for i in $(seq 1 30); do
+            if docker exec "$container" /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" -b -o /dev/null; then
+              echo "SQL Server is ready (attempt $i)"
+              exit 0
+            fi
+            echo "SQL Server not ready yet, attempt $i/30..."
+            sleep 5
+          done
+          echo "SQL Server did not become ready in time"
+          docker logs "$container"
+          exit 1
+
+      - name: Restore
+        run: dotnet restore services/admin-service/AdminService.Api/AdminService.Api.csproj
+
+      - name: Build
+        run: dotnet build services/admin-service/AdminService.Api/AdminService.Api.csproj --no-restore -c Release
+
+      - name: Test
+        run: dotnet test services/admin-service/AdminService.Tests/AdminService.Tests.csproj -c Release
+
+  docker:
+    needs: build-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # GHCR repository/tag names must be lowercase; ${{ github.repository }} isn't guaranteed to
+      # be (this repo's owner is "KitMeii", mixed case) — compute a lowercase version once here.
+      - name: Compute lowercase image name
+        id: image
+        run: echo "repo=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: services/admin-service/AdminService.Api/Dockerfile
+          push: true
+          tags: ghcr.io/${{ steps.image.outputs.repo }}/admin-service:${{ github.sha }},ghcr.io/${{ steps.image.outputs.repo }}/admin-service:latest

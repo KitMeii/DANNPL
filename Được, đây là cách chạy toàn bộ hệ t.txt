@@ -1,0 +1,54 @@
+Được, đây là cách chạy toàn bộ hệ thống local để bạn tự bấm thử:
+
+## Bước 1 — Khởi động Docker Desktop
+Mở Docker Desktop (như đã làm trước đây), chờ tới khi thấy **"Engine running"** (icon cá voi xanh) ở góc dưới trái.
+
+## Bước 2 — Chạy toàn bộ backend qua docker-compose
+
+Mở **PowerShell** hoặc **Command Prompt**, chạy:
+
+```
+cd D:\NCKH_TTHCMK51
+docker compose up -d
+```
+
+Cờ `-d` để chạy nền (không chiếm cửa sổ terminal). Lần đầu có thể mất vài phút để kéo image SQL Server. Kiểm tra tất cả container đã chạy:
+
+```
+docker compose ps
+```
+
+Tất cả phải ở trạng thái `Up` (hoặc `healthy`), không có cái nào `Restarting`.
+
+## Bước 3 — Chạy frontend (vì đây là file tĩnh, cần 1 static server đơn giản)
+
+Frontend không chạy qua Docker (theo cấu trúc hiện tại), cần serve riêng. Cách đơn giản nhất nếu máy có Python (thường có sẵn trên Windows qua Microsoft Store hoặc đã cài trước đó):
+
+```
+cd D:\NCKH_TTHCMK51\FrontEnd
+python -m http.server 5500
+```
+
+Nếu không có Python, dùng extension **Live Server** trong VS Code (chuột phải vào `index.html` → "Open with Live Server") — nhớ chỉnh port Live Server thành `5500` trong Settings nếu `FRONTEND_ORIGIN` trong `.env` đang cấu hình đúng cổng đó (để khớp CORS).
+
+## Bước 4 — Mở trình duyệt
+
+Truy cập:
+```
+http://localhost:5500
+```
+
+## Bước 5 — Đăng nhập thử 3 tài khoản demo
+
+Dùng 3 tài khoản seed đã tạo từ đầu dự án (Student/Teacher/Admin) — nếu không nhớ email/password, hỏi Claude Code:
+
+```
+Nhắc lại giúp 3 tài khoản demo đã seed (email + password) cho 
+Student/Teacher/Admin, để tôi tự đăng nhập test qua trình duyệt.
+```
+
+Sau khi đăng nhập từng role, thử: bấm hết các mục trong bottom-nav, thử nộp 1 bài trắc nghiệm, xem tài liệu, và với Admin/Teacher — vào `admin/quan-tri-he-thong.html` / `teacher/quan-ly-noi-dung.html` xem có tính năng nào lỗi/thiếu không.
+
+Khi xong việc `docker compose down` để tắt (dữ liệu vẫn giữ nguyên nhờ Volume, lần sau `docker compose up -d` lại là dữ liệu vẫn còn).
+
+

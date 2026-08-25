@@ -1,0 +1,14 @@
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.page-content {
+  padding: 16px 0 8px;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  padding: 12px 0 4px;
+}

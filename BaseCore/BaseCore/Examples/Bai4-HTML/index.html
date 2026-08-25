@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 4 - HTML Cơ bản</title>
+</head>
+<body>
+    <!-- Tiêu đề -->
+    <h1>Chào mừng đến với HTML5</h1>
+    <h2>Bài 4: Giới thiệu HTML cơ bản</h2>
+
+    <!-- Đoạn văn -->
+    <p>HTML (HyperText Markup Language) là ngôn ngữ đánh dấu để tạo cấu trúc trang web.</p>
+
+    <!-- Danh sách -->
+    <h3>Các thẻ HTML quan trọng:</h3>
+    <ul>
+        <li>Thẻ tiêu đề: h1, h2, h3...</li>
+        <li>Thẻ đoạn văn: p</li>
+        <li>Thẻ liên kết: a</li>
+        <li>Thẻ hình ảnh: img</li>
+        <li>Thẻ form: form, input, button</li>
+    </ul>
+
+    <!-- Liên kết -->
+    <p>Tham khảo thêm: <a href="https://developer.mozilla.org/vi/docs/Web/HTML" target="_blank">MDN Web Docs</a></p>
+
+    <!-- Bảng -->
+    <h3>Bảng sản phẩm:</h3>
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Laptop Dell</td>
+                <td>35,000,000 VNĐ</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>iPhone 15</td>
+                <td>28,000,000 VNĐ</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Form đăng ký -->
+    <h3>Form đăng ký người dùng:</h3>
+    <form action="#" method="post">
+        <div>
+            <label for="fullname">Họ và tên:</label><br>
+            <input type="text" id="fullname" name="fullname" placeholder="Nhập họ tên" required>
+        </div>
+        <br>
+        <div>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" placeholder="example@email.com" required>
+        </div>
+        <br>
+        <div>
+            <label for="phone">Số điện thoại:</label><br>
+            <input type="tel" id="phone" name="phone" placeholder="0123456789">
+        </div>
+        <br>
+        <div>
+            <label for="password">Mật khẩu:</label><br>
+            <input type="password" id="password" name="password" minlength="6" required>
+        </div>
+        <br>
+        <div>
+            <label>Giới tính:</label><br>
+            <input type="radio" id="male" name="gender" value="male">
+            <label for="male">Nam</label>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Nữ</label>
+        </div>
+        <br>
+        <div>
+            <label for="city">Thành phố:</label><br>
+            <select id="city" name="city">
+                <option value="">-- Chọn thành phố --</option>
+                <option value="hanoi">Hà Nội</option>
+                <option value="hcm">TP. Hồ Chí Minh</option>
+                <option value="danang">Đà Nẵng</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">Tôi đồng ý với điều khoản sử dụng</label>
+        </div>
+        <br>
+        <button type="submit">Đăng ký</button>
+        <button type="reset">Làm mới</button>
+    </form>
+
+    <!-- Media -->
+    <h3>Media Elements:</h3>
+    <p>Video và Audio có thể được nhúng bằng thẻ &lt;video&gt; và &lt;audio&gt;</p>
+</body>
+</html>

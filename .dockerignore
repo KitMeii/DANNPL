@@ -1,0 +1,27 @@
+# Every Dockerfile builds with context "." (repo root, see docker-compose.yml), then COPYs
+# individual service directories in. Without this file, host-built bin/obj (containing
+# Windows-absolute NuGet fallback paths from local `dotnet build`) get copied into the Linux
+# build stage and clobber the in-container `dotnet restore` output, breaking `dotnet publish
+# --no-restore` with MSB4018 "Unable to find fallback package folder ...NuGetPackages".
+**/bin/
+**/obj/
+**/.vs/
+
+.git/
+.vscode/
+BaseCore/
+
+.env
+.env.*
+!.env.example
+
+**/appsettings.Development.json
+**/appsettings.*.local.json
+**/secrets.json
+
+**/node_modules/
+FrontEnd/
+sql/
+
+*.user
+*.suo

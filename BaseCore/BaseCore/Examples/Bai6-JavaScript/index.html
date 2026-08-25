@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 6 - JavaScript Cơ bản</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 10px; }
+        h2 { color: #667eea; }
+        button { background: #667eea; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; margin: 5px; }
+        button:hover { background: #764ba2; }
+        input, select { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 5px; }
+        .result { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        #todoList li { padding: 10px; background: white; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; }
+        .delete-btn { background: #f44336; }
+    </style>
+</head>
+<body>
+    <h1>Bài 6: JavaScript Cơ bản</h1>
+
+    <!-- 1. Biến và Kiểu dữ liệu -->
+    <div class="section">
+        <h2>1. Biến và Kiểu dữ liệu</h2>
+        <button onclick="demoVariables()">Demo Biến</button>
+        <div id="variableResult" class="result"></div>
+    </div>
+
+    <!-- 2. Hàm và Toán tử -->
+    <div class="section">
+        <h2>2. Hàm và Toán tử</h2>
+        <input type="number" id="num1" placeholder="Số 1" value="10">
+        <input type="number" id="num2" placeholder="Số 2" value="5">
+        <br><br>
+        <button onclick="calculate('add')">Cộng</button>
+        <button onclick="calculate('subtract')">Trừ</button>
+        <button onclick="calculate('multiply')">Nhân</button>
+        <button onclick="calculate('divide')">Chia</button>
+        <div id="calcResult" class="result"></div>
+    </div>
+
+    <!-- 3. Vòng lặp và Điều kiện -->
+    <div class="section">
+        <h2>3. Vòng lặp và Điều kiện</h2>
+        <input type="number" id="loopCount" placeholder="Số lần lặp" value="5">
+        <button onclick="demoLoop()">Demo Vòng lặp</button>
+        <div id="loopResult" class="result"></div>
+    </div>
+
+    <!-- 4. DOM Manipulation -->
+    <div class="section">
+        <h2>4. DOM Manipulation</h2>
+        <input type="text" id="newText" placeholder="Nhập text mới">
+        <button onclick="changeText()">Đổi Text</button>
+        <button onclick="changeColor()">Đổi Màu</button>
+        <p id="targetText" style="font-size: 20px; font-weight: bold;">Text sẽ thay đổi ở đây</p>
+    </div>
+
+    <!-- 5. Event Handling -->
+    <div class="section">
+        <h2>5. Event Handling - Todo List</h2>
+        <input type="text" id="todoInput" placeholder="Nhập công việc">
+        <button onclick="addTodo()">Thêm</button>
+        <ul id="todoList"></ul>
+    </div>
+
+    <!-- 6. Form Validation -->
+    <div class="section">
+        <h2>6. Form Validation</h2>
+        <form id="registrationForm" onsubmit="return validateForm(event)">
+            <input type="text" id="username" placeholder="Tên đăng nhập" required><br><br>
+            <input type="email" id="email" placeholder="Email" required><br><br>
+            <input type="password" id="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" required><br><br>
+            <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu" required><br><br>
+            <button type="submit">Đăng ký</button>
+        </form>
+        <div id="formResult" class="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

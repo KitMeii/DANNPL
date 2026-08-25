@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 5 - CSS Cơ bản</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">BaseCore Shop</div>
+            <ul class="nav-links">
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#">Sản phẩm</a></li>
+                <li><a href="#">Giới thiệu</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1>Bài 5: CSS Cơ bản</h1>
+
+        <!-- Box Model Demo -->
+        <section class="section">
+            <h2>1. Box Model</h2>
+            <div class="box-demo">
+                <div class="box">
+                    Content<br>
+                    Padding: 20px<br>
+                    Border: 3px<br>
+                    Margin: 10px
+                </div>
+            </div>
+        </section>
+
+        <!-- Flexbox Demo -->
+        <section class="section">
+            <h2>2. Flexbox Layout</h2>
+            <div class="flex-container">
+                <div class="flex-item">Item 1</div>
+                <div class="flex-item">Item 2</div>
+                <div class="flex-item">Item 3</div>
+                <div class="flex-item">Item 4</div>
+            </div>
+        </section>
+
+        <!-- Grid Demo -->
+        <section class="section">
+            <h2>3. CSS Grid</h2>
+            <div class="grid-container">
+                <div class="grid-item header-grid">Header</div>
+                <div class="grid-item sidebar">Sidebar</div>
+                <div class="grid-item main-content">Main Content</div>
+                <div class="grid-item footer-grid">Footer</div>
+            </div>
+        </section>
+
+        <!-- Card Layout (Responsive) -->
+        <section class="section">
+            <h2>4. Responsive Cards</h2>
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-img">📱</div>
+                    <div class="card-body">
+                        <h3>iPhone 15</h3>
+                        <p>Điện thoại thông minh mới nhất</p>
+                        <span class="price">28,000,000 VNĐ</span>
+                        <button class="btn">Mua ngay</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">💻</div>
+                    <div class="card-body">
+                        <h3>Laptop Dell</h3>
+                        <p>Laptop hiệu suất cao</p>
+                        <span class="price">35,000,000 VNĐ</span>
+                        <button class="btn">Mua ngay</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">📚</div>
+                    <div class="card-body">
+                        <h3>Sách lập trình</h3>
+                        <p>Học lập trình cơ bản</p>
+                        <span class="price">450,000 VNĐ</span>
+                        <button class="btn">Mua ngay</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 BaseCore Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

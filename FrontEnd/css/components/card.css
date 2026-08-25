@@ -1,0 +1,111 @@
+/* ===== CARDS ===== */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+.card-title {
+  font-family: "Oswald", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.card-title i {
+  color: var(--red);
+  font-size: 1rem;
+}
+
+/* ===== WELCOME CARD (card dạng chào mừng ở dashboard) ===== */
+.welcome-card {
+  background: linear-gradient(135deg, #b71c1c 0%, #c62828 40%, #d32f2f 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(198, 40, 40, 0.35);
+}
+.welcome-card::before {
+  content: "";
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 130px;
+  height: 130px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+}
+.welcome-card::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  right: 30px;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+}
+.star-icon {
+  font-size: 3.5rem;
+  color: var(--gold);
+  filter: drop-shadow(0 2px 8px rgba(249, 168, 37, 0.5));
+  float: right;
+  margin-top: -4px;
+}
+.welcome-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.welcome-name {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.welcome-sub {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 3px;
+}
+.welcome-streak {
+  font-size: 0.78rem;
+  margin-top: 8px;
+  opacity: 0.9;
+}
+.welcome-streak span {
+  font-weight: 700;
+}
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  padding: 9px 18px;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s;
+  font-family: "Be Vietnam Pro", sans-serif;
+  letter-spacing: 0.3px;
+}
+.btn-start:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(2px);
+}

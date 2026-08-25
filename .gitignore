@@ -1,0 +1,27 @@
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+**/appsettings.Development.json
+**/appsettings.*.local.json
+**/secrets.json
+
+# --- .NET ---
+**/bin/
+**/obj/
+**/.vs/
+*.user
+*.suo
+UpgradeLog.htm
+
+# --- Node ---
+**/node_modules/
+**/dist/
+npm-debug.log*
+
+# --- Docker ---
+docker-compose.override.yml
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
