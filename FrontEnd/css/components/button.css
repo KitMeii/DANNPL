@@ -16,21 +16,32 @@
   letter-spacing: 0.2px;
 }
 .btn-red {
-  background: var(--red);
+  background: var(--primary);
   color: white;
 }
 .btn-red:hover {
-  background: var(--red-dark);
+  background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.4);
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.4);
 }
 .btn-outline {
   background: transparent;
-  color: var(--red);
-  border: 1.5px solid var(--red);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
 }
 .btn-outline:hover {
-  background: var(--red-bg);
+  background: var(--primary-bg);
+}
+/* Hành động phá huỷ thật sự (xoá vĩnh viễn, không phục hồi được) — tách khỏi .btn-red vì
+   .btn-red giờ là màu thương hiệu (xanh), không còn tự nhiên biểu thị "nguy hiểm" nữa. */
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+.btn-danger:hover {
+  background: var(--danger-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.4);
 }
 .btn-full {
   width: 100%;

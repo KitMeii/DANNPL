@@ -25,9 +25,8 @@ body.dark .chat-input {
   color: #e0e0e0;
   border-color: #444;
 }
-body.dark .bottom-nav {
-  background: #1e1e1e;
-  border-color: #333;
+body.dark .nav-row {
+  background: #14201a;
 }
 body.dark .prog-track {
   background: #333;

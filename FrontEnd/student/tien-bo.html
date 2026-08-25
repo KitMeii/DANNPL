@@ -42,15 +42,18 @@
         transition: all 0.15s;
       }
       .period-btn.active {
-        background: var(--red);
+        background: var(--primary);
         color: white;
-        border-color: var(--red);
+        border-color: var(--primary);
       }
     </style>
   </head>
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -72,6 +75,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -167,7 +199,7 @@
             >
               <div class="empty">
                 <i class="fas fa-pencil-alt"></i>Chưa có bài thi nào.
-                <a href="thi-thu.html" style="color: var(--red)">Thi ngay!</a>
+                <a href="thi-thu.html" style="color: var(--primary)">Thi ngay!</a>
               </div>
             </div>
           </div>
@@ -181,35 +213,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — "Tiến bộ" là sub-page của "Tiến độ" (đã redirect Admin từ trước,
@@ -281,11 +284,11 @@
               {
                 label: "Phút học",
                 data,
-                borderColor: "#c62828",
-                backgroundColor: "rgba(198,40,40,0.1)",
+                borderColor: "#1b5e20",
+                backgroundColor: "rgba(27,94,32,0.1)",
                 tension: 0.4,
                 fill: true,
-                pointBackgroundColor: "#c62828",
+                pointBackgroundColor: "#1b5e20",
                 pointRadius: 4,
               },
             ],
@@ -323,8 +326,8 @@
                 data: recent.map((h) => h.score),
                 backgroundColor: recent.map((h) =>
                   h.score >= 5
-                    ? "rgba(198,40,40,0.8)"
-                    : "rgba(198,40,40,0.3)",
+                    ? "rgba(27,94,32,0.8)"
+                    : "rgba(27,94,32,0.3)",
                 ),
                 borderRadius: 6,
               },
@@ -408,10 +411,10 @@
       ${badges
         .map(
           (b) => `
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${b.earned ? "var(--red-bg)" : "var(--gray-50)"};border-radius:var(--radius);border:1px solid ${b.earned ? "#ffcdd2" : "var(--gray-200)"};">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${b.earned ? "#fff3e0" : "var(--gray-50)"};border-radius:var(--radius);border:1px solid ${b.earned ? "#ffcc80" : "var(--gray-200)"};">
           <div style="font-size:1.8rem;${!b.earned ? "filter:grayscale(1);opacity:0.4" : ""}">${b.icon}</div>
           <div>
-            <div style="font-size:0.78rem;font-weight:700;color:${b.earned ? "var(--red)" : "var(--gray-500)"}">${b.label}</div>
+            <div style="font-size:0.78rem;font-weight:700;color:${b.earned ? "var(--accent-dark)" : "var(--gray-500)"}">${b.label}</div>
             <div style="font-size:0.65rem;color:var(--gray-400);margin-top:2px;">${b.desc}</div>
           </div>
         </div>`,

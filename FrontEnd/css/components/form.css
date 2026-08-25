@@ -21,7 +21,7 @@
 }
 .form-input:focus {
   outline: none;
-  border-color: var(--red);
+  border-color: var(--primary);
 }
 
 /* Toggle Switch — native <input type="checkbox"> đã có <label for> đúng chuẩn (xem
@@ -60,7 +60,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 .toggle input:checked + .toggle-slider {
-  background: var(--red);
+  background: var(--primary);
 }
 .toggle input:checked + .toggle-slider::before {
   transform: translateX(20px);

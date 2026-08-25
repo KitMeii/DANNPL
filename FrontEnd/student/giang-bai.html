@@ -33,8 +33,13 @@
       /* ===================== LAYOUT ===================== */
       body {
         background: #f8f7f5;
-        padding-top: 70px;
-        padding-bottom: 72px;
+        padding-top: calc(var(--header-height) + var(--nav-row-height));
+        padding-bottom: 20px;
+      }
+      @media (max-width: 767px) {
+        body {
+          padding-top: var(--header-height);
+        }
       }
 
       .lecture-wrap {
@@ -81,7 +86,7 @@
       }
       .groq-input:focus {
         outline: none;
-        border-color: #f9a825;
+        border-color: #f57c00;
       }
 
       /* ===================== PLAYER (Việc E, 2026-08-16 — "media player"; tinh chỉnh
@@ -218,7 +223,7 @@
         font-size: 0.65rem;
         font-weight: 800;
         letter-spacing: 1px;
-        color: var(--red);
+        color: var(--primary);
         text-transform: uppercase;
       }
       .np-title-inline {
@@ -286,16 +291,16 @@
       }
       /* Câu/đoạn ĐANG được đọc — nổi bật, nền sáng, đúng yêu cầu "kiểu lyrics" */
       .cap-sentence.current {
-        color: var(--red-dark);
+        color: var(--primary-dark);
         font-weight: 700;
-        background: var(--red-bg);
+        background: var(--primary-bg);
       }
       /* Phương án dự phòng khi giọng đọc không phát onboundary (xem báo cáo audit) — tô sáng cả
          đoạn văn của phần hiện tại như 1 khối, không chi tiết tới từng câu. */
       .caption-area.cap-fallback-whole .cap-sentence {
-        color: var(--red-dark);
+        color: var(--primary-dark);
         font-weight: 600;
-        background: var(--red-bg);
+        background: var(--primary-bg);
       }
 
       /* ── Thanh điều khiển kiểu media player ── */
@@ -335,18 +340,18 @@
         height: 56px;
         border-radius: 50%;
         border: none;
-        background: var(--red);
+        background: var(--primary);
         color: white;
         font-size: 1.15rem;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 14px rgba(198, 40, 40, 0.35);
+        box-shadow: 0 4px 14px rgba(27, 94, 32, 0.35);
         transition: all 0.15s;
       }
       .media-btn-play:hover {
-        background: var(--red-dark);
+        background: var(--primary-dark);
         transform: scale(1.05);
       }
       .media-bar-progress {
@@ -386,11 +391,11 @@
         background: var(--gray-200);
       }
       .media-dot.done {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
       }
       .media-dot.current {
-        background: var(--red);
+        background: var(--primary);
         color: white;
         transform: scale(1.05);
       }
@@ -460,10 +465,10 @@
         transition: all 0.18s;
       }
       .mat-card:hover {
-        border-color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        background: var(--primary-bg);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(183, 28, 28, 0.1);
+        box-shadow: 0 4px 12px rgba(27, 94, 32, 0.1);
       }
       .mat-card-icon {
         width: 48px;
@@ -496,8 +501,8 @@
         align-items: center;
       }
       .mat-card-badge {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
         padding: 2px 7px;
         border-radius: 100px;
         font-size: 0.62rem;
@@ -509,7 +514,7 @@
         flex-shrink: 0;
       }
       .mat-card:hover .mat-card-arrow {
-        color: var(--red);
+        color: var(--primary);
       }
       /* Dùng chung trong .media-bar-tools mới (Việc E) */
       .speed-btn {
@@ -524,9 +529,9 @@
         color: var(--gray-600);
       }
       .speed-btn.active {
-        border-color: var(--red);
-        color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-bg);
       }
 
       /* ===================== Q&A OVERLAY ===================== */
@@ -809,6 +814,9 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -833,6 +841,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link active"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main>
@@ -891,7 +928,7 @@
               <div class="ai-loading" style="justify-content: center">
                 <i
                   class="fas fa-spinner fa-spin"
-                  style="color: var(--red); font-size: 1.2rem"
+                  style="color: var(--primary); font-size: 1.2rem"
                 ></i>
                 <span id="processingMsg">Đang đọc PDF...</span>
               </div>
@@ -1136,35 +1173,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item"
-        ><i class="fas fa-comment-dots"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item active"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — Giảng bài là trải nghiệm học viên, không còn dành cho Admin —

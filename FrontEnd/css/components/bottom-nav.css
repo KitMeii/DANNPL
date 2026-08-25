@@ -1,59 +1,115 @@
-/* ===== BOTTOM NAV ===== */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: var(--nav-height);
-  background: white;
-  border-top: 1px solid var(--gray-200);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 999;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-}
-.nav-item {
-  display: flex;
-  flex-direction: column;
+/* ===== TOP NAV (Giai đoạn 3 — thay bottom-nav cũ, gộp vào .app-header) =====
+   Desktop (≥768px): hàng ngang trong luồng trang, ngay dưới header. Item active là "pill" nền
+   vàng cam (--accent) — nổi bật hơn kiểu chỉ đổi màu chữ của bottom-nav cũ.
+   Mobile (<768px): ẩn mặc định, gộp vào nút hamburger trong header; bấm mở drawer trượt xuống
+   dạng overlay (position: fixed, không cộng vào chiều cao layout — xem reset.css). */
+
+.hamburger {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  font-size: 1.05rem;
+  cursor: pointer;
   align-items: center;
   justify-content: center;
-  color: var(--gray-500);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.hamburger:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.nav-row {
+  background: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 16px;
+  height: var(--nav-row-height);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-row::-webkit-scrollbar {
+  display: none;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+  cursor: pointer;
   text-decoration: none;
-  font-size: 10px;
-  font-weight: 500;
-  padding: 6px 4px;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s;
-  min-width: 50px;
-  position: relative;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
-.nav-item i {
-  font-size: 20px;
-  margin-bottom: 2px;
+.nav-link i {
+  font-size: 0.95rem;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
 }
-.nav-item.active {
-  color: var(--red);
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
-.nav-item.active i {
-  transform: translateY(-2px);
+.nav-link.active {
+  background: var(--accent);
+  color: #241300;
+  box-shadow: 0 2px 8px rgba(245, 124, 0, 0.4);
 }
-.nav-item.nav-admin {
-  color: #f9a825;
+
+@media (max-width: 400px) {
+  .hamburger {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+  }
 }
-.nav-item.nav-admin i {
-  color: #f9a825;
-}
-.nav-item.nav-admin.active {
-  color: #f57f17;
-}
-.nav-dot {
-  position: absolute;
-  top: 2px;
-  right: 6px;
-  width: 7px;
-  height: 7px;
-  background: var(--red);
-  border-radius: 50%;
-  border: 2px solid white;
+
+@media (max-width: 767px) {
+  .hamburger {
+    display: flex;
+  }
+  .nav-row {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    z-index: 999;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 10px;
+    background: var(--primary-dark);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: max-height 0.28s ease;
+  }
+  .nav-row.open {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding: 6px 10px 10px;
+  }
+  .nav-link {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+  }
+  .nav-link.active {
+    background: rgba(245, 124, 0, 0.18);
+    color: var(--accent-light);
+    border-left-color: var(--accent);
+    box-shadow: none;
+  }
 }

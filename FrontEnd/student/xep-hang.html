@@ -45,14 +45,14 @@
         transition: all 0.15s;
       }
       .lop-pick-card:hover {
-        border-color: var(--red);
+        border-color: var(--primary);
         background: #fff8f8;
       }
       .lop-pick-icon {
         width: 42px;
         height: 42px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--red-dark), var(--red));
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -105,7 +105,7 @@
         transition: border-color 0.15s;
       }
       .member-search-input:focus {
-        border-color: var(--red);
+        border-color: var(--primary);
         outline: none;
       }
       .sort-btn-row {
@@ -125,9 +125,9 @@
         color: var(--gray-600);
       }
       .sort-btn.active {
-        background: var(--red-bg);
-        border-color: var(--red);
-        color: var(--red);
+        background: var(--primary-bg);
+        border-color: var(--primary);
+        color: var(--primary);
       }
 
       /* Rà soát Lần V — bố cục CỘT (thay card rời rạc): .member-row-grid định nghĩa 6 cột dùng
@@ -167,7 +167,7 @@
         border-bottom: none;
       }
       .member-row.me {
-        background: var(--red-bg);
+        background: var(--primary-bg);
       }
       .member-stt {
         text-align: center;
@@ -233,8 +233,8 @@
         color: var(--gray-600);
       }
       .chucvu-badge.cv-loptruong {
-        background: #fff8e1;
-        color: #f57f17;
+        background: #fff3e0;
+        color: #e65100;
       }
       .chucvu-badge.cv-loppho {
         background: #e3f2fd;
@@ -283,9 +283,12 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge">
-            <i class="fas fa-trophy" style="color: #f9a825"></i>
+            <i class="fas fa-trophy" style="color: #f57c00"></i>
           </div>
           <div class="logo-info">
             <div class="logo-title">Bảng xếp hạng</div>
@@ -306,6 +309,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link active"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -373,35 +405,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item active"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — gom về applyRoleGate() dùng chung (api-client.js), thay IIFE cũ
@@ -430,7 +433,7 @@
         }
         if (score < 4) return { label: "Yếu", bg: "#ffebee", text: "#c62828" };
         if (score < 6.5) return { label: "Trung bình", bg: "#fff3e0", text: "#e65100" };
-        if (score < 7) return { label: "Trung bình khá", bg: "#fffde7", text: "#f57f17" };
+        if (score < 7) return { label: "Trung bình khá", bg: "#fff3e0", text: "#e65100" };
         if (score < 8) return { label: "Khá", bg: "#e8f5e9", text: "#2e7d32" };
         if (score < 9) return { label: "Giỏi", bg: "#e3f2fd", text: "#1565c0" };
         return { label: "Xuất sắc", bg: "#f3e5f5", text: "#6a1b9a" };
@@ -608,7 +611,7 @@
           <div class="member-identity">
             <div class="member-avatar" style="background:${band.bg};color:${band.text};">${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="" />` : initials}</div>
             <div class="member-name-col">
-              <div class="member-name">${escapeHtmlLocal(m.name)}${isMe ? ' <span style="color:var(--red);font-size:0.65rem;">(Bạn)</span>' : ""}</div>
+              <div class="member-name">${escapeHtmlLocal(m.name)}${isMe ? ' <span style="color:var(--primary);font-size:0.65rem;">(Bạn)</span>' : ""}</div>
               <div class="member-band-label" style="color:${band.text};">${band.label}</div>
             </div>
           </div>

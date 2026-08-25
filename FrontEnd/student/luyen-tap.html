@@ -28,8 +28,8 @@
     <script src="../api-client.js?v=20260822b"></script>
     <style>
       .option-btn.selected {
-        border-color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        background: var(--primary-bg);
       }
       .review-item {
         padding: 10px 0;
@@ -43,6 +43,9 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -64,6 +67,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link active"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -83,7 +115,7 @@
             <div class="empty" style="padding: 30px 0">
               <i
                 class="fas fa-spinner fa-spin"
-                style="font-size: 1.5rem; color: var(--red)"
+                style="font-size: 1.5rem; color: var(--primary)"
               ></i>
               <div
                 style="
@@ -119,7 +151,7 @@
                 gap: 8px;
               "
             >
-              <i class="fas fa-book-open" style="color: var(--red)"></i> Tài
+              <i class="fas fa-book-open" style="color: var(--primary)"></i> Tài
               liệu ôn tập
             </div>
             <div
@@ -142,7 +174,7 @@
                     font-family: &quot;Oswald&quot;, sans-serif;
                     font-size: 1.6rem;
                     font-weight: 700;
-                    color: var(--red);
+                    color: var(--primary);
                   "
                   id="totalDone"
                 >
@@ -174,7 +206,7 @@
                     font-family: &quot;Oswald&quot;, sans-serif;
                     font-size: 1.6rem;
                     font-weight: 700;
-                    color: var(--gold-light);
+                    color: var(--accent-light);
                   "
                   id="quizCount"
                 >
@@ -214,8 +246,8 @@
               style="
                 display: none;
                 margin-top: 12px;
-                background: var(--red-bg);
-                border-left: 3px solid var(--red);
+                background: var(--primary-bg);
+                border-left: 3px solid var(--primary);
                 padding: 12px;
                 border-radius: var(--radius-sm);
                 font-size: 0.82rem;
@@ -293,7 +325,7 @@
                     font-family: &quot;Oswald&quot;, sans-serif;
                     font-size: 1.5rem;
                     font-weight: 700;
-                    color: var(--red);
+                    color: var(--primary);
                   "
                   id="rWrong"
                 >
@@ -327,35 +359,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item active"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — Luyện tập là trải nghiệm học viên, không còn dành cho Admin —
@@ -472,7 +475,7 @@
           : ""
       }
       <div class="chapter-btn" onclick="startQuiz('__all__')">
-        <div class="chapter-num" style="background:linear-gradient(135deg,#b71c1c,#c62828);color:white;">★</div>
+        <div class="chapter-num" style="background:linear-gradient(135deg,#0a3d12,#1b5e20);color:white;">★</div>
         <div class="chapter-info">
           <div class="chapter-name">Tất cả chương (Ngẫu nhiên)</div>
           <div class="chapter-meta">${totalQ} câu · Ngẫu nhiên</div>
@@ -632,7 +635,7 @@
             const q = questions.find((x) => x.id === d.questionId);
             return `<div class="review-item">
       <div style="font-size:0.82rem;font-weight:600;margin-bottom:6px;">${i + 1}. ${q ? q.q : ""}</div>
-      <div style="font-size:0.78rem;color:${d.isCorrect ? "#2e7d32" : "var(--red)"};">
+      <div style="font-size:0.78rem;color:${d.isCorrect ? "#2e7d32" : "var(--danger)"};">
         ${d.isCorrect ? "✅ Đúng" : `❌ Sai — Đáp án đúng: ${LETTERS[d.correctAnswer]}`}
       </div>
       ${d.explanation ? `<div style="font-size:0.76rem;color:var(--gray-500);margin-top:3px;">💡 ${d.explanation}</div>` : ""}
@@ -682,11 +685,11 @@
             .map(
               (m) =>
                 `<div style="display:flex;align-items:center;gap:10px;background:#fafafa;border:1.5px solid var(--gray-200);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all 0.15s;"
-        onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--gray-200)'"
+        onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--gray-200)'"
         onclick="window.open('giang-bai.html?mat=${m.id}','_blank')">
         <span style="font-size:1.1rem;">📄</span>
         <span style="flex:1;font-size:0.79rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</span>
-        <span style="font-size:0.62rem;background:var(--red-bg);color:var(--red);padding:2px 7px;border-radius:100px;font-weight:700;flex-shrink:0;">${m.chapter || "Chung"}</span>
+        <span style="font-size:0.62rem;background:var(--primary-bg);color:var(--primary);padding:2px 7px;border-radius:100px;font-weight:700;flex-shrink:0;">${m.chapter || "Chung"}</span>
         <i class="fas fa-external-link-alt" style="color:var(--gray-400);font-size:0.72rem;flex-shrink:0;"></i>
       </div>`,
             )

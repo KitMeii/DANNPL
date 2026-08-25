@@ -33,7 +33,7 @@
   }
 }
 .modal-header {
-  background: linear-gradient(135deg, var(--red-dark), var(--red));
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
   color: white;
   padding: 20px;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;

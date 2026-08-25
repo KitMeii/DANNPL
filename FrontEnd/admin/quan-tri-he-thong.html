@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/base/reset.css" />
     <link rel="stylesheet" href="../css/layout/layout.css" />
     <link rel="stylesheet" href="../css/components/header.css" />
-    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
     <link rel="stylesheet" href="../css/components/card.css" />
     <link rel="stylesheet" href="../css/components/button.css" />
     <link rel="stylesheet" href="../css/components/modal.css" />
@@ -99,7 +98,7 @@
         padding: 16px 20px;
         font-weight: 700;
         font-size: 0.95rem;
-        color: var(--red);
+        color: var(--primary);
         cursor: pointer;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
         margin-bottom: 8px;
@@ -113,13 +112,13 @@
         transform: rotate(180deg);
       }
       .sidebar-item:hover {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
       }
       .sidebar-item.active {
-        background: var(--red-bg);
-        color: var(--red);
-        border-left-color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
+        border-left-color: var(--primary);
       }
       .sidebar-item i {
         width: 20px;
@@ -192,8 +191,8 @@
         color: var(--gray-600);
       }
       .chucvu-badge.cv-loptruong {
-        background: #fff8e1;
-        color: #f57f17;
+        background: #fff3e0;
+        color: #e65100;
       }
       .chucvu-badge.cv-loppho {
         background: #e3f2fd;
@@ -211,7 +210,7 @@
         flex-wrap: wrap;
       }
       .breadcrumb-link {
-        color: var(--red);
+        color: var(--primary);
         cursor: pointer;
         font-weight: 600;
       }
@@ -241,7 +240,7 @@
         user-select: none;
       }
       .data-table th.sortable:hover {
-        color: var(--red);
+        color: var(--primary);
       }
       .sort-icon {
         font-size: 0.78rem;
@@ -328,8 +327,8 @@
         color: #1565c0;
       }
       .role-badge.admin {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
       }
 
       /* Import zone */
@@ -345,8 +344,8 @@
         margin-bottom: 14px;
       }
       .import-area:hover {
-        border-color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        background: var(--primary-bg);
       }
       .import-area input {
         position: absolute;
@@ -375,7 +374,7 @@
         outline: none;
       }
       .search-input:focus {
-        border-color: var(--red);
+        border-color: var(--primary);
       }
 
       /* Toast */
@@ -502,7 +501,7 @@
         color: #2e7d32;
       }
       .bfs-error {
-        color: var(--red);
+        color: var(--danger);
       }
 
       .batch-overall {
@@ -537,7 +536,7 @@
       }
       .import-prog-fill {
         height: 100%;
-        background: var(--red);
+        background: var(--primary);
         border-radius: 6px;
         transition: width 0.3s;
       }
@@ -556,7 +555,7 @@
       .q-chapter {
         font-size: 0.75rem;
         font-weight: 700;
-        color: var(--red);
+        color: var(--primary);
         text-transform: uppercase;
         margin-bottom: 4px;
       }
@@ -586,7 +585,7 @@
 
       /* ── ADMIN DASHBOARD (trung tâm điều hành — KHÔNG dùng chung với Teacher) ── */
       .admin-hero {
-        background: linear-gradient(135deg, var(--red-dark), var(--red));
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
         border-radius: 16px;
         padding: 20px 22px;
         color: white;
@@ -802,13 +801,13 @@
                   <div class="ov-label">Giáo viên</div>
                 </div>
                 <div class="ov-card">
-                  <div class="ov-icon" style="background: var(--red-bg)">
-                    <i class="fas fa-user-shield" style="color: var(--red)"></i>
+                  <div class="ov-icon" style="background: var(--primary-bg)">
+                    <i class="fas fa-user-shield" style="color: var(--primary)"></i>
                   </div>
                   <div
                     class="ov-value"
                     id="adm-ov-admins"
-                    style="color: var(--red)"
+                    style="color: var(--primary)"
                   >
                     —
                   </div>
@@ -838,12 +837,12 @@
                 </div>
                 <div class="ov-card">
                   <div class="ov-icon" style="background: #fff8e1">
-                    <i class="fas fa-folder-open" style="color: #f9a825"></i>
+                    <i class="fas fa-folder-open" style="color: #f57c00"></i>
                   </div>
                   <div
                     class="ov-value"
                     id="adm-ov-materials"
-                    style="color: #f9a825"
+                    style="color: #f57c00"
                   >
                     —
                   </div>
@@ -1397,7 +1396,7 @@
                     <div
                       class="ov-value"
                       id="khoaStatTB"
-                      style="color: var(--red)"
+                      style="color: var(--primary)"
                     >
                       —
                     </div>
@@ -1553,8 +1552,8 @@
                       border-radius: 50%;
                       background: linear-gradient(
                         135deg,
-                        var(--red-dark),
-                        var(--red)
+                        var(--primary-dark),
+                        var(--primary)
                       );
                       display: flex;
                       align-items: center;
@@ -1909,7 +1908,7 @@
               </div>
               <div class="card">
                 <div class="card-title">
-                  <i class="fas fa-trash-alt" style="color: var(--red)"></i>Xóa
+                  <i class="fas fa-trash-alt" style="color: var(--danger)"></i>Xóa
                   dữ liệu
                 </div>
                 <div
@@ -1928,14 +1927,14 @@
                   <button
                     class="btn btn-outline btn-sm"
                     onclick="clearQuestions()"
-                    style="color: var(--red); border-color: var(--red)"
+                    style="color: var(--danger); border-color: var(--danger)"
                   >
                     <i class="fas fa-trash"></i> Xóa tất cả câu hỏi TN
                   </button>
                   <button
                     class="btn btn-outline btn-sm"
                     onclick="clearOralQuestions()"
-                    style="color: var(--red); border-color: var(--red)"
+                    style="color: var(--danger); border-color: var(--danger)"
                   >
                     <i class="fas fa-trash"></i> Xóa câu hỏi vấn đáp
                   </button>
@@ -2019,7 +2018,7 @@
             id="monHocEditMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2094,7 +2093,7 @@
             id="monHocLopMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2158,7 +2157,7 @@
             id="teacherEditMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2220,7 +2219,7 @@
             id="teacherLopMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2281,7 +2280,7 @@
             id="teacherMonHocMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2362,7 +2361,7 @@
             id="staffNameEditMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2416,7 +2415,7 @@
             id="studentRosterEditMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2489,7 +2488,7 @@
             id="createUserMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2592,7 +2591,7 @@
             id="teacherCreateMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2642,7 +2641,7 @@
             id="cpMsg"
             style="
               font-size: 0.88rem;
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 8px;
               display: none;
             "
@@ -2761,7 +2760,7 @@
         style="max-width: 560px"
       >
         <div class="modal-header">
-          <h3 id="lopDestroyModalTitle" style="color: var(--red)">
+          <h3 id="lopDestroyModalTitle" style="color: var(--danger)">
             <i class="fas fa-radiation"></i> Xóa toàn bộ dữ liệu Lớp
           </h3>
           <button
@@ -2781,7 +2780,7 @@
               gì.
             </p>
             <button
-              class="btn btn-red btn-full"
+              class="btn btn-danger btn-full"
               onclick="prepareLopDestroy()"
               id="lopDestroyPrepareBtn"
             >
@@ -2793,7 +2792,7 @@
             <div
               style="
                 background: #fff3f3;
-                border: 1px solid var(--red);
+                border: 1px solid var(--danger);
                 border-radius: 8px;
                 padding: 12px;
                 margin-bottom: 12px;
@@ -2801,7 +2800,7 @@
               "
             >
               <div
-                style="font-weight: 700; color: var(--red); margin-bottom: 6px"
+                style="font-weight: 700; color: var(--danger); margin-bottom: 6px"
               >
                 Sẽ xóa vĩnh viễn:
               </div>
@@ -2809,7 +2808,7 @@
                 id="lopDestroyCountsList"
                 style="margin: 0; padding-left: 18px; line-height: 1.7"
               ></ul>
-              <div style="margin-top: 8px; font-weight: 700; color: var(--red)">
+              <div style="margin-top: 8px; font-weight: 700; color: var(--danger)">
                 KHÔNG THỂ KHÔI PHỤC.
               </div>
             </div>
@@ -2825,12 +2824,12 @@
             <div
               style="
                 background: #fff3f3;
-                border: 1px solid var(--red);
+                border: 1px solid var(--danger);
                 border-radius: 8px;
                 padding: 12px;
                 margin-bottom: 12px;
                 font-size: 0.92rem;
-                color: var(--red);
+                color: var(--danger);
                 font-weight: 600;
               "
             >
@@ -3189,7 +3188,7 @@
             datasets: [
               {
                 data: [students, teachers, admins],
-                backgroundColor: ["#1565c0", "#e65100", "#c62828"],
+                backgroundColor: ["#1565c0", "#e65100", "#1b5e20"],
                 borderWidth: 0,
               },
             ],
@@ -3458,7 +3457,7 @@
         <td style="text-align: center">
           ${
             t.isLocked
-              ? '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#fde8e8;color:var(--red);">🔒 Đã khóa</span>'
+              ? '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#fde8e8;color:var(--danger);">🔒 Đã khóa</span>'
               : '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#e6f4ea;color:#2e7d32;">🟢 Hoạt động</span>'
           }
         </td>
@@ -3475,7 +3474,7 @@
             <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openTeacherEditModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.capBac || "")}, ${JSON.stringify(t.chucVuGV || "")})'>
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; ${t.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--red); border-color: var(--red);"}" onclick="toggleUserLocked('${t.id}', ${t.isLocked ? "true" : "false"}, '${t.name.replace(/'/g, "\\'")}')">
+            <button class="btn btn-outline btn-sm" style="flex: 1; ${t.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${t.id}', ${t.isLocked ? "true" : "false"}, '${t.name.replace(/'/g, "\\'")}')">
               <i class="fas fa-${t.isLocked ? "unlock" : "lock"}"></i> ${t.isLocked ? "Mở khóa" : "Khóa"}
             </button>
           </div>
@@ -3590,7 +3589,7 @@
       <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:0.92rem;font-weight:400;border-bottom:1px solid var(--gray-100);">
         <input type="checkbox" class="teacherLopItemCheck" value="${l.id}" ${isMine ? "checked" : ""} />
         ${l.ten}/${khoaById[l.khoaId] || "?"}
-        ${takenByOther ? '<span style="font-size:0.75rem;color:var(--red);margin-left:auto;">Đang có GV khác</span>' : ""}
+        ${takenByOther ? '<span style="font-size:0.75rem;color:var(--danger);margin-left:auto;">Đang có GV khác</span>' : ""}
       </label>`;
                 })
                 .join("")
@@ -3670,7 +3669,7 @@
       <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:0.92rem;font-weight:400;border-bottom:1px solid var(--gray-100);">
         <input type="checkbox" class="teacherMonHocItemCheck" value="${m.id}" ${isMine ? "checked" : ""} />
         ${m.ten} (${m.maHocPhan})
-        ${takenByOther ? '<span style="font-size:0.75rem;color:var(--red);margin-left:auto;">Đang có GV khác</span>' : ""}
+        ${takenByOther ? '<span style="font-size:0.75rem;color:var(--danger);margin-left:auto;">Đang có GV khác</span>' : ""}
       </label>`;
                 })
                 .join("")
@@ -3772,7 +3771,7 @@
       <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:0.92rem;font-weight:400;border-bottom:1px solid var(--gray-100);">
         <input type="checkbox" class="teacherCreateMonHocCheck" value="${m.id}" />
         ${m.ten} (${m.maHocPhan})
-        ${m.giaoVienId ? '<span style="font-size:0.75rem;color:var(--red);margin-left:auto;">Đang có GV khác</span>' : ""}
+        ${m.giaoVienId ? '<span style="font-size:0.75rem;color:var(--danger);margin-left:auto;">Đang có GV khác</span>' : ""}
       </label>`,
                 )
                 .join("")
@@ -3784,7 +3783,7 @@
       <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:0.92rem;font-weight:400;border-bottom:1px solid var(--gray-100);">
         <input type="checkbox" class="teacherCreateLopCheck" value="${l.id}" />
         ${l.ten}/${khoaById[l.khoaId] || "?"}
-        ${l.giaoVienId ? '<span style="font-size:0.75rem;color:var(--red);margin-left:auto;">Đang có GV khác</span>' : ""}
+        ${l.giaoVienId ? '<span style="font-size:0.75rem;color:var(--danger);margin-left:auto;">Đang có GV khác</span>' : ""}
       </label>`,
                 )
                 .join("")
@@ -3925,7 +3924,7 @@
             <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openMonHocModal(${JSON.stringify(m.id)})'>
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--red); border-color: var(--red)" onclick="deleteMonHoc('${m.id}', '${m.ten.replace(/'/g, "\\'")}')">
+            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteMonHoc('${m.id}', '${m.ten.replace(/'/g, "\\'")}')">
               <i class="fas fa-trash"></i> Xóa
             </button>
           </div>
@@ -4169,7 +4168,7 @@
         <td style="font-weight: 600">${t.name}</td>
         <td style="text-align: center">${t.lopCount}</td>
         <td style="text-align: center">${t.totalStudents}</td>
-        <td style="text-align: center; color: var(--red); font-weight: 600">${t.avgExam != null ? t.avgExam.toFixed(2) : "—"}</td>
+        <td style="text-align: center; color: var(--primary); font-weight: 600">${t.avgExam != null ? t.avgExam.toFixed(2) : "—"}</td>
         <td style="text-align: center; color: #2e7d32; font-weight: 600">${t.avgPractice != null ? t.avgPractice.toFixed(2) : "—"}</td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="openTeacherLbDetail('${t.teacherId}', '${t.name.replace(/'/g, "\\'")}')">
@@ -4249,7 +4248,7 @@
                 <tr>
                   <td style="font-weight:600">${l.lopTen}</td>
                   <td style="text-align:center">${l.studentCount}</td>
-                  <td style="text-align:center; color: var(--red); font-weight:600">${l.avgExamScore != null ? l.avgExamScore.toFixed(2) : "—"}</td>
+                  <td style="text-align:center; color: var(--primary); font-weight:600">${l.avgExamScore != null ? l.avgExamScore.toFixed(2) : "—"}</td>
                   <td style="text-align:center; color: #2e7d32; font-weight:600">${l.avgPracticeScore != null ? l.avgPracticeScore.toFixed(2) : "—"}</td>
                   <td><button class="btn btn-outline btn-sm" onclick="showTeacherLbLopRow('${l.lopId}', '${l.lopTen.replace(/'/g, "\\'")}')">Xem BXH</button></td>
                 </tr>`,
@@ -4290,9 +4289,9 @@
                   .map(
                     (m, i) => `
                 <tr>
-                  <td style="text-align:center; font-weight:700; color: ${i < 3 ? "var(--red)" : "var(--gray-400)"}">${i + 1}</td>
+                  <td style="text-align:center; font-weight:700; color: ${i < 3 ? "var(--primary)" : "var(--gray-400)"}">${i + 1}</td>
                   <td style="font-weight:600">${m.name}</td>
-                  <td style="text-align:center; color: var(--red); font-weight:600">${m.avgExamScore != null ? m.avgExamScore.toFixed(2) : "—"}</td>
+                  <td style="text-align:center; color: var(--primary); font-weight:600">${m.avgExamScore != null ? m.avgExamScore.toFixed(2) : "—"}</td>
                   <td style="text-align:center; color: #2e7d32; font-weight:600">${m.avgPracticeScore != null ? m.avgPracticeScore.toFixed(2) : "—"}</td>
                 </tr>`,
                   )
@@ -4407,7 +4406,7 @@
       <td style="text-align: center">
         ${
           s.isLocked
-            ? '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#fde8e8;color:var(--red);">🔒 Đã khóa</span>'
+            ? '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#fde8e8;color:var(--danger);">🔒 Đã khóa</span>'
             : '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#e6f4ea;color:#2e7d32;">🟢 Hoạt động</span>'
         }
       </td>
@@ -4419,7 +4418,7 @@
           <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openStaffNameEditModal(${JSON.stringify(s.id)}, ${JSON.stringify(s.name)})'>
             <i class="fas fa-pen"></i> Sửa tên
           </button>
-          <button class="btn btn-outline btn-sm" style="flex: 1; ${s.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--red); border-color: var(--red);"}" onclick="toggleUserLocked('${s.id}', ${s.isLocked ? "true" : "false"}, '${(s.name || "").replace(/'/g, "\\'")}')">
+          <button class="btn btn-outline btn-sm" style="flex: 1; ${s.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${s.id}', ${s.isLocked ? "true" : "false"}, '${(s.name || "").replace(/'/g, "\\'")}')">
             <i class="fas fa-${s.isLocked ? "unlock" : "lock"}"></i> ${s.isLocked ? "Mở khóa" : "Khóa"}
           </button>
         </div>
@@ -4690,7 +4689,7 @@
         <td style="text-align: center">
           ${
             s.isLocked
-              ? '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#fde8e8;color:var(--red);">🔒 Đã khóa</span>'
+              ? '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#fde8e8;color:var(--danger);">🔒 Đã khóa</span>'
               : '<span style="font-size:0.78rem;font-weight:700;padding:2px 8px;border-radius:100px;background:#e6f4ea;color:#2e7d32;">🟢 Hoạt động</span>'
           }
         </td>
@@ -4699,7 +4698,7 @@
             <button class="btn btn-outline btn-sm" onclick='openStudentRosterEditModal(${JSON.stringify(s.id)}, ${JSON.stringify(s.name)}, ${JSON.stringify(s.namHoc || "")})'>
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="${s.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--red); border-color: var(--red);"}" onclick="toggleUserLocked('${s.id}', ${s.isLocked ? "true" : "false"}, '${s.name.replace(/'/g, "\\'")}')">
+            <button class="btn btn-outline btn-sm" style="${s.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${s.id}', ${s.isLocked ? "true" : "false"}, '${s.name.replace(/'/g, "\\'")}')">
               <i class="fas fa-${s.isLocked ? "unlock" : "lock"}"></i> ${s.isLocked ? "Mở khóa" : "Khóa"}
             </button>
           </div>
@@ -5055,7 +5054,7 @@
             <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openKhoaModal('${k.id}')">
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--red); border-color: var(--red)" onclick="deleteKhoa('${k.id}')">
+            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteKhoa('${k.id}')">
               <i class="fas fa-trash"></i> Xóa
             </button>
           </div>
@@ -5200,7 +5199,7 @@
         <td style="text-align: center">${namHoc}</td>
         <td>${gvName}</td>
         <td style="text-align: center">${siSo}</td>
-        <td style="text-align: center; color: var(--red); font-weight: 600">${tbThiThu}</td>
+        <td style="text-align: center; color: var(--primary); font-weight: 600">${tbThiThu}</td>
         <td style="text-align: center; color: #2e7d32; font-weight: 600">${tbLuyenTap}</td>
         <td>
           <!-- Rà soát Lần XIII (2026-08-21) — 4 nút trước đây nhồi chung 1 dòng, tràn/vỡ cột (nút
@@ -5217,11 +5216,11 @@
             <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openLopModal('${r.id}')">
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--red); border-color: var(--red)" onclick="deleteLop('${r.id}')">
+            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteLop('${r.id}')">
               <i class="fas fa-trash"></i> Xóa
             </button>
           </div>
-          <button class="btn btn-sm btn-full" style="color: #fff; background: var(--red); border-color: var(--red)" onclick="openLopDestroyModal('${r.id}', '${r.ten.replace(/'/g, "\\'")}')">
+          <button class="btn btn-sm btn-full" style="color: #fff; background: var(--danger); border-color: var(--danger)" onclick="openLopDestroyModal('${r.id}', '${r.ten.replace(/'/g, "\\'")}')">
             <i class="fas fa-radiation"></i> Xóa toàn bộ dữ liệu
           </button>
         </td>
@@ -5671,7 +5670,7 @@
         <td>${fmtScore(s.diemThiThu)} <span style="color: var(--gray-400); font-size: 0.75rem">(${s.soLuotThiThu} lượt)</span></td>
         <td>${fmtScore(s.diemLuyenTap)} <span style="color: var(--gray-400); font-size: 0.75rem">(${s.soLuotLuyenTap} lượt)</span></td>
         <td>
-          <button class="btn btn-outline btn-sm" style="color: var(--red)" onclick="removeStudentFromLop('${s.id}')">Gỡ</button>
+          <button class="btn btn-outline btn-sm" style="color: var(--danger)" onclick="removeStudentFromLop('${s.id}')">Gỡ</button>
         </td>
       </tr>`,
           )

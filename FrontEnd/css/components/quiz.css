@@ -14,15 +14,15 @@
   text-align: left;
 }
 .chapter-btn:hover {
-  border-color: var(--red);
+  border-color: var(--primary);
   box-shadow: var(--shadow-sm);
   transform: translateX(3px);
 }
 .chapter-num {
   width: 36px;
   height: 36px;
-  background: var(--red-bg);
-  color: var(--red);
+  background: var(--primary-bg);
+  color: var(--primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -61,18 +61,18 @@
   gap: 10px;
 }
 .option-btn:hover:not(:disabled) {
-  border-color: var(--red);
-  background: var(--red-bg);
+  border-color: var(--primary);
+  background: var(--primary-bg);
 }
 .option-btn.correct {
-  border-color: #2e7d32;
-  background: #e8f5e9;
-  color: #2e7d32;
+  border-color: var(--success);
+  background: var(--success-bg);
+  color: var(--success);
 }
 .option-btn.wrong {
-  border-color: #c62828;
-  background: #ffebee;
-  color: var(--red);
+  border-color: var(--danger);
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 .option-btn:disabled {
   cursor: default;
@@ -90,11 +90,11 @@
   flex-shrink: 0;
 }
 .option-btn.correct .opt-letter {
-  background: #2e7d32;
+  background: var(--success);
   color: white;
 }
 .option-btn.wrong .opt-letter {
-  background: var(--red);
+  background: var(--danger);
   color: white;
 }
 
@@ -111,7 +111,7 @@
 }
 .quiz-score {
   font-size: 0.8rem;
-  color: var(--red);
+  color: var(--primary);
   font-weight: 700;
 }
 
@@ -120,8 +120,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--red-bg);
-  color: var(--red);
+  background: var(--primary-bg);
+  color: var(--primary);
   padding: 6px 14px;
   border-radius: 20px;
   font-family: "Oswald", sans-serif;
@@ -129,8 +129,8 @@
   font-weight: 600;
 }
 .timer-box.urgent {
-  background: #ffebee;
-  color: #b71c1c;
+  background: var(--danger-bg);
+  color: var(--danger-dark);
   animation: timerPulse 1s infinite;
 }
 @keyframes timerPulse {
@@ -152,7 +152,7 @@
   font-family: "Oswald", sans-serif;
   font-size: 5rem;
   font-weight: 700;
-  color: var(--red);
+  color: var(--primary);
   line-height: 1;
 }
 .result-label {

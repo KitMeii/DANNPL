@@ -30,7 +30,7 @@
   font-family: "Oswald", sans-serif;
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--red);
+  color: var(--primary);
   line-height: 1;
 }
 .stat-unit {

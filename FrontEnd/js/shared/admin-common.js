@@ -539,8 +539,8 @@ function drawLopCharts(lopId, stats) {
             // Quy điểm (thang 0-10) về cùng trục 0-100 với tỷ lệ tham gia (%) để radar cân đối —
             // tooltip bên dưới hiện lại giá trị thật, không phải giá trị đã quy đổi.
             data: [Number(stats.diemTBThiThu || 0) * 10, Number(stats.diemTBLuyenTap || 0) * 10, participationRate],
-            backgroundColor: "rgba(198, 40, 40, 0.2)",
-            borderColor: "#c62828",
+            backgroundColor: "rgba(27, 94, 32, 0.2)",
+            borderColor: "#1b5e20",
           },
         ],
       },
@@ -1606,7 +1606,7 @@ function renderBatchList() {
   el.innerHTML = batchFiles
     .map((b, i) => {
       const icons = { pdf: "📄", docx: "📝", txt: "📃" };
-      const colors = { pdf: "#c62828", docx: "#1565c0", txt: "#555" };
+      const colors = { pdf: "#1b5e20", docx: "#1565c0", txt: "#555" };
       const statusMap = {
         pending: { cls: "bfs-pending", text: "⏳ Chờ" },
         loading: { cls: "bfs-loading", text: "🔄 Đang xử lý..." },
@@ -2499,7 +2499,7 @@ async function submitChangePassword() {
     showToast("✓ Đã đổi mật khẩu!", "success");
     closeModal("changePasswordModal");
   } catch (err) {
-    msg.style.color = "var(--red)";
+    msg.style.color = "var(--danger)";
     msg.textContent = "Lỗi: " + err.message;
     msg.style.display = "block";
   } finally {

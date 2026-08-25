@@ -25,12 +25,12 @@
   font-family: "Oswald", sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--red);
+  color: var(--primary);
   min-width: 40px;
   text-align: right;
 }
 .ch-pct.done {
-  color: #2e7d32;
+  color: var(--success);
 }
 .ch-pct.empty {
   color: var(--gray-400);
@@ -46,7 +46,7 @@
 }
 .prog-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--red), #ef5350);
+  background: linear-gradient(90deg, var(--primary), var(--primary-mid));
   border-radius: 10px;
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }

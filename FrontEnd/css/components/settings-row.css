@@ -11,7 +11,7 @@
   border-bottom: none;
 }
 .setting-row:hover .setting-label {
-  color: var(--red);
+  color: var(--primary);
 }
 .setting-label {
   font-size: 0.875rem;
@@ -19,5 +19,5 @@
   transition: color 0.2s;
 }
 .setting-label.danger {
-  color: #c62828;
+  color: var(--danger);
 }

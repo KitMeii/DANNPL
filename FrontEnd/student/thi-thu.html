@@ -39,8 +39,8 @@
         transition: all 0.2s;
       }
       .exam-tab.active {
-        color: var(--red);
-        border-bottom-color: var(--red);
+        color: var(--primary);
+        border-bottom-color: var(--primary);
       }
       .q-nav-dot {
         width: 26px;
@@ -71,8 +71,8 @@
         transition: all 0.15s;
       }
       .mat-strip:hover {
-        border-color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        background: var(--primary-bg);
       }
       .mat-strip-icon {
         font-size: 1.2rem;
@@ -88,19 +88,19 @@
       }
       .mat-strip-badge {
         font-size: 0.62rem;
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
         padding: 2px 7px;
         border-radius: 100px;
         font-weight: 700;
         flex-shrink: 0;
       }
       .q-nav-dot.answered {
-        background: var(--red);
+        background: var(--primary);
         color: white;
       }
       .q-nav-dot.current {
-        border-color: var(--gold);
+        border-color: var(--accent);
       }
 
       /* Oral exam */
@@ -123,7 +123,7 @@
         width: 40px;
         height: 40px;
         background: rgba(255, 255, 255, 0.15);
-        border: 2px solid #f9a825;
+        border: 2px solid #f57c00;
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -161,7 +161,7 @@
         font-family: "Oswald", sans-serif;
         font-size: 1.3rem;
         font-weight: 700;
-        color: var(--red);
+        color: var(--primary);
         text-align: center;
         margin-bottom: 10px;
       }
@@ -440,13 +440,13 @@
         color: #1b5e20;
       }
       .ai-feedback.ok {
-        background: #fff8e1;
-        border-left: 3px solid #f57f17;
+        background: #fff3e0;
+        border-left: 3px solid #e65100;
         color: #5d4037;
       }
       .ai-feedback.bad {
         background: #ffebee;
-        border-left: 3px solid var(--red);
+        border-left: 3px solid var(--danger);
         color: #b71c1c;
       }
 
@@ -469,7 +469,7 @@
       }
       .score-fill {
         height: 100%;
-        background: var(--red);
+        background: var(--primary);
         border-radius: 3px;
         transition: width 0.5s;
       }
@@ -489,6 +489,9 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -501,7 +504,7 @@
             id="timerBox"
             style="
               display: none;
-              background: var(--red);
+              background: var(--primary);
               color: white;
               padding: 5px 10px;
               border-radius: 8px;
@@ -525,6 +528,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link active"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -585,7 +617,7 @@
                       font-family: &quot;Oswald&quot;, sans-serif;
                       font-size: 1.5rem;
                       font-weight: 700;
-                      color: var(--red);
+                      color: var(--primary);
                     "
                   >
                     40 câu
@@ -612,7 +644,7 @@
                       font-family: &quot;Oswald&quot;, sans-serif;
                       font-size: 1.5rem;
                       font-weight: 700;
-                      color: var(--red);
+                      color: var(--primary);
                     "
                   >
                     45 phút
@@ -734,7 +766,7 @@
           <!-- Tài liệu bài giảng -->
           <div class="card" id="matCardTT" style="display: none">
             <div class="card-title">
-              <i class="fas fa-book-open" style="color: var(--red)"></i> Ôn tập
+              <i class="fas fa-book-open" style="color: var(--primary)"></i> Ôn tập
               tài liệu trước khi thi
             </div>
             <div
@@ -832,7 +864,7 @@
               class="btn"
               style="
                 background: #ffebee;
-                color: var(--red);
+                color: var(--primary);
                 border: 1px solid #ffcdd2;
                 border-radius: 10px;
                 padding: 10px 14px;
@@ -890,35 +922,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item active"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — Thi thử là trải nghiệm học viên, không còn dành cho Admin — redirect
@@ -1188,7 +1191,7 @@
       async function submitTN() {
         clearInterval(tnTimer);
         document.getElementById("timerBox").style.display = "none";
-        document.getElementById("timerBox").style.background = "var(--red)";
+        document.getElementById("timerBox").style.background = "var(--danger)";
         const elapsed = Math.floor((Date.now() - tnStart) / 1000);
         document.getElementById("tnScreen").style.display = "none";
 
@@ -1229,7 +1232,7 @@
                 const q = tnQuestions.find((x) => x.id === d.questionId);
                 return `<div style="padding:8px 10px;background:var(--gray-50);border-radius:8px;margin-bottom:6px;font-size:0.78rem;">
       <div style="font-weight:600;margin-bottom:3px;">${q ? q.q : ""}</div>
-      <div style="color:var(--red);">✗ Bạn chọn: ${q ? q.opts[d.selectedOption] : "—"}</div>
+      <div style="color:var(--danger);">✗ Bạn chọn: ${q ? q.opts[d.selectedOption] : "—"}</div>
       <div style="color:#2e7d32;">✓ Đáp án: ${q ? q.opts[d.correctAnswer] : "—"}</div>
       ${d.explanation ? `<div style="color:var(--gray-600);margin-top:3px;">💡 ${d.explanation}</div>` : ""}
     </div>`;
@@ -1501,9 +1504,9 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
       <div style="font-size:0.78rem;font-weight:600;">Câu ${i + 1}: ${q.question.slice(0, 60)}...</div>
       <div style="width:100%;">
         <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--gray-500);margin-bottom:3px;">
-          <span>Điểm</span><span style="font-weight:700;color:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--red)"};">${scores[i]}/10</span>
+          <span>Điểm</span><span style="font-weight:700;color:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--danger)"};">${scores[i]}/10</span>
         </div>
-        <div class="score-bar"><div class="score-fill" style="width:${scores[i] * 10}%;background:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--red)"};"></div></div>
+        <div class="score-bar"><div class="score-fill" style="width:${scores[i] * 10}%;background:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--danger)"};"></div></div>
       </div>
     </div>`,
           )
@@ -1574,7 +1577,7 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
         <div style="font-size:0.7rem;color:var(--gray-500);">${h.correct || 0}/${h.total || 0} câu</div>
         ${h.isAutoSubmitted ? `<div style="font-size:0.68rem;color:#b8860b;margin-top:2px;"><i class="fas fa-triangle-exclamation"></i> Đã tự động nộp do thoát giữa chừng</div>` : ""}
       </div>
-      <div style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;color:${parseFloat(h.score) >= 5 ? "#2e7d32" : "var(--red)"};">${parseFloat(h.score).toFixed(1)}</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;color:${parseFloat(h.score) >= 5 ? "#2e7d32" : "var(--danger)"};">${parseFloat(h.score).toFixed(1)}</div>
     </div>`,
           )
           .join("");

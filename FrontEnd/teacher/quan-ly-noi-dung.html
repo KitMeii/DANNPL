@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/base/reset.css" />
     <link rel="stylesheet" href="../css/layout/layout.css" />
     <link rel="stylesheet" href="../css/components/header.css" />
-    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
     <link rel="stylesheet" href="../css/components/card.css" />
     <link rel="stylesheet" href="../css/components/button.css" />
     <link rel="stylesheet" href="../css/components/modal.css" />
@@ -78,13 +77,13 @@
         border-left: 3px solid transparent;
       }
       .sidebar-item:hover {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
       }
       .sidebar-item.active {
-        background: var(--red-bg);
-        color: var(--red);
-        border-left-color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
+        border-left-color: var(--primary);
       }
       .sidebar-item i {
         width: 16px;
@@ -183,8 +182,8 @@
         color: var(--gray-600);
       }
       .chucvu-badge.cv-loptruong {
-        background: #fff8e1;
-        color: #f57f17;
+        background: #fff3e0;
+        color: #e65100;
       }
       .chucvu-badge.cv-loppho {
         background: #e3f2fd;
@@ -204,8 +203,8 @@
         margin-bottom: 14px;
       }
       .import-area:hover {
-        border-color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        background: var(--primary-bg);
       }
       .import-area input {
         position: absolute;
@@ -234,7 +233,7 @@
         outline: none;
       }
       .search-input:focus {
-        border-color: var(--red);
+        border-color: var(--primary);
       }
 
       /* Toast */
@@ -364,7 +363,7 @@
         color: #e65100;
       }
       .bfs-error {
-        color: var(--red);
+        color: var(--primary);
       }
 
       .batch-overall {
@@ -399,7 +398,7 @@
       }
       .import-prog-fill {
         height: 100%;
-        background: var(--red);
+        background: var(--primary);
         border-radius: 6px;
         transition: width 0.3s;
       }
@@ -434,7 +433,7 @@
       .q-chapter {
         font-size: 0.68rem;
         font-weight: 700;
-        color: var(--red);
+        color: var(--primary);
         text-transform: uppercase;
         margin-bottom: 4px;
       }
@@ -556,7 +555,7 @@
         border: 1.5px solid var(--gray-200);
       }
       .member-search-input:focus {
-        border-color: var(--red);
+        border-color: var(--primary);
         outline: none;
       }
       .sort-btn-row {
@@ -576,9 +575,9 @@
         color: var(--gray-600);
       }
       .sort-btn.active {
-        background: var(--red-bg);
-        border-color: var(--red);
-        color: var(--red);
+        background: var(--primary-bg);
+        border-color: var(--primary);
+        color: var(--primary);
       }
       .lb-table-wrap {
         background: white;
@@ -627,7 +626,7 @@
         font-family: "Oswald", sans-serif;
         font-size: 1.05rem;
         font-weight: 700;
-        color: var(--red);
+        color: var(--primary);
       }
       .lb-score-practice {
         font-size: 0.95rem;
@@ -746,7 +745,7 @@
               Luyện tập, câu mới xuất bản tự động có mặt). Cả 2 đều đã tồn tại (Việc 2/Việc 4.4B),
               chỉ gộp lối vào ngay đây cho rõ thay vì phải sang panel Import mới thấy. -->
               <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap">
-                <button class="btn btn-outline btn-sm" style="border-color: var(--red); color: var(--red)" onclick="openBankExamSetModal('mcq')">
+                <button class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary)" onclick="openBankExamSetModal('mcq')">
                   <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Thi thử
                 </button>
                 <button class="btn btn-outline btn-sm" style="border-color: #e65100; color: #e65100" onclick="openCreatePracticeSetModal()">
@@ -804,7 +803,7 @@
               đáp) — khác Trắc nghiệm ở panel bên cạnh, nên chỉ 1 nút, gắn rõ nhãn "Thi thử" để
               không hiểu nhầm là còn thiếu 1 nút Luyện tập. -->
               <div style="margin-bottom: 12px">
-                <button class="btn btn-outline btn-sm" style="border-color: var(--red); color: var(--red)" onclick="openBankExamSetModal('oral')">
+                <button class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary)" onclick="openBankExamSetModal('oral')">
                   <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Thi Vấn đáp
                 </button>
               </div>
@@ -958,7 +957,7 @@
                   <div class="import-area" style="padding: 14px; margin-bottom: 0">
                     <input type="file" id="poolFileInput" accept=".pdf" onchange="onPoolFileSelected(this)" />
                     <div style="font-size: 0.85rem; color: var(--gray-600)">
-                      <i class="fas fa-file-pdf" style="color: var(--red)"></i>
+                      <i class="fas fa-file-pdf" style="color: var(--primary)"></i>
                       <span id="poolFileName">Chọn file PDF nội dung lớn...</span>
                     </div>
                   </div>
@@ -1335,7 +1334,7 @@
                       width: 88px;
                       height: 88px;
                       border-radius: 50%;
-                      background: linear-gradient(135deg, var(--red-dark), var(--red));
+                      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
                       display: flex;
                       align-items: center;
                       justify-content: center;
@@ -1537,7 +1536,7 @@
           <div style="font-size: 0.72rem; color: var(--gray-500); margin-bottom: 10px">
             * Bắt buộc chọn ít nhất 1 Lớp — đề luyện tập chỉ dùng để giao riêng theo lớp.
           </div>
-          <div id="createPracticeSetMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <div id="createPracticeSetMsg" style="font-size: 0.78rem; color: var(--danger); margin-bottom: 8px; display: none"></div>
           <button class="btn btn-red btn-full" id="createPracticeSetSaveBtn" onclick="saveCreatePracticeSet()">
             <i class="fas fa-save"></i> Tạo đề
           </button>
@@ -1562,7 +1561,7 @@
             <label class="form-label">Tên lớp</label>
             <input class="form-input" id="createLopTenInput" placeholder="VD: CNTT2" />
           </div>
-          <div id="createLopMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <div id="createLopMsg" style="font-size: 0.78rem; color: var(--danger); margin-bottom: 8px; display: none"></div>
           <button class="btn btn-red btn-full" id="createLopSaveBtn" onclick="saveCreateLop()">
             Tạo lớp
           </button>
@@ -1595,7 +1594,7 @@
             <label class="form-label">Xác nhận mật khẩu mới</label>
             <input class="form-input" id="cpConfirmInput" type="password" />
           </div>
-          <div id="cpMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <div id="cpMsg" style="font-size: 0.78rem; color: var(--danger); margin-bottom: 8px; display: none"></div>
           <button class="btn btn-red btn-full" id="cpSubmitBtn" onclick="submitChangePassword()">
             Đổi mật khẩu
           </button>
@@ -1624,7 +1623,7 @@
             <label class="form-label">Niên khóa</label>
             <input class="form-input" id="renameLopNamHocInput" placeholder="VD: 2024-2025" />
           </div>
-          <div id="renameLopMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <div id="renameLopMsg" style="font-size: 0.78rem; color: var(--danger); margin-bottom: 8px; display: none"></div>
           <button class="btn btn-red btn-full" id="renameLopSaveBtn" onclick="saveRenameLop()">
             Lưu thay đổi
           </button>
@@ -1936,7 +1935,7 @@
                   <td id="lopCrudSiSo-${l.id}">…</td>
                   <td id="lopCrudKhoa-${l.id}">…</td>
                   <td>${l.namHoc || '<span style="color: var(--gray-400)">—</span>'}</td>
-                  <td id="lopCrudThiThu-${l.id}" style="color: var(--red); font-weight: 600">…</td>
+                  <td id="lopCrudThiThu-${l.id}" style="color: var(--primary); font-weight: 600">…</td>
                   <td id="lopCrudLuyenTap-${l.id}" style="color: #2e7d32; font-weight: 600">…</td>
                   <td style="text-align:right; white-space: nowrap; min-width: 190px;">
                     <!-- Rà soát Lần VI (2026-08-21) — trước 3 nút xếp 1 hàng, tràn khỏi cột (phải
@@ -1951,7 +1950,7 @@
                       <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openRenameLopModal('${l.id}', '${l.ten.replace(/'/g, "\\'")}', '${(l.namHoc || "").replace(/'/g, "\\'")}', '${l.khoaId}')">
                         <i class="fas fa-pen"></i> Sửa
                       </button>
-                      <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--red); border-color: var(--red)" onclick="deleteLopWithConfirm('${l.id}', '${l.ten.replace(/'/g, "\\'")}')">
+                      <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteLopWithConfirm('${l.id}', '${l.ten.replace(/'/g, "\\'")}')">
                         <i class="fas fa-trash"></i> Xóa
                       </button>
                     </div>
@@ -2219,7 +2218,7 @@
                   <td>${s.chapter}</td>
                   <td>${s.questionCount}</td>
                   <td>${s.lopIds.length}</td>
-                  <td style="text-align:right"><button class="btn btn-outline btn-sm" style="color: var(--red)" onclick="deletePracticeSetWithConfirm('${s.id}', '${s.ten.replace(/'/g, "\\'")}')">Xóa</button></td>
+                  <td style="text-align:right"><button class="btn btn-outline btn-sm" style="color: var(--danger)" onclick="deletePracticeSetWithConfirm('${s.id}', '${s.ten.replace(/'/g, "\\'")}')">Xóa</button></td>
                 </tr>`,
                 )
                 .join("")}
@@ -2460,7 +2459,7 @@
             </td>
             <td>${fmtScore(s.diemThiThu)} <span style="color: var(--gray-400); font-size: 0.68rem">(${s.soLuotThiThu} lượt)</span></td>
             <td>${fmtScore(s.diemLuyenTap)} <span style="color: var(--gray-400); font-size: 0.68rem">(${s.soLuotLuyenTap} lượt)</span></td>
-            <td><button class="btn btn-outline btn-sm" style="color: var(--red)" onclick="removeMemberFromLop('${s.id}')">Gỡ</button></td>
+            <td><button class="btn btn-outline btn-sm" style="color: var(--danger)" onclick="removeMemberFromLop('${s.id}')">Gỡ</button></td>
           </tr>`,
           )
           .join("");
@@ -2545,7 +2544,7 @@
             })
             .join("");
         } catch (err) {
-          resultsEl.innerHTML = `<div style="color: var(--red)">Lỗi: ${err.message}</div>`;
+          resultsEl.innerHTML = `<div style="color: var(--danger)">Lỗi: ${err.message}</div>`;
         }
       }
 

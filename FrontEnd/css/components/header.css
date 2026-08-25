@@ -4,8 +4,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: var(--header-height);
-  background: linear-gradient(135deg, #b71c1c 0%, #c62828 50%, #d32f2f 100%);
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-mid) 100%);
   z-index: 1000;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
@@ -13,22 +12,24 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
-  height: 100%;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 .logo-wrap {
   display: flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  min-width: 0;
 }
 .logo-badge {
   width: 48px;
   height: 48px;
   background: rgba(255, 255, 255, 0.15);
-  border: 2px solid var(--gold);
+  border: 2px solid var(--accent);
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
@@ -43,11 +44,12 @@
 }
 .logo-badge i {
   font-size: 14px;
-  color: var(--gold);
+  color: var(--accent);
   margin-bottom: 1px;
 }
 .logo-info {
   color: white;
+  min-width: 0;
 }
 .logo-title {
   font-family: "Oswald", sans-serif;
@@ -56,16 +58,23 @@
   letter-spacing: 0.5px;
   line-height: 1.2;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .logo-sub {
   font-size: 0.7rem;
   opacity: 0.8;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .header-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 .hdr-btn {
   width: 40px;
@@ -93,4 +102,32 @@ mặc định) khi user đã đổi avatar, xem renderHeaderProfileBtn() trong a
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+}
+
+/* Màn hình rất hẹp — thêm nút hamburger (Giai đoạn 3) khiến header-inner chật, thu gọn để không
+   tràn ngang. Đặt CUỐI file để thắng các rule .hdr-btn/.logo-title/... không điều kiện phía trên
+   (cùng độ ưu tiên selector — thứ tự nguồn quyết định, media query khớp không tự động thắng). */
+@media (max-width: 400px) {
+  .header-inner {
+    gap: 6px;
+    padding: 0 10px;
+  }
+  .logo-badge {
+    width: 38px;
+    height: 38px;
+  }
+  .logo-title {
+    font-size: 0.85rem;
+  }
+  .logo-sub {
+    display: none;
+  }
+  .header-actions {
+    gap: 4px;
+  }
+  .hdr-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+  }
 }

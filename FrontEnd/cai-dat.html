@@ -30,6 +30,9 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -44,6 +47,35 @@
           </button>
         </div>
       </div>
+      <nav class="nav-row" id="navRow">
+        <a href="index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="student/chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="student/luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="student/thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="student/tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="student/xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="student/giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="cai-dat.html" class="nav-link active" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -67,7 +99,7 @@
               style="
                 width: 72px;
                 height: 72px;
-                background: linear-gradient(135deg, var(--red-dark), var(--red));
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary));
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
@@ -192,12 +224,12 @@
                 style="
                   width: 32px;
                   height: 32px;
-                  background: var(--red-bg);
+                  background: var(--primary-bg);
                   border-radius: 8px;
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  color: var(--red);
+                  color: var(--primary);
                 "
               >
                 <i class="fas fa-bell"></i>
@@ -394,9 +426,9 @@
               font-weight: 600;
               text-align: center;
               padding: 12px;
-              background: var(--red-bg);
+              background: var(--primary-bg);
               border-radius: var(--radius);
-              color: var(--red);
+              color: var(--primary);
               margin-bottom: 16px;
             "
             id="emailDisplay"
@@ -419,35 +451,6 @@
       </div>
     </div>
 
-    <nav class="bottom-nav">
-      <a href="index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="student/chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="student/luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="student/thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="student/tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="student/xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="student/giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="cai-dat.html" class="nav-item active" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — trang Cài đặt riêng này trùng với panel "Hồ sơ cá nhân" đã có sẵn

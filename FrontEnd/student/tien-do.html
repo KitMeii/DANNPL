@@ -30,6 +30,9 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -51,6 +54,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link active"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -91,7 +123,7 @@
                 cy="60"
                 r="50"
                 fill="none"
-                stroke="#c62828"
+                stroke="#1b5e20"
                 stroke-width="10"
                 stroke-dasharray="314"
                 id="progressCircle"
@@ -116,7 +148,7 @@
                   font-family: &quot;Oswald&quot;, sans-serif;
                   font-size: 1.8rem;
                   font-weight: 700;
-                  color: var(--red);
+                  color: var(--primary);
                   line-height: 1;
                 "
                 id="overallPct"
@@ -142,7 +174,7 @@
                   font-family: &quot;Oswald&quot;, sans-serif;
                   font-size: 1.2rem;
                   font-weight: 700;
-                  color: var(--red);
+                  color: var(--primary);
                 "
                 id="chapDone"
               >
@@ -173,7 +205,7 @@
                   font-family: &quot;Oswald&quot;, sans-serif;
                   font-size: 1.2rem;
                   font-weight: 700;
-                  color: var(--gold-light);
+                  color: var(--accent-light);
                 "
                 id="totalTimeDisplay"
               >
@@ -216,35 +248,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item active"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — gom về applyRoleGate() dùng chung (api-client.js), thay IIFE cũ
@@ -312,7 +315,7 @@
                   ? "#2e7d32"
                   : avgScore >= 5
                     ? "#e65100"
-                    : "var(--red)";
+                    : "var(--danger)";
               return `<div class="chapter-row">
         <div class="ch-info">
           <div class="ch-name">${name}</div>
@@ -345,17 +348,17 @@
         document.getElementById("weekSchedule").innerHTML = schedule
           .map(
             (s) => `
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);${s.isToday ? "background:var(--red-bg);margin:0 -18px;padding:10px 18px;border-radius:var(--radius-sm);" : ""}">
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);${s.isToday ? "background:var(--primary-bg);margin:0 -18px;padding:10px 18px;border-radius:var(--radius-sm);" : ""}">
       <div style="text-align:center;min-width:36px;">
-        <div style="font-size:0.65rem;color:${s.isToday ? "var(--red)" : "var(--gray-500)"};font-weight:700;">${s.day}</div>
-        <div style="font-size:0.75rem;font-weight:700;color:${s.isToday ? "var(--red)" : "var(--gray-700)"};">${s.date}</div>
+        <div style="font-size:0.65rem;color:${s.isToday ? "var(--primary)" : "var(--gray-500)"};font-weight:700;">${s.day}</div>
+        <div style="font-size:0.75rem;font-weight:700;color:${s.isToday ? "var(--primary)" : "var(--gray-700)"};">${s.date}</div>
       </div>
       <div style="flex:1;">
         ${
           s.mins > 0
             ? `<div style="font-size:0.82rem;font-weight:600;">Đã học ${s.mins} phút</div><div class="prog-track" style="margin-top:5px;height:5px;"><div class="prog-fill" style="width:${Math.min(100, (s.mins / 60) * 100)}%"></div></div>`
             : s.isToday
-              ? `<div style="font-size:0.82rem;font-weight:700;color:var(--red);">📌 Hôm nay</div>`
+              ? `<div style="font-size:0.82rem;font-weight:700;color:var(--primary);">📌 Hôm nay</div>`
               : `<div style="font-size:0.82rem;color:var(--gray-400);">Chưa học</div>`
         }
       </div>

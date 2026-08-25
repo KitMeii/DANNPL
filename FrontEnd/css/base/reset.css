@@ -9,8 +9,16 @@ body {
   background: #f0f2f5;
   min-height: 100vh;
   color: var(--gray-900);
-  padding-top: var(--header-height);
-  padding-bottom: calc(var(--nav-height) + 12px);
+  /* Top-nav gộp vào header: hàng nav nằm TRONG luồng trang trên desktop (cộng thêm chiều cao),
+     nhưng là overlay cố định trên mobile (không cộng — xem media query bên dưới và
+     .nav-row trong bottom-nav.css). */
+  padding-top: calc(var(--header-height) + var(--nav-row-height));
+  padding-bottom: 20px;
+}
+@media (max-width: 767px) {
+  body {
+    padding-top: var(--header-height);
+  }
 }
 
 /* ===== SCROLLBAR ===== */

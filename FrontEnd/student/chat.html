@@ -28,11 +28,16 @@
     <script src="../api-client.js?v=20260822b"></script>
     <style>
       body {
-        padding-top: 70px;
-        padding-bottom: 64px;
+        padding-top: calc(var(--header-height) + var(--nav-row-height));
+        padding-bottom: 0;
         height: 100vh;
         display: flex;
         flex-direction: column;
+      }
+      @media (max-width: 767px) {
+        body {
+          padding-top: var(--header-height);
+        }
       }
       main {
         flex: 1;
@@ -94,7 +99,7 @@
         gap: 8px;
       }
       .sidebar-head-title i {
-        color: #f9a825;
+        color: #f57c00;
       }
       .sidebar-close {
         width: 30px;
@@ -121,7 +126,7 @@
         display: flex;
         align-items: center;
         gap: 9px;
-        background: linear-gradient(135deg, #b71c1c, #c62828);
+        background: linear-gradient(135deg, #0a3d12, #1b5e20);
         color: white;
         border: none;
         border-radius: 10px;
@@ -184,7 +189,7 @@
         background: rgba(255, 255, 255, 0.06);
       }
       .session-item.active {
-        background: rgba(229, 57, 53, 0.15);
+        background: rgba(27, 94, 32, 0.15);
       }
       .session-item.active::before {
         content: "";
@@ -193,7 +198,7 @@
         top: 6px;
         bottom: 6px;
         width: 3px;
-        background: #e53935;
+        background: #1b5e20;
         border-radius: 0 3px 3px 0;
       }
 
@@ -211,8 +216,8 @@
         margin-top: 1px;
       }
       .session-item.active .session-icon {
-        background: rgba(229, 57, 53, 0.2);
-        color: #f87171;
+        background: rgba(27, 94, 32, 0.2);
+        color: #81c784;
       }
 
       .session-info {
@@ -231,7 +236,7 @@
         font-family: "Be Vietnam Pro", sans-serif;
       }
       .session-item.active .session-title {
-        color: #fca5a5;
+        color: #a5d6a7;
       }
       .session-meta {
         font-size: 0.63rem;
@@ -314,8 +319,8 @@
         transition: all 0.15s;
       }
       .hist-btn:hover {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
         border-color: #ffcdd2;
       }
 
@@ -327,7 +332,7 @@
         padding: 6px 12px;
         border-radius: 9px;
         flex-shrink: 0;
-        background: var(--red);
+        background: var(--primary);
         color: white;
         border: none;
         font-size: 0.72rem;
@@ -390,10 +395,10 @@
       }
       .key-bar input:focus {
         outline: none;
-        border-color: #f9a825;
+        border-color: #f57c00;
       }
       .key-bar button {
-        background: #f9a825;
+        background: #f57c00;
         color: #000;
         border: none;
         border-radius: 6px;
@@ -441,7 +446,7 @@
         line-height: 1.6;
       }
       .msg.user .msg-bubble {
-        background: var(--red);
+        background: var(--primary);
         color: white;
         border-bottom-right-radius: 4px;
       }
@@ -522,7 +527,7 @@
       .welcome-icon {
         width: 60px;
         height: 60px;
-        background: linear-gradient(135deg, #b71c1c, #c62828);
+        background: linear-gradient(135deg, #0a3d12, #1b5e20);
         border-radius: 18px;
         display: flex;
         align-items: center;
@@ -530,7 +535,7 @@
         font-size: 1.5rem;
         color: white;
         margin-bottom: 14px;
-        box-shadow: 0 8px 24px rgba(183, 28, 28, 0.25);
+        box-shadow: 0 8px 24px rgba(27, 94, 32, 0.25);
       }
       .welcome-title {
         font-weight: 800;
@@ -568,9 +573,9 @@
         line-height: 1.4;
       }
       .chip:hover {
-        border-color: var(--red);
-        color: var(--red);
-        background: var(--red-bg);
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-bg);
       }
 
       /* Input */
@@ -595,7 +600,7 @@
         overflow: hidden;
       }
       .input-wrap:focus-within {
-        border-color: var(--red);
+        border-color: var(--primary);
       }
       .chat-input {
         flex: 1;
@@ -635,7 +640,7 @@
       .chat-send {
         width: 42px;
         height: 42px;
-        background: var(--red);
+        background: var(--primary);
         color: white;
         border: none;
         border-radius: 12px;
@@ -648,7 +653,7 @@
         transition: all 0.15s;
       }
       .chat-send:hover {
-        background: var(--red-dark);
+        background: var(--primary-dark);
         transform: scale(1.04);
       }
       .chat-send:disabled {
@@ -693,6 +698,9 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -714,6 +722,35 @@
           </button>
         </div>
       </div>
+  <nav class="nav-row" id="navRow">
+        <a href="../index.html" class="nav-link"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="chat.html" class="nav-link active"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="../cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <!-- Sidebar Overlay -->
@@ -830,35 +867,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <a href="../index.html" class="nav-item"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="chat.html" class="nav-item active"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="../cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
 
     <script>
       // Việc 4.5 (2026-08-20) — Chat AI là trải nghiệm học viên, không còn dành cho Admin — redirect
@@ -1130,7 +1138,7 @@
           .replace(/\*(.*?)\*/g, "<em>$1</em>")
           .replace(
             /^>\s(.+)/gm,
-            '<blockquote style="border-left:3px solid var(--red);padding-left:10px;margin:6px 0;color:var(--gray-600);">$1</blockquote>',
+            '<blockquote style="border-left:3px solid var(--primary);padding-left:10px;margin:6px 0;color:var(--gray-600);">$1</blockquote>',
           )
           .replace(/\n/g, "<br>");
 

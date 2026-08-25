@@ -1,12 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap");
 
 :root {
-  --red: #c62828;
-  --red-dark: #8b0000;
-  --red-light: #ef9a9a;
-  --red-bg: #ffebee;
-  --gold: #f9a825;
-  --gold-light: #fbc02d;
+  /* Thương hiệu — xanh lá đậm chủ đạo (Giai đoạn 4, thay bộ --red cũ) */
+  --primary: #1b5e20;
+  --primary-dark: #0a3d12;
+  --primary-mid: #2e7d32;
+  --primary-light: #81c784;
+  --primary-bg: #e8f5e9;
+  /* Nhấn — vàng cam (thay bộ --gold cũ) */
+  --accent: #f57c00;
+  --accent-light: #ffb74d;
+  --accent-dark: #e65100;
+  /* Ngữ nghĩa — tách khỏi thương hiệu, KHÔNG đổi theo theme (đáp án sai/nguy hiểm vẫn phải đỏ,
+     đáp án đúng vẫn phải xanh, bất kể thương hiệu đang là màu gì). */
+  --danger: #c62828;
+  --danger-dark: #8b0000;
+  --danger-bg: #ffebee;
+  --success: #2e7d32;
+  --success-bg: #e8f5e9;
   --white: #ffffff;
   --gray-50: #fafafa;
   --gray-100: #f5f5f5;
@@ -34,6 +45,6 @@
   --radius: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-  --nav-height: 64px;
+  --nav-row-height: 46px;
   --header-height: 70px;
 }

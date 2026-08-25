@@ -43,22 +43,9 @@
         }
       }
 
-      /* 8-item bottom nav - thu nhỏ lại */
-      .bottom-nav {
-        padding: 6px 0 6px;
-      }
-      .bottom-nav .nav-item {
-        font-size: 0.58rem;
-        gap: 2px;
-        padding: 4px 6px;
-      }
-      .bottom-nav .nav-item i {
-        font-size: 1.1rem;
-      }
-
       .search-tag {
-        background: var(--red-bg);
-        color: var(--red);
+        background: var(--primary-bg);
+        color: var(--primary);
         padding: 5px 12px;
         border-radius: 20px;
         font-size: 0.75rem;
@@ -135,20 +122,20 @@
         style="
           width: 56px;
           height: 56px;
-          background: linear-gradient(135deg, #b71c1c, #c62828);
+          background: linear-gradient(135deg, #0a3d12, #1b5e20);
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
         "
       >
-        <i class="fas fa-star" style="color: #f9a825; font-size: 1.6rem"></i>
+        <i class="fas fa-star" style="color: #f57c00; font-size: 1.6rem"></i>
       </div>
       <div
         style="
           font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
           font-weight: 700;
-          color: #c62828;
+          color: #1b5e20;
         "
       >
         Đang tải...
@@ -165,7 +152,7 @@
         <div
           style="
             height: 100%;
-            background: #c62828;
+            background: #1b5e20;
             animation: loadbar 1.2s infinite;
             border-radius: 3px;
           "
@@ -175,6 +162,9 @@
 
     <header class="app-header">
       <div class="header-inner">
+        <button class="hamburger" id="navHamburger" aria-label="Menu" aria-expanded="false" onclick="var r=document.getElementById('navRow');r.classList.toggle('open');this.setAttribute('aria-expanded', r.classList.contains('open'))">
+          <i class="fas fa-bars"></i>
+        </button>
         <a href="index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
@@ -195,6 +185,35 @@
           </button>
         </div>
       </div>
+      <nav class="nav-row" id="navRow">
+        <a href="index.html" class="nav-link active"
+          ><i class="fas fa-home"></i><span>Trang chủ</span></a
+        >
+        <a href="student/chat.html" class="nav-link"
+          ><i class="fas fa-robot"></i><span>Chat AI</span></a
+        >
+        <a href="student/luyen-tap.html" class="nav-link"
+          ><i class="fas fa-book"></i><span>Luyện tập</span></a
+        >
+        <a href="student/thi-thu.html" class="nav-link"
+          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+        >
+        <a href="student/tien-do.html" class="nav-link"
+          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+        >
+        <a href="student/xep-hang.html" class="nav-link"
+          ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+        >
+        <a href="student/giang-bai.html" class="nav-link"
+          ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+        >
+        <a href="cai-dat.html" class="nav-link" id="navSettings"
+          ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+        >
+        <a href="#" class="nav-link" id="navAdmin"
+          ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+        >
+      </nav>
     </header>
 
     <main class="main-content">
@@ -244,7 +263,7 @@
         <div class="card-title" style="margin-bottom: 10px">
           <i
             class="fas fa-th-large"
-            style="color: var(--red); margin-right: 6px"
+            style="color: var(--primary); margin-right: 6px"
           ></i
           >Truy cập nhanh
         </div>
@@ -259,8 +278,8 @@
             </div>
           </a>
           <a href="student/luyen-tap.html" class="quick-card">
-            <div class="quick-icon" style="background: var(--red-bg)">
-              <i class="fas fa-book-open" style="color: var(--red)"></i>
+            <div class="quick-icon" style="background: var(--primary-bg)">
+              <i class="fas fa-book-open" style="color: var(--primary)"></i>
             </div>
             <div>
               <div class="quick-title">Luyện tập</div>
@@ -287,7 +306,7 @@
           </a>
           <a href="student/xep-hang.html" class="quick-card">
             <div class="quick-icon" style="background: #fff8e1">
-              <i class="fas fa-trophy" style="color: #f9a825"></i>
+              <i class="fas fa-trophy" style="color: #f57c00"></i>
             </div>
             <div>
               <div class="quick-title">Bảng XH</div>
@@ -389,37 +408,6 @@
       </div>
     </main>
 
-    <!-- 8-item bottom nav -->
-    <nav class="bottom-nav">
-      <a href="index.html" class="nav-item active"
-        ><i class="fas fa-home"></i><span>Trang chủ</span></a
-      >
-      <a href="student/chat.html" class="nav-item"
-        ><i class="fas fa-robot"></i><span>Chat AI</span></a
-      >
-      <a href="student/luyen-tap.html" class="nav-item"
-        ><i class="fas fa-book"></i><span>Luyện tập</span></a
-      >
-      <a href="student/thi-thu.html" class="nav-item"
-        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
-      >
-      <a href="student/tien-do.html" class="nav-item"
-        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
-      >
-      <a href="student/xep-hang.html" class="nav-item"
-        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
-      >
-      <a href="student/giang-bai.html" class="nav-item"
-        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
-      >
-      <a href="cai-dat.html" class="nav-item" id="navSettings"
-        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
-      >
-      <a href="#" class="nav-item" id="navAdmin"
-        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
-      >
-    </nav>
-
     <script>
       // Việc 4.5 (2026-08-20) — gom về applyRoleGate() dùng chung (api-client.js), thay IIFE cũ
       // (Việc D, 2026-08-16). Rà soát Lần XIII (2026-08-21) — Admin không còn bị redirect khỏi
@@ -512,7 +500,7 @@
                 color: var(--gray-700);
               "
             >
-              <i class="fas fa-book" style="color: var(--red); width: 16px"></i
+              <i class="fas fa-book" style="color: var(--primary); width: 16px"></i
               ><span style="font-size: 0.82rem; font-weight: 600"
                 >Luyện tập Quiz</span
               >
@@ -593,12 +581,12 @@
         <div
           class="modal-header"
           style="
-            background: linear-gradient(135deg, #b71c1c, #c62828);
+            background: linear-gradient(135deg, #0a3d12, #1b5e20);
             border-radius: 14px 14px 0 0;
           "
         >
           <h3 id="onboardingModalTitle" style="color: white">
-            <i class="fas fa-star" style="color: #f9a825"></i> Chào mừng đến với
+            <i class="fas fa-star" style="color: #f57c00"></i> Chào mừng đến với
             <span data-app-name>Giảng viên Ảo</span>!
           </h3>
         </div>
@@ -619,7 +607,7 @@
             <div style="font-weight: 700; margin-bottom: 8px">
               <span
                 style="
-                  background: var(--red);
+                  background: var(--primary);
                   color: white;
                   border-radius: 50%;
                   width: 22px;
@@ -782,11 +770,11 @@
             datasets: [
               {
                 data: weekData,
-                borderColor: "#c62828",
-                backgroundColor: "rgba(198,40,40,0.08)",
+                borderColor: "#1b5e20",
+                backgroundColor: "rgba(27,94,32,0.08)",
                 tension: 0.4,
                 fill: true,
-                pointBackgroundColor: "#c62828",
+                pointBackgroundColor: "#1b5e20",
                 pointRadius: 4,
               },
             ],

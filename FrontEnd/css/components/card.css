@@ -19,20 +19,20 @@
   margin-bottom: 14px;
 }
 .card-title i {
-  color: var(--red);
+  color: var(--primary);
   font-size: 1rem;
 }
 
 /* ===== WELCOME CARD (card dạng chào mừng ở dashboard) ===== */
 .welcome-card {
-  background: linear-gradient(135deg, #b71c1c 0%, #c62828 40%, #d32f2f 100%);
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, var(--primary-mid) 100%);
   border-radius: var(--radius-lg);
   padding: 20px;
   color: white;
   position: relative;
   overflow: hidden;
   margin-bottom: 14px;
-  box-shadow: 0 8px 24px rgba(198, 40, 40, 0.35);
+  box-shadow: 0 8px 24px rgba(27, 94, 32, 0.35);
 }
 .welcome-card::before {
   content: "";
@@ -56,8 +56,8 @@
 }
 .star-icon {
   font-size: 3.5rem;
-  color: var(--gold);
-  filter: drop-shadow(0 2px 8px rgba(249, 168, 37, 0.5));
+  color: var(--accent);
+  filter: drop-shadow(0 2px 8px rgba(245, 124, 0, 0.5));
   float: right;
   margin-top: -4px;
 }

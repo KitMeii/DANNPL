@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/base/reset.css" />
     <link rel="stylesheet" href="css/layout/layout.css" />
     <link rel="stylesheet" href="css/components/header.css" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css" />
     <link rel="stylesheet" href="css/components/card.css" />
     <link rel="stylesheet" href="css/components/button.css" />
     <link rel="stylesheet" href="css/components/modal.css" />
@@ -31,9 +30,9 @@
         padding: 0;
         background: linear-gradient(
           160deg,
-          #b71c1c 0%,
-          #c62828 40%,
-          #e53935 100%
+          #0a3d12 0%,
+          #1b5e20 40%,
+          #2e7d32 100%
         );
         min-height: 100vh;
         display: flex;
@@ -55,7 +54,7 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
       .auth-hero {
-        background: linear-gradient(135deg, #8b0000, #c62828);
+        background: linear-gradient(135deg, #0a3d12, #1b5e20);
         padding: 28px 24px;
         text-align: center;
         color: white;
@@ -64,7 +63,7 @@
         width: 64px;
         height: 64px;
         background: rgba(255, 255, 255, 0.15);
-        border: 2px solid #f9a825;
+        border: 2px solid #f57c00;
         border-radius: 12px;
         display: flex;
         flex-direction: column;
@@ -73,7 +72,7 @@
         margin: 0 auto 14px;
       }
       .hero-badge i {
-        color: #f9a825;
+        color: #f57c00;
         font-size: 1.4rem;
       }
       .hero-badge span {
@@ -108,8 +107,8 @@
         transition: all 0.2s;
       }
       .tab.active {
-        color: var(--red);
-        border-bottom-color: var(--red);
+        color: var(--primary);
+        border-bottom-color: var(--primary);
       }
       .auth-body {
         padding: 24px;
@@ -172,7 +171,7 @@
             <label class="form-label"
               ><i
                 class="fas fa-envelope"
-                style="color: var(--red); margin-right: 5px"
+                style="color: var(--primary); margin-right: 5px"
               ></i
               >Email</label
             >
@@ -188,7 +187,7 @@
             <label class="form-label"
               ><i
                 class="fas fa-lock"
-                style="color: var(--red); margin-right: 5px"
+                style="color: var(--primary); margin-right: 5px"
               ></i
               >Mật khẩu</label
             >
@@ -224,7 +223,7 @@
               href="#"
               style="
                 font-size: 0.78rem;
-                color: var(--red);
+                color: var(--primary);
                 text-decoration: none;
               "
               onclick="switchTab('forgot')"
@@ -239,7 +238,7 @@
             <label class="form-label"
               ><i
                 class="fas fa-user-soldier"
-                style="color: var(--red); margin-right: 5px"
+                style="color: var(--primary); margin-right: 5px"
               ></i
               >Họ tên đầy đủ</label
             >
@@ -255,7 +254,7 @@
             <label class="form-label"
               ><i
                 class="fas fa-envelope"
-                style="color: var(--red); margin-right: 5px"
+                style="color: var(--primary); margin-right: 5px"
               ></i
               >Email</label
             >
@@ -270,7 +269,7 @@
             <label class="form-label"
               ><i
                 class="fas fa-lock"
-                style="color: var(--red); margin-right: 5px"
+                style="color: var(--primary); margin-right: 5px"
               ></i
               >Mật khẩu</label
             >
