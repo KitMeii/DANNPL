@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Bảng xếp hạng</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <style>
+      .lop-pick-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .lop-pick-card {
+        background: white;
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        border: 1.5px solid #f0f0f0;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .lop-pick-card:hover {
+        border-color: var(--red);
+        background: #fff8f8;
+      }
+      .lop-pick-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--red-dark), var(--red));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .lop-pick-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .lop-header-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .lop-back-btn {
+        background: none;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        color: var(--gray-600);
+        flex-shrink: 0;
+      }
+      .lop-title {
+        font-weight: 800;
+        font-size: 1rem;
+        flex: 1;
+      }
+
+      /* Rà soát Lần V (2026-08-21) — 1 thanh công cụ: ô tìm kiếm nới rộng (flex:1, cao/rộng hơn
+      hẳn trước) + nút sắp xếp đẩy lên NGANG HÀNG bên phải, thay vì 2 dòng tách rời như trước. */
+      .member-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+      .member-search-input {
+        flex: 1 1 200px;
+        padding: 12px 18px;
+        font-size: 0.88rem;
+        border-radius: 12px;
+        border: 1.5px solid var(--gray-200);
+        transition: border-color 0.15s;
+      }
+      .member-search-input:focus {
+        border-color: var(--red);
+        outline: none;
+      }
+      .sort-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .sort-btn {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--gray-200);
+        background: white;
+        font-size: 0.72rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--gray-600);
+      }
+      .sort-btn.active {
+        background: var(--red-bg);
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      /* Rà soát Lần V — bố cục CỘT (thay card rời rạc): .member-row-grid định nghĩa 6 cột dùng
+      chung cho CẢ header lẫn từng dòng dữ liệu, đảm bảo luôn thẳng hàng. min-width ép cuộn ngang
+      trên màn hẹp thay vì bóp méo cột. */
+      .member-table-wrap {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
+      .member-table-scroll {
+        overflow-x: auto;
+      }
+      .member-row-grid {
+        display: grid;
+        grid-template-columns: 36px minmax(150px, 2fr) 108px 108px 84px 96px;
+        align-items: center;
+        gap: 8px;
+        min-width: 620px;
+      }
+      .member-table-head {
+        padding: 10px 16px;
+        background: var(--gray-50);
+        font-size: 0.64rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .member-row {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .member-row:last-child {
+        border-bottom: none;
+      }
+      .member-row.me {
+        background: var(--red-bg);
+      }
+      .member-stt {
+        text-align: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--gray-400);
+      }
+      .member-identity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .member-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      /* Rà soát Lần V (2026-08-21) — ảnh đại diện thật thay chữ cái đầu tên khi có avatarUrl (chỉ
+      là URL Cloudinary có sẵn, browser tự cache, không tốn thêm tải hệ thống). */
+      .member-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .member-name-col {
+        min-width: 0;
+      }
+      .member-name {
+        font-weight: 700;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .member-band-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        margin-top: 1px;
+      }
+      /* Việc IV (2026-08-20) — badge Chức vụ, copy nguyên CSS từ teacher/quan-ly-noi-dung.html để
+      cùng màu sắc/hình dạng (trang này không nạp admin-common.js nên không tái dùng hàm JS được,
+      chỉ copy CSS + tự viết hàm nhỏ tương đương ở phần script bên dưới). */
+      .chucvu-badge {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        padding: 1px 7px;
+        border-radius: 100px;
+        white-space: nowrap;
+        margin-top: 2px;
+      }
+      .chucvu-badge.cv-hocvien {
+        background: #f0f0f0;
+        color: var(--gray-600);
+      }
+      .chucvu-badge.cv-loptruong {
+        background: #fff8e1;
+        color: #f57f17;
+      }
+      .chucvu-badge.cv-loppho {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      /* Rà soát Lần IV (2026-08-21) — Cấp bậc trước hiện như chữ xám nhỏ dễ lẫn vào nền, nâng thành
+      badge riêng cùng khuôn mẫu chucvu-badge để không bị coi là "thiếu trường" trên giao diện. */
+      .capbac-badge {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        padding: 1px 7px;
+        border-radius: 100px;
+        white-space: nowrap;
+        background: #ede7f6;
+        color: #5e35b1;
+      }
+      .member-exam-score {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+      .member-practice-score {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--gray-600);
+      }
+      .cell-empty {
+        color: var(--gray-300);
+        font-size: 0.72rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--gray-400);
+      }
+      .empty-state i {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        display: block;
+        opacity: 0.4;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../index.html" class="logo-wrap">
+          <div class="logo-badge">
+            <i class="fas fa-trophy" style="color: #f9a825"></i>
+          </div>
+          <div class="logo-info">
+            <div class="logo-title">Bảng xếp hạng</div>
+            <div class="logo-sub" id="pageSub">Theo Lớp</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <!-- Rà soát Lần IV (2026-08-21) — 3 nút Tìm kiếm/Avatar/Đăng xuất đồng nhất trên MỌI trang học
+          viên (trước chỉ index.html có đủ, các trang khác chỉ có Đăng xuất từ Việc II). Tìm kiếm
+          điều hướng về index.html?search=1 (modal Tìm kiếm chỉ có ở đó, xem openQuickSearch()). -->
+          <button class="hdr-btn" id="searchBtn" aria-label="Tìm kiếm" onclick="location.href='../index.html?search=1'">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="hdr-btn" id="profileBtn" aria-label="Hồ sơ cá nhân"></button>
+          <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- Chọn Lớp — chỉ hiện với Teacher/Admin có nhiều hơn 1 Lớp; Student luôn vào thẳng lớp mình -->
+        <div id="lopPickSection" style="display: none">
+          <div id="lopPickList" class="lop-pick-list"></div>
+        </div>
+
+        <!-- Bảng xếp hạng của 1 Lớp -->
+        <div id="memberSection" style="display: none">
+          <div class="lop-header-row">
+            <button class="lop-back-btn" id="lopBackBtn" onclick="backToLopPick()" style="display: none">
+              <i class="fas fa-arrow-left"></i> Đổi lớp
+            </button>
+            <div class="lop-title" id="lopTitle">—</div>
+          </div>
+
+          <!-- Rà soát Lần V (2026-08-21) — hợp nhất Tìm kiếm + Sắp xếp thành 1 thanh công cụ ngang
+          hàng (trước xếp 2 dòng riêng biệt) cho gọn/chuyên nghiệp hơn; ô tìm kiếm nới rộng chiếm
+          phần lớn thanh (flex: 1) thay vì chật hẹp như trước. -->
+          <div class="member-toolbar">
+            <input
+              class="search-input member-search-input"
+              id="memberSearch"
+              placeholder="🔍 Tìm theo tên..."
+              oninput="renderMembers()"
+            />
+            <!-- Rà soát Lần IV (2026-08-21) — ĐÃ QUY ƯỚC LẠI: Bảng xếp hạng chỉ xếp theo điểm CAO ->
+            THẤP (bỏ hẳn Tên A-Z và 2 chiều tăng dần cũ). Mặc định mở trang là "Thi thử" (điểm
+            chính dùng để xếp hạng), STT luôn tính lại theo đúng thứ tự đang hiển thị (xem
+            renderMembers() — i + 1 trên mảng đã filter+sort). -->
+            <div class="sort-btn-row">
+              <button class="sort-btn active" id="sortScoreDescBtn" onclick="setSort('score-desc')">Thi thử</button>
+              <button class="sort-btn" id="sortPracticeDescBtn" onclick="setSort('practice-desc')">Luyện tập</button>
+            </div>
+          </div>
+
+          <!-- Rà soát Lần V — chuyển từ card-list rời rạc sang bố cục CỘT thẳng hàng (STT/Học
+          viên/Cấp bậc/Chức vụ/Thi thử/Luyện tập), có header cột rõ ràng — nhìn chuyên nghiệp hơn
+          hẳn khi Lớp có nhiều học viên, mỗi trường đều thẳng cột giữa các dòng. Cuộn ngang trên màn
+          hẹp (min-width ép trên .member-row-grid) thay vì vỡ bố cục. -->
+          <div class="member-table-wrap">
+            <div class="member-table-scroll">
+              <div class="member-row-grid member-table-head">
+                <div>STT</div>
+                <div>Học viên</div>
+                <div>Cấp bậc</div>
+                <div>Chức vụ</div>
+                <div>Thi thử</div>
+                <div>Luyện tập</div>
+              </div>
+              <div class="member-list" id="memberList">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Đang tải...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trạng thái trống: chưa gán Lớp / chưa phụ trách Lớp nào -->
+        <div id="noLopState" class="empty-state" style="display: none">
+          <i class="fas fa-users-slash"></i>
+          <div id="noLopMessage">Bạn chưa được gán vào lớp nào.</div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="chat.html" class="nav-item"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="xep-hang.html" class="nav-item active"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — gom về applyRoleGate() dùng chung (api-client.js), thay IIFE cũ
+      // (Việc D, 2026-08-16). Hành vi giữ nguyên 100%.
+      applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1")
+        document.body.classList.add("dark");
+
+      // Việc C (2026-08-16) — thiết kế lại hoàn toàn: Khóa → Lớp → Thành viên (bỏ cấp Khóa khỏi UI
+      // theo thiết kế đã duyệt — Teacher/Admin vào thẳng danh sách Lớp phẳng, Student vào thẳng lớp
+      // mình). Xếp hạng + tô màu theo Điểm TB THI THỬ (quyết định đã duyệt) — Điểm TB Luyện tập chỉ
+      // hiện phụ, không dùng để sort/tô màu.
+      let myUserId = null;
+      let myRole = null;
+      let currentMembers = [];
+      let currentSort = "score-desc";
+
+      // 6 dải xếp loại đã duyệt — biên liền kề, không hở/chồng trong [0,10] (giả định điểm luôn
+      // làm tròn 2 chữ số thập phân ở quiz-service, xem QuizStatsService).
+      function gradeBand(score) {
+        if (score === null || score === undefined) {
+          return { label: "Chưa có dữ liệu", bg: "#eceff1", text: "#455a64" };
+        }
+        if (score < 4) return { label: "Yếu", bg: "#ffebee", text: "#c62828" };
+        if (score < 6.5) return { label: "Trung bình", bg: "#fff3e0", text: "#e65100" };
+        if (score < 7) return { label: "Trung bình khá", bg: "#fffde7", text: "#f57f17" };
+        if (score < 8) return { label: "Khá", bg: "#e8f5e9", text: "#2e7d32" };
+        if (score < 9) return { label: "Giỏi", bg: "#e3f2fd", text: "#1565c0" };
+        return { label: "Xuất sắc", bg: "#f3e5f5", text: "#6a1b9a" };
+      }
+
+      async function init() {
+        if (!requireAuth()) return;
+        renderHeaderProfileBtn("../cai-dat.html");
+        const me = await getProfile();
+        myUserId = me.id;
+        myRole = me.role;
+
+        if (myRole === "Student") {
+          document.getElementById("pageSub").textContent = "Lớp của bạn";
+          if (!me.lopId) {
+            showNoLop("Bạn chưa được gán vào lớp nào.");
+            return;
+          }
+          await loadLop(me.lopId, null);
+          return;
+        }
+
+        // Teacher/Admin — bỏ cấp Khóa: danh sách Lớp phẳng để chọn.
+        document.getElementById("pageSub").textContent = "Theo Lớp";
+        let lops = [];
+        try {
+          lops = myRole === "Admin" ? await authListLop() : await authListMyLop();
+        } catch (err) {
+          showNoLop("Lỗi tải danh sách lớp: " + err.message);
+          return;
+        }
+
+        if (!lops.length) {
+          showNoLop(
+            myRole === "Admin"
+              ? "Hệ thống chưa có Lớp nào."
+              : "Bạn chưa được phân công chủ nhiệm lớp nào.",
+          );
+          return;
+        }
+
+        if (lops.length === 1) {
+          await loadLop(lops[0].id, lops[0].ten);
+          return;
+        }
+
+        showLopPicker(lops);
+      }
+
+      function showNoLop(message) {
+        document.getElementById("noLopMessage").textContent = message;
+        document.getElementById("noLopState").style.display = "block";
+      }
+
+      let cachedLops = [];
+
+      function showLopPicker(lops) {
+        cachedLops = lops;
+        document.getElementById("lopPickSection").style.display = "block";
+        document.getElementById("memberSection").style.display = "none";
+        document.getElementById("lopPickList").innerHTML = lops
+          .map(
+            (l) => `<div class="lop-pick-card" onclick="loadLop('${l.id}', '${escapeAttr(l.ten)}')">
+          <div class="lop-pick-icon"><i class="fas fa-users"></i></div>
+          <div class="lop-pick-name">${escapeHtmlLocal(l.ten)}</div>
+          <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--gray-300);"></i>
+        </div>`,
+          )
+          .join("");
+      }
+
+      function backToLopPick() {
+        document.getElementById("memberSection").style.display = "none";
+        showLopPicker(cachedLops);
+      }
+
+      function escapeHtmlLocal(str) {
+        return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      }
+      function escapeAttr(str) {
+        return String(str ?? "").replace(/'/g, "\\'");
+      }
+
+      async function loadLop(lopId, lopTen) {
+        document.getElementById("lopPickSection").style.display = "none";
+        document.getElementById("noLopState").style.display = "none";
+        document.getElementById("memberSection").style.display = "block";
+        document.getElementById("lopBackBtn").style.display = cachedLops.length > 1 ? "inline-flex" : "none";
+        document.getElementById("lopTitle").textContent = lopTen ? `Lớp ${lopTen}` : "Đang tải...";
+        document.getElementById("memberList").innerHTML =
+          '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Đang tải...</div>';
+        document.getElementById("memberSearch").value = "";
+        currentSort = "score-desc";
+        updateSortButtons();
+
+        // Việc IV (2026-08-20, rà soát Lần II mục 1.3) — hiện lại Khóa (bị bỏ khỏi UI ở Việc C chỉ
+        // vì bỏ BƯỚC CHỌN Khóa trong điều hướng, không phải vì Khóa không cần hiện nữa) — tái dùng
+        // resolveLopKhoaLabel() đã có sẵn (api-client.js), cùng cách hiển thị "Lớp X · Khóa Y" dùng
+        // ở Hồ sơ cá nhân.
+        resolveLopKhoaLabel(lopId).then((label) => {
+          document.getElementById("lopTitle").textContent = label;
+        });
+
+        try {
+          const data = await getLopLeaderboard(lopId);
+          currentMembers = data.members || [];
+          renderMembers();
+        } catch (err) {
+          document.getElementById("memberList").innerHTML =
+            `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i>Lỗi tải bảng xếp hạng: ${escapeHtmlLocal(err.message)}</div>`;
+        }
+      }
+
+      function setSort(mode) {
+        currentSort = mode;
+        updateSortButtons();
+        renderMembers();
+      }
+
+      function updateSortButtons() {
+        document.getElementById("sortScoreDescBtn").classList.toggle("active", currentSort === "score-desc");
+        document.getElementById("sortPracticeDescBtn").classList.toggle("active", currentSort === "practice-desc");
+      }
+
+      // Việc IV (2026-08-20) — copy nguyên logic màu/nhãn từ chucVuBadge() trong admin-common.js
+      // (trang này không nạp file đó) để hiện badge Chức vụ nhất quán với Admin/Teacher.
+      function chucVuBadgeLocal(chucVu) {
+        const cls = chucVu === "Lớp trưởng" ? "cv-loptruong" : chucVu === "Lớp phó" ? "cv-loppho" : "cv-hocvien";
+        return `<span class="chucvu-badge ${cls}">${escapeHtmlLocal(chucVu || "Học viên")}</span>`;
+      }
+
+      function renderMembers() {
+        const listEl = document.getElementById("memberList");
+        const search = (document.getElementById("memberSearch").value || "").trim().toLowerCase();
+
+        let filtered = currentMembers.filter((m) => !search || (m.name || "").toLowerCase().includes(search));
+
+        // Rà soát Lần IV (2026-08-21) — chỉ còn 2 chế độ, LUÔN cao->thấp (đã bỏ Tên A-Z + 2 chiều
+        // tăng dần cũ). null/undefined (chưa có lượt nào) xếp CUỐI, không tính là 0 điểm.
+        filtered = [...filtered].sort((a, b) => {
+          if (currentSort === "practice-desc") {
+            const av = a.avgPracticeScore === null || a.avgPracticeScore === undefined ? -1 : a.avgPracticeScore;
+            const bv = b.avgPracticeScore === null || b.avgPracticeScore === undefined ? -1 : b.avgPracticeScore;
+            return bv - av;
+          }
+          const av = a.avgExamScore === null || a.avgExamScore === undefined ? -1 : a.avgExamScore;
+          const bv = b.avgExamScore === null || b.avgExamScore === undefined ? -1 : b.avgExamScore;
+          return bv - av;
+        });
+
+        if (!filtered.length) {
+          listEl.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i>${search ? "Không tìm thấy học viên nào khớp." : "Lớp chưa có học viên nào."}</div>`;
+          return;
+        }
+
+        listEl.innerHTML = filtered
+          .map((m, i) => {
+            const band = gradeBand(m.avgExamScore);
+            const isMe = m.userId === myUserId;
+            const initials = (m.name || "HV")
+              .split(" ")
+              .slice(-2)
+              .map((w) => w[0])
+              .join("")
+              .toUpperCase();
+            const examText = m.avgExamScore === null || m.avgExamScore === undefined ? "—" : m.avgExamScore.toFixed(1);
+            const practiceText = m.avgPracticeScore === null || m.avgPracticeScore === undefined ? null : m.avgPracticeScore.toFixed(1);
+
+            // Việc IV (2026-08-20) — STT theo thứ tự đang hiển thị (đổi theo sort/tìm kiếm hiện
+            // tại, giống cách STT hoạt động ở mọi bảng khác trong dự án — không phải hạng cố định
+            // theo điểm khi đang sort theo Tên). Rà soát Lần V — bố cục CỘT, 6 ô khớp đúng
+            // grid-template-columns của .member-row-grid (xem CSS + header ở HTML).
+            return `<div class="member-row member-row-grid ${isMe ? "me" : ""}">
+          <div class="member-stt">${i + 1}</div>
+          <div class="member-identity">
+            <div class="member-avatar" style="background:${band.bg};color:${band.text};">${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="" />` : initials}</div>
+            <div class="member-name-col">
+              <div class="member-name">${escapeHtmlLocal(m.name)}${isMe ? ' <span style="color:var(--red);font-size:0.65rem;">(Bạn)</span>' : ""}</div>
+              <div class="member-band-label" style="color:${band.text};">${band.label}</div>
+            </div>
+          </div>
+          <div>${m.capBac ? `<span class="capbac-badge">${escapeHtmlLocal(m.capBac)}</span>` : '<span class="cell-empty">—</span>'}</div>
+          <div>${chucVuBadgeLocal(m.chucVu)}</div>
+          <div class="member-exam-score" style="color:${band.text};">${examText}</div>
+          <div class="member-practice-score">${practiceText ?? '<span class="cell-empty">—</span>'}</div>
+        </div>`;
+          })
+          .join("");
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

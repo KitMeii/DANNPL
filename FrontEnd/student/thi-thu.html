@@ -1,0 +1,1869 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Thi thử</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <style>
+      .exam-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        color: var(--gray-400);
+        transition: all 0.2s;
+      }
+      .exam-tab.active {
+        color: var(--red);
+        border-bottom-color: var(--red);
+      }
+      .q-nav-dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+        flex-shrink: 0;
+        border: 2px solid transparent;
+      }
+
+      /* Material cards */
+      .mat-strip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 11px 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .mat-strip:hover {
+        border-color: var(--red);
+        background: var(--red-bg);
+      }
+      .mat-strip-icon {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+      .mat-strip-title {
+        flex: 1;
+        font-size: 0.8rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mat-strip-badge {
+        font-size: 0.62rem;
+        background: var(--red-bg);
+        color: var(--red);
+        padding: 2px 7px;
+        border-radius: 100px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .q-nav-dot.answered {
+        background: var(--red);
+        color: white;
+      }
+      .q-nav-dot.current {
+        border-color: var(--gold);
+      }
+
+      /* Oral exam */
+      .oral-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      .oral-header {
+        background: linear-gradient(135deg, #0d47a1, #1565c0);
+        padding: 16px 20px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .oral-num {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid #f9a825;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+      }
+      .oral-body {
+        padding: 20px;
+      }
+      .oral-question {
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.6;
+        margin-bottom: 16px;
+        color: var(--gray-800);
+      }
+      .oral-textarea {
+        width: 100%;
+        border: 1.5px solid var(--gray-300);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 0.855rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        resize: vertical;
+        outline: none;
+        min-height: 100px;
+        box-sizing: border-box;
+        transition: border 0.2s;
+      }
+      .oral-textarea:focus {
+        border-color: #1565c0;
+      }
+      .oral-timer {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--red);
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      /* Follow-up questions */
+      .followup-panel {
+        background: #f3f8ff;
+        border: 1.5px solid #90caf9;
+        border-radius: 12px;
+        padding: 14px;
+        margin-top: 12px;
+        display: none;
+      }
+      .followup-panel.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      .followup-q {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #0d47a1;
+        margin-bottom: 8px;
+      }
+      .followup-input {
+        width: 100%;
+        border: 1.5px solid #90caf9;
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 0.82rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        outline: none;
+        box-sizing: border-box;
+      }
+      .followup-input:focus {
+        border-color: #1565c0;
+      }
+
+      /* ── VOICE INPUT ── */
+      .voice-box {
+        border: 2px solid var(--gray-200);
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        background: white;
+      }
+      .voice-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: #f8fafc;
+        border-bottom: 1px solid var(--gray-200);
+      }
+      .voice-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--gray-600);
+        flex: 1;
+      }
+      .voice-status {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        border-radius: 100px;
+        font-weight: 700;
+        background: var(--gray-100);
+        color: var(--gray-500);
+      }
+      .voice-status.listening {
+        background: #fce4ec;
+        color: #c62828;
+        animation: pulse-red 1s infinite;
+      }
+      .voice-status.processing {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .voice-status.done {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      @keyframes pulse-red {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .voice-transcript {
+        padding: 10px 14px;
+        min-height: 52px;
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        font-style: italic;
+        line-height: 1.5;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .voice-transcript.has-text {
+        color: var(--gray-700);
+        font-style: normal;
+      }
+
+      .voice-result {
+        padding: 10px 14px;
+        background: #f0f9ff;
+        display: none;
+      }
+      .voice-result.show {
+        display: block;
+      }
+      .voice-result-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #0369a1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+      .key-points {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .key-point {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 0.79rem;
+        color: var(--gray-800);
+        line-height: 1.5;
+      }
+      .key-point-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #0369a1;
+        flex-shrink: 0;
+        margin-top: 6px;
+      }
+
+      .voice-textarea {
+        width: 100%;
+        border: none;
+        padding: 10px 14px;
+        font-size: 0.82rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        resize: none;
+        outline: none;
+        min-height: 80px;
+        box-sizing: border-box;
+        color: var(--gray-700);
+        line-height: 1.6;
+      }
+      .voice-textarea::placeholder {
+        color: var(--gray-400);
+      }
+
+      .voice-actions {
+        padding: 10px 14px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        border-top: 1px solid var(--gray-100);
+      }
+      .mic-btn {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.2s;
+        flex-shrink: 0;
+        background: #1565c0;
+        color: white;
+        box-shadow: 0 4px 14px rgba(21, 101, 192, 0.35);
+      }
+      .mic-btn.recording {
+        background: #c62828;
+        box-shadow: 0 4px 20px rgba(198, 40, 40, 0.5);
+        animation: mic-pulse 1s infinite;
+      }
+      .mic-btn:disabled {
+        background: var(--gray-300);
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+      @keyframes mic-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.08);
+        }
+      }
+
+      .mic-hint {
+        font-size: 0.72rem;
+        color: var(--gray-500);
+        line-height: 1.5;
+        flex: 1;
+      }
+      .mic-hint strong {
+        color: var(--gray-700);
+      }
+
+      .voice-edit-note {
+        font-size: 0.67rem;
+        color: var(--gray-400);
+        padding: 4px 14px 8px;
+        font-style: italic;
+      }
+
+      /* Followup voice */
+      .followup-voice-box {
+        border: 1.5px solid #90caf9;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .followup-mic-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: #e3f2fd;
+      }
+      .followup-mic-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: #1565c0;
+        color: white;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .followup-mic-btn.recording {
+        background: #c62828;
+        animation: mic-pulse 1s infinite;
+      }
+      .followup-transcript {
+        font-size: 0.75rem;
+        color: #1565c0;
+        flex: 1;
+        font-style: italic;
+        line-height: 1.4;
+      }
+      .followup-result-area {
+        padding: 8px 12px;
+        background: white;
+      }
+
+      /* AI feedback */
+      .ai-feedback {
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        line-height: 1.6;
+        margin-top: 10px;
+      }
+      .ai-feedback.good {
+        background: #e8f5e9;
+        border-left: 3px solid #2e7d32;
+        color: #1b5e20;
+      }
+      .ai-feedback.ok {
+        background: #fff8e1;
+        border-left: 3px solid #f57f17;
+        color: #5d4037;
+      }
+      .ai-feedback.bad {
+        background: #ffebee;
+        border-left: 3px solid var(--red);
+        color: #b71c1c;
+      }
+
+      /* Score summary */
+      .score-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: var(--gray-50);
+        margin-bottom: 8px;
+      }
+      .score-bar {
+        height: 6px;
+        background: var(--gray-200);
+        border-radius: 3px;
+        margin-top: 4px;
+        overflow: hidden;
+      }
+      .score-fill {
+        height: 100%;
+        background: var(--red);
+        border-radius: 3px;
+        transition: width 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../index.html" class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-info">
+            <div class="logo-title">Thi thử</div>
+            <div class="logo-sub">Trắc nghiệm & Vấn đáp AI</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <div
+            id="timerBox"
+            style="
+              display: none;
+              background: var(--red);
+              color: white;
+              padding: 5px 10px;
+              border-radius: 8px;
+              font-family: &quot;Oswald&quot;, sans-serif;
+              font-weight: 700;
+              font-size: 0.9rem;
+            "
+          >
+            <i class="fas fa-clock"></i> <span id="timerDisplay">45:00</span>
+          </div>
+          <!-- Rà soát Lần IV (2026-08-21) — 3 nút Tìm kiếm/Avatar/Đăng xuất đồng nhất trên MỌI trang học
+          viên (trước chỉ index.html có đủ, các trang khác chỉ có Đăng xuất từ Việc II). Tìm kiếm
+          điều hướng về index.html?search=1 (modal Tìm kiếm chỉ có ở đó, xem openQuickSearch()). -->
+          <button class="hdr-btn" id="searchBtn" aria-label="Tìm kiếm" onclick="location.href='../index.html?search=1'">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="hdr-btn" id="profileBtn" aria-label="Hồ sơ cá nhân"></button>
+          <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- START SCREEN -->
+        <div id="startScreen">
+          <div class="page-title">Thi thử <span data-subject-name>Môn học</span></div>
+
+          <!-- Mode tabs -->
+          <div
+            class="card"
+            style="padding: 0; overflow: hidden; margin-bottom: 14px"
+          >
+            <div
+              style="display: flex; border-bottom: 1px solid var(--gray-100)"
+            >
+              <div
+                class="exam-tab active"
+                id="tabTN"
+                onclick="switchMode('tn')"
+              >
+                <i class="fas fa-check-circle"></i> Trắc nghiệm
+              </div>
+              <div class="exam-tab" id="tabVD" onclick="switchMode('vd')">
+                <i class="fas fa-comments"></i> Vấn đáp AI
+              </div>
+            </div>
+
+            <!-- TN info -->
+            <div id="infoTN" style="padding: 20px; text-align: center">
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 10px;
+                  margin-bottom: 16px;
+                  text-align: left;
+                "
+              >
+                <div
+                  style="
+                    background: var(--gray-50);
+                    padding: 12px;
+                    border-radius: var(--radius);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.7rem;
+                      color: var(--gray-500);
+                      margin-bottom: 3px;
+                    "
+                  >
+                    Số câu hỏi
+                  </div>
+                  <div
+                    style="
+                      font-family: &quot;Oswald&quot;, sans-serif;
+                      font-size: 1.5rem;
+                      font-weight: 700;
+                      color: var(--red);
+                    "
+                  >
+                    40 câu
+                  </div>
+                </div>
+                <div
+                  style="
+                    background: var(--gray-50);
+                    padding: 12px;
+                    border-radius: var(--radius);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.7rem;
+                      color: var(--gray-500);
+                      margin-bottom: 3px;
+                    "
+                  >
+                    Thời gian
+                  </div>
+                  <div
+                    style="
+                      font-family: &quot;Oswald&quot;, sans-serif;
+                      font-size: 1.5rem;
+                      font-weight: 700;
+                      color: var(--red);
+                    "
+                  >
+                    45 phút
+                  </div>
+                </div>
+                <div
+                  style="
+                    background: var(--gray-50);
+                    padding: 12px;
+                    border-radius: var(--radius);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.7rem;
+                      color: var(--gray-500);
+                      margin-bottom: 3px;
+                    "
+                  >
+                    Điểm đạt
+                  </div>
+                  <div
+                    style="
+                      font-family: &quot;Oswald&quot;, sans-serif;
+                      font-size: 1.5rem;
+                      font-weight: 700;
+                      color: #2e7d32;
+                    "
+                  >
+                    5.0/10
+                  </div>
+                </div>
+                <div
+                  style="
+                    background: var(--gray-50);
+                    padding: 12px;
+                    border-radius: var(--radius);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.7rem;
+                      color: var(--gray-500);
+                      margin-bottom: 3px;
+                    "
+                  >
+                    Nguồn câu hỏi
+                  </div>
+                  <div
+                    style="
+                      font-family: &quot;Oswald&quot;, sans-serif;
+                      font-size: 1rem;
+                      font-weight: 700;
+                      color: var(--gray-700);
+                    "
+                  >
+                    DB + mặc định
+                  </div>
+                </div>
+              </div>
+              <button
+                class="btn btn-red btn-full"
+                style="padding: 14px; font-size: 1rem"
+                onclick="startExam('tn')"
+              >
+                <i class="fas fa-play"></i> BẮT ĐẦU THI TRẮC NGHIỆM
+              </button>
+            </div>
+
+            <!-- VD info -->
+            <div
+              id="infoVD"
+              style="padding: 20px; display: none; text-align: center"
+            >
+              <div
+                style="
+                  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                  border-radius: 12px;
+                  padding: 16px;
+                  margin-bottom: 14px;
+                  text-align: left;
+                "
+              >
+                <div
+                  style="font-weight: 700; color: #0d47a1; margin-bottom: 8px"
+                >
+                  <i class="fas fa-robot"></i> Cách thức thi vấn đáp AI
+                </div>
+                <div
+                  style="font-size: 0.82rem; color: #1565c0; line-height: 1.7"
+                >
+                  1️⃣ Nhận <strong>2 câu hỏi chính</strong> (tự luận)<br />
+                  2️⃣ Gõ câu trả lời trong <strong>3 phút/câu</strong><br />
+                  3️⃣ AI đặt lại <strong>2-3 câu hỏi phụ</strong><br />
+                  4️⃣ Trả lời xong → AI <strong>tổng hợp điểm</strong> và nhận
+                  xét
+                </div>
+              </div>
+              <button
+                class="btn btn-full"
+                style="
+                  padding: 14px;
+                  font-size: 1rem;
+                  background: linear-gradient(135deg, #0d47a1, #1565c0);
+                  color: white;
+                  border: none;
+                  border-radius: 10px;
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                  font-weight: 700;
+                "
+                onclick="startExam('vd')"
+              >
+                <i class="fas fa-microphone"></i> BẮT ĐẦU THI VẤN ĐÁP
+              </button>
+            </div>
+          </div>
+
+          <!-- Tài liệu bài giảng -->
+          <div class="card" id="matCardTT" style="display: none">
+            <div class="card-title">
+              <i class="fas fa-book-open" style="color: var(--red)"></i> Ôn tập
+              tài liệu trước khi thi
+            </div>
+            <div
+              style="
+                font-size: 0.73rem;
+                color: var(--gray-500);
+                margin-bottom: 10px;
+              "
+            >
+              Xem lại bài giảng để chuẩn bị tốt hơn
+            </div>
+            <div
+              id="matListTT"
+              style="display: flex; flex-direction: column; gap: 7px"
+            ></div>
+          </div>
+
+          <!-- History -->
+          <div class="card">
+            <div class="card-title">
+              <i class="fas fa-history"></i>Lịch sử thi của bạn
+            </div>
+            <div id="historyList">
+              <div class="empty"><i class="fas fa-spinner fa-spin"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRẮC NGHIỆM SCREEN -->
+        <div id="tnScreen" style="display: none">
+          <div style="margin-bottom: 12px">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 6px;
+              "
+            >
+              <span
+                style="
+                  font-size: 0.8rem;
+                  font-weight: 600;
+                  color: var(--gray-600);
+                "
+                id="tnCounter"
+                >Câu 1/40</span
+              >
+              <span
+                style="font-size: 0.8rem; color: var(--gray-500)"
+                id="tnAnswered"
+                >Đã trả lời: 0/40</span
+              >
+            </div>
+            <div class="prog-track">
+              <div class="prog-fill" id="tnProg" style="width: 0%"></div>
+            </div>
+          </div>
+          <div style="overflow-x: auto; margin-bottom: 10px">
+            <div
+              id="tnNav"
+              style="
+                display: flex;
+                gap: 5px;
+                padding: 2px;
+                min-width: max-content;
+              "
+            ></div>
+          </div>
+          <div class="card" id="tnQCard">
+            <div
+              style="
+                font-size: 0.95rem;
+                font-weight: 600;
+                line-height: 1.6;
+                margin-bottom: 16px;
+              "
+              id="tnQuestion"
+            ></div>
+            <div id="tnOptions"></div>
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 4px">
+            <button
+              class="btn btn-outline"
+              id="tnPrev"
+              onclick="goTN(-1)"
+              disabled
+              aria-label="Câu trước"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="btn btn-red" style="flex: 1" onclick="goTN(1)">
+              Tiếp <i class="fas fa-chevron-right"></i>
+            </button>
+            <button
+              class="btn"
+              style="
+                background: #ffebee;
+                color: var(--red);
+                border: 1px solid #ffcdd2;
+                border-radius: 10px;
+                padding: 10px 14px;
+                cursor: pointer;
+                font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                font-weight: 700;
+              "
+              onclick="confirmSubmitTN()"
+            >
+              <i class="fas fa-paper-plane"></i> Nộp
+            </button>
+          </div>
+        </div>
+
+        <!-- VẤN ĐÁP SCREEN -->
+        <div id="vdScreen" style="display: none">
+          <div id="vdContent"></div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="resultScreen" style="display: none">
+          <div class="card result-card">
+            <div id="resEmoji" style="font-size: 3rem; margin-bottom: 8px">
+              🎉
+            </div>
+            <div class="result-score" id="resScore">0</div>
+            <div
+              style="font-size: 1rem; font-weight: 700; margin-top: 2px"
+              id="resType"
+            >
+              /10 điểm
+            </div>
+            <div class="result-label" id="resMsg">—</div>
+            <div
+              style="font-size: 0.78rem; color: #2e7d32; margin-top: 6px"
+              id="resSaved"
+            ></div>
+            <div id="resDetail" style="margin: 16px 0; text-align: left"></div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <button
+                class="btn btn-red btn-full"
+                onclick="
+                  document.getElementById('resultScreen').style.display =
+                    'none';
+                  document.getElementById('startScreen').style.display =
+                    'block';
+                  loadHistory();
+                "
+              >
+                <i class="fas fa-list"></i> Xem lịch sử
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="chat.html" class="nav-item"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="thi-thu.html" class="nav-item active"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — Thi thử là trải nghiệm học viên, không còn dành cho Admin — redirect
+      // thẳng sang trang quản trị (trước đây chỉ ẩn nav, Admin gõ thẳng URL vẫn vào được).
+      // applyRoleGate() dùng chung (api-client.js).
+      applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1")
+        document.body.classList.add("dark");
+      const LETTERS = ["A", "B", "C", "D"];
+
+      // ===== TN State =====
+      let tnQuestions = [],
+        tnAnswers = [],
+        tnCurrent = 0,
+        tnTimer = null,
+        tnTimeLeft = 45 * 60,
+        tnStart = null;
+
+      // Việc 4.1 (2026-08-19) — chống thoát thi thử. Có giá trị = đang thi dở (phiên InProgress ở
+      // server) — dùng làm cờ "examInProgress" luôn, không cần biến riêng: null ở CẢ 2 nghĩa là
+      // "chưa bắt đầu" và "đã nộp xong", chỉ khác nhau ở thời điểm gán null (sau khi nộp thành
+      // công / lúc mới tải trang) — cả 2 đều đúng là "không còn gì cần bảo vệ".
+      let tnSessionId = null;
+      let vdSessionId = null;
+
+      // ===== VD State =====
+      let vdQuestions = [],
+        vdCurrentQ = 0,
+        vdFollowupIdx = 0,
+        vdFollowups = [],
+        vdAnswers = [],
+        vdFollowupAnswers = [],
+        vdTimers = [];
+
+      function shuffle(arr) {
+        return [...arr].sort(() => Math.random() - 0.5);
+      }
+
+      // ===================== Việc 4.1 (2026-08-19) — Chống thoát thi thử =====================
+      // beforeunload: hỏi xác nhận CHỈ khi đang thi dở (có session đang mở) — không làm phiền lúc
+      // đã nộp xong hoặc chưa bắt đầu thi. pagehide (không phải beforeunload) để BẮN BEACON thật —
+      // pagehide đáng tin cậy hơn cho việc chạy code lúc trang bị hủy (1 số trình duyệt không chạy
+      // side-effect trong beforeunload). Cả 2 đều best-effort — lưới an toàn thật (Lớp 2) là
+      // lazy-check ở server, xem QuizAttemptService.FinalizeExpiredSessionsAsync.
+      window.addEventListener("beforeunload", (e) => {
+        if (tnSessionId || vdSessionId) {
+          e.preventDefault();
+          e.returnValue = "";
+        }
+      });
+
+      window.addEventListener("pagehide", () => {
+        if (tnSessionId) {
+          const answers = [];
+          tnQuestions.forEach((q, i) => {
+            if (tnAnswers[i] !== -1) {
+              answers.push({ questionId: q.id, selectedOption: tnAnswers[i] });
+            }
+          });
+          beaconAutoSubmitExam(tnSessionId, answers);
+        }
+        if (vdSessionId) {
+          beaconAbandonOralSession(vdSessionId);
+        }
+      });
+
+      async function init() {
+        if (!requireAuth()) return;
+        renderHeaderProfileBtn("../cai-dat.html");
+        loadHistory();
+        loadMaterialsForExam();
+      }
+
+      function switchMode(mode) {
+        document
+          .getElementById("tabTN")
+          .classList.toggle("active", mode === "tn");
+        document
+          .getElementById("tabVD")
+          .classList.toggle("active", mode === "vd");
+        document.getElementById("infoTN").style.display =
+          mode === "tn" ? "block" : "none";
+        document.getElementById("infoVD").style.display =
+          mode === "vd" ? "block" : "none";
+      }
+
+      // ======================== LOAD POOL ========================
+      // Không còn fallback "câu hỏi mẫu" nhúng sẵn: mỗi câu phải có id thật trong quiz-service
+      // để có thể nộp bài và được chấm ở server (xem ghi chú F3 ở luyen-tap.html) — nếu ngân
+      // hàng câu hỏi trống, báo rõ cho học viên thay vì thi với câu hỏi không chấm được.
+      async function loadPool(count) {
+        const data = await getPracticeQuestions();
+        const pool = data.map((q) => ({
+          id: q.id,
+          q: q.questionText,
+          opts: [q.optionA, q.optionB, q.optionC, q.optionD].filter(Boolean),
+        }));
+        return shuffle(pool).slice(0, count);
+      }
+
+      async function loadVDPool() {
+        const data = await getOralQuestions();
+        const pool = data.map((q) => ({
+          id: q.id,
+          question: q.questionText,
+        }));
+        return shuffle(pool).slice(0, 2);
+      }
+
+      // ======================== START ========================
+      async function startExam(mode) {
+        if (mode === "tn") {
+          const pool = await loadPool(40);
+          if (pool.length === 0) {
+            alert("Chưa có câu hỏi trắc nghiệm nào. Vui lòng liên hệ giáo viên!");
+            return;
+          }
+          tnQuestions = pool;
+          document.getElementById("startScreen").style.display = "none";
+          document.getElementById("resultScreen").style.display = "none";
+          tnAnswers = new Array(tnQuestions.length).fill(-1);
+          tnCurrent = 0;
+          tnTimeLeft = 45 * 60;
+          tnStart = Date.now();
+          // Việc 4.1 — báo server bài thi đã bắt đầu + bộ câu hỏi thật, TRƯỚC khi hiển thị câu hỏi.
+          // Best-effort: lỗi ở đây (VD quiz-service tạm gián đoạn) không chặn học viên thi bình
+          // thường, chỉ mất lớp bảo vệ chống-thoát cho riêng lượt này.
+          try {
+            const session = await startExamSession(tnQuestions.map((q) => q.id), tnTimeLeft);
+            tnSessionId = session.sessionId;
+          } catch {
+            tnSessionId = null;
+          }
+          document.getElementById("tnScreen").style.display = "block";
+          document.getElementById("timerBox").style.display = "flex";
+          buildTNNav();
+          renderTNQ();
+          startTNTimer();
+        } else {
+          const oralQs = await loadVDPool();
+          if (oralQs.length === 0) {
+            alert("Chưa có câu hỏi vấn đáp nào. Vui lòng liên hệ giáo viên!");
+            return;
+          }
+          document.getElementById("startScreen").style.display = "none";
+          document.getElementById("resultScreen").style.display = "none";
+          vdQuestions = oralQs;
+          vdCurrentQ = 0;
+          vdFollowupIdx = 0;
+          vdAnswers = [];
+          vdFollowupAnswers = [];
+          document.getElementById("vdScreen").style.display = "block";
+          document.getElementById("timerBox").style.display = "flex";
+          tnTimeLeft = vdQuestions.length * 3 * 60; // 3 min per question
+          try {
+            const session = await startOralSession(vdQuestions.map((q) => q.id), tnTimeLeft);
+            vdSessionId = session.sessionId;
+          } catch {
+            vdSessionId = null;
+          }
+          startTNTimer();
+          renderVDQuestion(0);
+        }
+      }
+
+      // ======================== TN ========================
+      function startTNTimer() {
+        clearInterval(tnTimer);
+        tnTimer = setInterval(() => {
+          tnTimeLeft--;
+          const m = Math.floor(tnTimeLeft / 60),
+            s = tnTimeLeft % 60;
+          document.getElementById("timerDisplay").textContent =
+            `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+          if (tnTimeLeft <= 300)
+            document.getElementById("timerBox").style.background = "#b71c1c";
+          if (tnTimeLeft <= 0) {
+            clearInterval(tnTimer);
+            submitTN();
+          }
+        }, 1000);
+      }
+
+      function buildTNNav() {
+        document.getElementById("tnNav").innerHTML = tnQuestions
+          .map(
+            (_, i) =>
+              `<div class="q-nav-dot" id="tnNav${i}" onclick="jumpTN(${i})">${i + 1}</div>`,
+          )
+          .join("");
+      }
+
+      function updateTNNav() {
+        tnQuestions.forEach((_, i) => {
+          const d = document.getElementById(`tnNav${i}`);
+          if (!d) return;
+          d.className =
+            "q-nav-dot" +
+            (tnAnswers[i] !== -1 ? " answered" : "") +
+            (i === tnCurrent ? " current" : "");
+        });
+      }
+
+      function renderTNQ() {
+        const q = tnQuestions[tnCurrent];
+        document.getElementById("tnCounter").textContent =
+          `Câu ${tnCurrent + 1}/${tnQuestions.length}`;
+        document.getElementById("tnAnswered").textContent =
+          `Đã trả lời: ${tnAnswers.filter((x) => x !== -1).length}/${tnQuestions.length}`;
+        document.getElementById("tnProg").style.width =
+          ((tnCurrent + 1) / tnQuestions.length) * 100 + "%";
+        document.getElementById("tnQuestion").textContent = q.q;
+        document.getElementById("tnOptions").innerHTML = q.opts
+          .map(
+            (o, i) =>
+              `<button class="option-btn ${tnAnswers[tnCurrent] === i ? "correct" : ""}" onclick="selectTN(${i})">
+      <div class="opt-letter">${LETTERS[i]}</div><span>${o}</span>
+    </button>`,
+          )
+          .join("");
+        document.getElementById("tnPrev").disabled = tnCurrent === 0;
+        updateTNNav();
+      }
+
+      function selectTN(i) {
+        tnAnswers[tnCurrent] = i;
+        document
+          .querySelectorAll("#tnOptions .option-btn")
+          .forEach((b, idx) => {
+            b.className = "option-btn" + (idx === i ? " correct" : "");
+          });
+        document.getElementById("tnAnswered").textContent =
+          `Đã trả lời: ${tnAnswers.filter((x) => x !== -1).length}/${tnQuestions.length}`;
+        updateTNNav();
+      }
+
+      function jumpTN(i) {
+        tnCurrent = i;
+        renderTNQ();
+      }
+      function goTN(dir) {
+        const n = tnCurrent + dir;
+        if (n >= 0 && n < tnQuestions.length) {
+          tnCurrent = n;
+          renderTNQ();
+        }
+      }
+
+      function confirmSubmitTN() {
+        const ua = tnAnswers.filter((x) => x === -1).length;
+        if (
+          confirm(
+            ua > 0
+              ? `Còn ${ua} câu chưa trả lời — các câu này sẽ KHÔNG được tính vào bài chấm (không tự động tính sai). Xác nhận nộp bài?`
+              : "Xác nhận nộp bài?",
+          )
+        )
+          submitTN();
+      }
+
+      // Điểm số luôn do quiz-service tính từ đáp án lưu trên server — client chỉ gửi lựa
+      // chọn của học viên, KHÔNG bao giờ tự tính hay gửi điểm số lên (khắc phục lỗ hổng F3,
+      // xem ghi chú chi tiết ở luyen-tap.html).
+      async function submitTN() {
+        clearInterval(tnTimer);
+        document.getElementById("timerBox").style.display = "none";
+        document.getElementById("timerBox").style.background = "var(--red)";
+        const elapsed = Math.floor((Date.now() - tnStart) / 1000);
+        document.getElementById("tnScreen").style.display = "none";
+
+        const answers = [];
+        tnQuestions.forEach((q, i) => {
+          if (tnAnswers[i] !== -1) {
+            answers.push({ questionId: q.id, selectedOption: tnAnswers[i] });
+          }
+        });
+
+        if (answers.length === 0) {
+          alert("Bạn chưa trả lời câu nào!");
+          document.getElementById("tnScreen").style.display = "block";
+          document.getElementById("timerBox").style.display = "flex";
+          return;
+        }
+
+        let result;
+        try {
+          result = await submitExam(answers, elapsed, tnSessionId);
+          // Nộp thành công — không còn gì cần bảo vệ nữa, tắt cờ chống-thoát (beforeunload/pagehide).
+          tnSessionId = null;
+        } catch (err) {
+          alert("Lỗi nộp bài: " + err.message);
+          document.getElementById("tnScreen").style.display = "block";
+          document.getElementById("timerBox").style.display = "flex";
+          return;
+        }
+
+        // Xem lại chi tiết — đáp án đúng chỉ xuất hiện trong response SAU khi nộp bài.
+        const wrong = result.details.filter((d) => !d.isCorrect);
+        let detailHtml = "";
+        if (wrong.length > 0) {
+          detailHtml =
+            `<div style="font-weight:700;margin-bottom:8px;font-size:0.85rem;">Câu trả lời sai (${wrong.length} câu):</div>` +
+            wrong
+              .map((d) => {
+                const q = tnQuestions.find((x) => x.id === d.questionId);
+                return `<div style="padding:8px 10px;background:var(--gray-50);border-radius:8px;margin-bottom:6px;font-size:0.78rem;">
+      <div style="font-weight:600;margin-bottom:3px;">${q ? q.q : ""}</div>
+      <div style="color:var(--red);">✗ Bạn chọn: ${q ? q.opts[d.selectedOption] : "—"}</div>
+      <div style="color:#2e7d32;">✓ Đáp án: ${q ? q.opts[d.correctAnswer] : "—"}</div>
+      ${d.explanation ? `<div style="color:var(--gray-600);margin-top:3px;">💡 ${d.explanation}</div>` : ""}
+    </div>`;
+              })
+              .join("");
+        }
+        if (answers.length < tnQuestions.length) {
+          detailHtml =
+            `<div style="font-size:0.75rem;color:var(--gray-500);margin-bottom:8px;">Đã chấm trên ${answers.length}/${tnQuestions.length} câu đã trả lời.</div>` +
+            detailHtml;
+        }
+
+        showResult({
+          score: result.score,
+          correct: result.correct,
+          total: result.total,
+          type: "Trắc nghiệm",
+          elapsed,
+          detail: detailHtml,
+        });
+      }
+
+      // ======================== VẤN ĐÁP ========================
+      function renderVDQuestion(idx) {
+        const q = vdQuestions[idx];
+        const timerKey = `vd_q${idx}`;
+        let timeLeft = 180; // 3 minutes
+        let timerInterval;
+
+        document.getElementById("vdContent").innerHTML = `
+    <div class="oral-card">
+      <div class="oral-header">
+        <div class="oral-num">${idx + 1}</div>
+        <div>
+          <div style="font-weight:700;">Câu hỏi ${idx + 1}/${vdQuestions.length}</div>
+          <div style="font-size:0.72rem;opacity:0.8;">Tự luận · Vấn đáp AI</div>
+        </div>
+        <div style="margin-left:auto;font-size:1.2rem;font-weight:700;font-family:'Oswald',sans-serif;" id="vdTimer${idx}">3:00</div>
+      </div>
+      <div class="oral-body">
+        <div class="oral-question">${q.question}</div>
+        <div class="voice-box">
+          <div class="voice-header">
+            <i class="fas fa-microphone" style="color:#1565c0;"></i>
+            <span class="voice-label">Trả lời bằng giọng nói</span>
+            <span class="voice-status" id="vdStatus${idx}">Sẵn sàng</span>
+          </div>
+          <div class="voice-transcript" id="vdTranscript${idx}">
+            Nhấn nút mic bên dưới để bắt đầu nói...
+          </div>
+          <div class="voice-result" id="vdResult${idx}">
+            <div class="voice-result-label">🤖 AI tổng hợp ý chính:</div>
+            <div class="key-points" id="vdKeyPoints${idx}"></div>
+          </div>
+          <textarea class="voice-textarea" id="vdAns${idx}" placeholder="Câu trả lời sẽ được điền tự động sau khi nói. Bạn có thể chỉnh sửa thêm..."></textarea>
+          <div class="voice-edit-note">✏️ Bạn có thể chỉnh sửa câu trả lời trước khi gửi</div>
+          <div class="voice-actions">
+            <button class="mic-btn" id="vdMicBtn${idx}" onclick="toggleVoice(${idx})" aria-label="Bắt đầu ghi âm" aria-pressed="false">
+              <i class="fas fa-microphone"></i>
+            </button>
+            <div class="mic-hint">
+              <strong>Nhấn mic để nói</strong><br>
+              AI sẽ nhận diện giọng nói và tổng hợp ý chính
+            </div>
+          </div>
+        </div>
+        <div id="followupArea${idx}"></div>
+        <div id="feedbackArea${idx}"></div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button class="btn btn-red btn-full" id="vdSubmitBtn${idx}" onclick="submitVDAnswer(${idx})">
+            <i class="fas fa-paper-plane"></i> Gửi câu trả lời
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+        // Start timer
+        const timerEl = document.getElementById(`vdTimer${idx}`);
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          const m = Math.floor(timeLeft / 60),
+            s = timeLeft % 60;
+          timerEl.textContent = `${m}:${String(s).padStart(2, "0")}`;
+          document.getElementById("timerDisplay").textContent =
+            `${m}:${String(s).padStart(2, "0")}`;
+          if (timeLeft <= 30) timerEl.style.color = "#ef5350";
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitVDAnswer(idx, true);
+          }
+        }, 1000);
+        vdTimers.push(timerInterval);
+      }
+
+      async function submitVDAnswer(idx, timeout = false) {
+        vdTimers.forEach((t) => clearInterval(t));
+        const ans = document.getElementById(`vdAns${idx}`).value.trim();
+        const q = vdQuestions[idx];
+        const btn = document.getElementById(`vdSubmitBtn${idx}`);
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+        vdAnswers[idx] = ans;
+
+        // Câu hỏi phụ chỉ để khai thác sâu hơn — không tự chấm điểm ở đây, nên dùng tạm
+        // chatbot chung là đủ (điểm số thật sự tính 1 lần ở finalizeVD qua /grade-oral).
+        const followups = await generateFollowups(q.question, ans);
+        vdFollowups = followups;
+        vdFollowupIdx = 0;
+        vdFollowupAnswers[idx] = [];
+
+        if (followups.length > 0) {
+          renderFollowup(idx, 0);
+        } else {
+          await finalizeVD(idx);
+        }
+      }
+
+      async function generateFollowups(mainQ, answer) {
+        try {
+          const prompt = `Bạn là giảng viên ${window.APP_CONFIG.subjectName} đang thi vấn đáp. Học viên vừa trả lời:
+
+Câu hỏi chính: ${mainQ}
+Câu trả lời: ${answer || "(Không trả lời)"}
+
+Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn sự hiểu biết của học viên. Mỗi câu hỏi 1 dòng, không đánh số, không giải thích thêm.`;
+          const res = await askAI(prompt);
+          const lines = res
+            .split("\n")
+            .map((l) => l.replace(/^[-*\d.)\s]+/, "").trim())
+            .filter((l) => l.length > 0)
+            .slice(0, 3);
+          return lines.length > 0
+            ? lines.map((q) => ({ q }))
+            : [{ q: "Bạn có thể nêu thêm ví dụ cụ thể?" }];
+        } catch {
+          return [
+            { q: "Bạn có thể nêu thêm ví dụ cụ thể?" },
+            { q: "Ý nghĩa của điều này với sinh viên quân sự?" },
+          ];
+        }
+      }
+
+      function renderFollowup(qIdx, fIdx) {
+        if (fIdx >= vdFollowups.length) {
+          finalizeVD(qIdx);
+          return;
+        }
+        const fq = vdFollowups[fIdx];
+        const area = document.getElementById(`followupArea${qIdx}`);
+        area.innerHTML = `
+    <div class="followup-panel show">
+      <div class="followup-q">
+        <i class="fas fa-robot" style="color:#1565c0;margin-right:5px;"></i>
+        Câu hỏi phụ ${fIdx + 1}/${vdFollowups.length}: ${fq.q}
+        <button onclick="speakText('${fq.q.replace(/'/g, "\'")}')"
+          style="margin-left:8px;background:#e3f2fd;border:none;border-radius:6px;
+                 padding:3px 8px;cursor:pointer;color:#1565c0;font-size:0.72rem;vertical-align:middle;">
+          <i class="fas fa-volume-up"></i> Nghe lại
+        </button>
+      </div>
+      <div class="followup-voice-box">
+        <div class="followup-mic-row">
+          <button class="followup-mic-btn" id="fuMicBtn${qIdx}_${fIdx}" onclick="toggleFollowupVoice(${qIdx},${fIdx})" aria-label="Bắt đầu ghi âm" aria-pressed="false">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <span class="followup-transcript" id="fuTranscript${qIdx}_${fIdx}">Nhấn mic để trả lời bằng giọng nói...</span>
+        </div>
+        <div class="followup-result-area">
+          <textarea class="followup-input" id="fuAns${qIdx}_${fIdx}" rows="2" placeholder="Câu trả lời tự động điền sau khi nói. Có thể chỉnh sửa..."></textarea>
+        </div>
+      </div>
+      <button class="btn btn-sm" style="margin-top:4px;background:#1565c0;color:white;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;" onclick="submitFollowup(${qIdx},${fIdx})">
+        Trả lời <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>`;
+
+        // Tự động đọc câu hỏi phụ bằng TTS
+        setTimeout(() => speakText(fq.q), 300);
+      }
+
+      async function submitFollowup(qIdx, fIdx) {
+        const ans =
+          document.getElementById(`fuAns${qIdx}_${fIdx}`)?.value.trim() || "";
+        if (!vdFollowupAnswers[qIdx]) vdFollowupAnswers[qIdx] = [];
+        vdFollowupAnswers[qIdx].push({ q: vdFollowups[fIdx].q, a: ans });
+
+        const nextFIdx = fIdx + 1;
+        if (nextFIdx < vdFollowups.length) {
+          renderFollowup(qIdx, nextFIdx);
+        } else {
+          await finalizeVD(qIdx);
+        }
+      }
+
+      async function finalizeVD(qIdx) {
+        // Chấm điểm thật qua ai-service (server-side), không tự tính ở client.
+        const q = vdQuestions[qIdx];
+        const mainAns = vdAnswers[qIdx] || "";
+        const followupAns = vdFollowupAnswers[qIdx] || [];
+
+        const fbArea = document.getElementById(`feedbackArea${qIdx}`);
+        let feedback;
+        try {
+          const result = await submitOralAnswer(
+            q.id,
+            mainAns,
+            followupAns.map((f) => f.a),
+            vdSessionId,
+          );
+          feedback = {
+            score: result.aiScore,
+            comment: result.aiComment || "Đã ghi nhận.",
+            rubric: result.rubricScores || {},
+          };
+        } catch (err) {
+          feedback = { score: 0, comment: "Lỗi chấm điểm: " + err.message, rubric: {} };
+        }
+
+        if (fbArea) {
+          const r = feedback.rubric || {};
+          const rubricHtml =
+            r.noi_dung !== undefined
+              ? `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:8px 0;font-size:0.72rem;">
+        <div>📚 Nội dung: <strong>${r.noi_dung || 0}/10</strong></div>
+        <div>🧠 Lập luận: <strong>${r.lap_luan || 0}/10</strong></div>
+        <div>📌 Ví dụ: <strong>${r.vi_du || 0}/10</strong></div>
+        <div>✍️ Diễn đạt: <strong>${r.dien_dat || 0}/10</strong></div>
+      </div>`
+              : "";
+          fbArea.innerHTML = `<div class="ai-feedback ${feedback.score >= 7 ? "good" : feedback.score >= 5 ? "ok" : "bad"}">
+      <strong>${feedback.score >= 7 ? "✅ Tốt!" : feedback.score >= 5 ? "👍 Đạt" : "💬 Cần bổ sung"} — Điểm tổng: ${parseFloat(feedback.score).toFixed(1)}/10</strong>
+      ${rubricHtml}
+      <div style="font-size:0.75rem;margin-top:4px;">${feedback.comment}</div>
+    </div>`;
+        }
+
+        document.getElementById(`followupArea${qIdx}`).innerHTML = "";
+
+        vdAnswers[`score_${qIdx}`] = feedback.score;
+
+        // Move to next question or finish
+        const nextIdx = qIdx + 1;
+        if (nextIdx < vdQuestions.length) {
+          setTimeout(() => renderVDQuestion(nextIdx), 1500);
+        } else {
+          setTimeout(() => finishVD(), 1500);
+        }
+      }
+
+      async function finishVD() {
+        clearInterval(tnTimer);
+        document.getElementById("timerBox").style.display = "none";
+        document.getElementById("vdScreen").style.display = "none";
+        // Đã trả lời hết — server tự đánh dấu Submitted khi câu cuối được lưu (xem
+        // OralAttemptService.SubmitAsync). Không còn gì cần bảo vệ nữa.
+        vdSessionId = null;
+
+        const scores = vdQuestions.map((_, i) => vdAnswers[`score_${i}`] || 0);
+        const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+        const elapsed = Math.floor((Date.now() - tnStart) / 1000);
+
+        const detail = vdQuestions
+          .map(
+            (q, i) => `
+    <div class="score-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div style="font-size:0.78rem;font-weight:600;">Câu ${i + 1}: ${q.question.slice(0, 60)}...</div>
+      <div style="width:100%;">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--gray-500);margin-bottom:3px;">
+          <span>Điểm</span><span style="font-weight:700;color:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--red)"};">${scores[i]}/10</span>
+        </div>
+        <div class="score-bar"><div class="score-fill" style="width:${scores[i] * 10}%;background:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--red)"};"></div></div>
+      </div>
+    </div>`,
+          )
+          .join("");
+
+        // Điểm vấn đáp là điểm hiển thị (trung bình các câu đã chấm qua ai-service),
+        // chưa gộp vào điểm TB/leaderboard — mỗi câu đã được lưu riêng ở quiz-service.
+        showResult({
+          score: avgScore.toFixed(1),
+          correct: null,
+          total: null,
+          type: "Vấn đáp AI",
+          elapsed,
+          detail,
+        });
+      }
+
+      // ======================== RESULT ========================
+      function showResult({ score, correct, total, type, elapsed, detail }) {
+        document.getElementById("resultScreen").style.display = "block";
+        document.getElementById("resScore").textContent = score;
+        document.getElementById("resType").textContent = `${type} — /10 điểm`;
+        const m = Math.floor(elapsed / 60),
+          s = elapsed % 60;
+        let emoji = "😔",
+          msg = "Cần cố gắng thêm!";
+        if (score >= 9) {
+          emoji = "🏆";
+          msg = "Xuất sắc!";
+        } else if (score >= 7) {
+          emoji = "🎉";
+          msg = "Tốt lắm!";
+        } else if (score >= 5) {
+          emoji = "👍";
+          msg = "Đạt! Cần ôn thêm.";
+        }
+        document.getElementById("resEmoji").textContent = emoji;
+        document.getElementById("resMsg").textContent =
+          `${msg} · Thời gian: ${m}p ${s}s`;
+        document.getElementById("resSaved").textContent =
+          "✓ Kết quả đã được lưu vào tài khoản";
+        document.getElementById("resDetail").innerHTML = detail;
+        logStudyTime(Math.ceil(elapsed / 60)).catch(() => {});
+      }
+
+      // ======================== HISTORY ========================
+      async function loadHistory() {
+        const el = document.getElementById("historyList");
+        let history;
+        try {
+          const results = await getMyQuizResults();
+          history = results.filter((r) => r.kind === "exam");
+        } catch {
+          el.innerHTML = '<div class="empty">Không tải được lịch sử</div>';
+          return;
+        }
+        if (!history.length) {
+          el.innerHTML =
+            '<div class="empty"><i class="fas fa-clipboard-list"></i>Chưa có kết quả thi</div>';
+          return;
+        }
+        el.innerHTML = history
+          .map(
+            (h) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+      <div>
+        <div style="font-weight:600;font-size:0.875rem;">${formatDate(h.createdAtUtc)}</div>
+        <div style="font-size:0.7rem;color:var(--gray-500);">${h.correct || 0}/${h.total || 0} câu</div>
+        ${h.isAutoSubmitted ? `<div style="font-size:0.68rem;color:#b8860b;margin-top:2px;"><i class="fas fa-triangle-exclamation"></i> Đã tự động nộp do thoát giữa chừng</div>` : ""}
+      </div>
+      <div style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;color:${parseFloat(h.score) >= 5 ? "#2e7d32" : "var(--red)"};">${parseFloat(h.score).toFixed(1)}</div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      // ── TEXT TO SPEECH (TTS) ──
+      let currentUtterance = null;
+
+      function speakText(text, onEnd) {
+        // Dừng giọng đang nói (nếu có)
+        window.speechSynthesis.cancel();
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "vi-VN";
+        utter.rate = 0.92;
+        utter.pitch = 1;
+
+        // Ưu tiên giọng tiếng Việt nếu có
+        const voices = window.speechSynthesis.getVoices();
+        const viVoice = voices.find(
+          (v) => v.lang === "vi-VN" || v.lang.startsWith("vi"),
+        );
+        if (viVoice) utter.voice = viVoice;
+
+        if (onEnd) utter.onend = onEnd;
+        currentUtterance = utter;
+        window.speechSynthesis.speak(utter);
+      }
+
+      function stopSpeaking() {
+        window.speechSynthesis.cancel();
+        currentUtterance = null;
+      }
+
+      // ════════════════════════════════════════════
+      // VOICE INPUT — Web Speech API + Groq summarize
+      // ════════════════════════════════════════════
+
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      let activeRecognition = null;
+      let activeVdIdx = null;
+      let activeFuKey = null;
+
+      function toggleVoice(idx) {
+        if (activeRecognition) {
+          activeRecognition.stop();
+          activeRecognition = null;
+        }
+        if (activeVdIdx === idx) {
+          activeVdIdx = null;
+          setVdMicState(idx, false);
+          return;
+        }
+        if (!SpeechRecognition) {
+          alert("Trình duyệt không hỗ trợ. Dùng Chrome hoặc Edge nhé!");
+          return;
+        }
+        activeVdIdx = idx;
+        startVoiceRecognition(idx);
+      }
+
+      function startVoiceRecognition(idx) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = "vi-VN";
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+        activeRecognition = recognition;
+        setVdMicState(idx, true);
+        setVdStatus(idx, "listening", "🔴 Đang nghe...");
+
+        const transcriptEl = document.getElementById("vdTranscript" + idx);
+        transcriptEl.className = "voice-transcript has-text";
+
+        let finalTranscript = "";
+        let silenceTimer = null;
+
+        recognition.onresult = (e) => {
+          let interim = "";
+          finalTranscript = "";
+          for (let i = 0; i < e.results.length; i++) {
+            if (e.results[i].isFinal)
+              finalTranscript += e.results[i][0].transcript + " ";
+            else interim += e.results[i][0].transcript;
+          }
+          transcriptEl.textContent =
+            finalTranscript + interim || "Đang nhận diện...";
+          clearTimeout(silenceTimer);
+          silenceTimer = setTimeout(() => {
+            if (activeRecognition) recognition.stop();
+          }, 5000);
+        };
+
+        recognition.onend = async () => {
+          activeRecognition = null;
+          activeVdIdx = null;
+          setVdMicState(idx, false);
+          const fullText = finalTranscript.trim();
+          if (!fullText) {
+            setVdStatus(idx, "", "Sẵn sàng");
+            transcriptEl.textContent = "Không nhận diện được. Thử lại nhé!";
+            transcriptEl.className = "voice-transcript";
+            return;
+          }
+          transcriptEl.textContent = "🎤 " + fullText;
+          setVdStatus(idx, "processing", "🤖 Đang tổng hợp...");
+          const keyPoints = await summarizeWithGroq(fullText);
+          renderKeyPoints(idx, keyPoints);
+          setVdStatus(idx, "done", "✅ Hoàn thành");
+        };
+
+        recognition.onerror = (e) => {
+          activeRecognition = null;
+          activeVdIdx = null;
+          setVdMicState(idx, false);
+          setVdStatus(idx, "", "Sẵn sàng");
+          if (e.error !== "aborted") {
+            document.getElementById("vdTranscript" + idx).textContent =
+              "⚠️ Lỗi: " + e.error;
+          }
+        };
+
+        recognition.start();
+      }
+
+      async function summarizeWithGroq(text) {
+        try {
+          const prompt =
+            'Ban la tro ly hoc thuat. Nguoi hoc vua noi cau tra loi cho mot cau hoi van dap.\nCau tra loi goc: "' +
+            text +
+            '"\nHay tong hop thanh 3-5 y chinh ngan gon, moi y 1 dong, khong danh so, khong giai thich them.';
+          const res = await askAI(prompt);
+          const lines = res
+            .split("\n")
+            .map((l) => l.replace(/^[-*\d.)\s]+/, "").trim())
+            .filter((l) => l.length > 5)
+            .slice(0, 5);
+          return lines.length > 0 ? lines : [text];
+        } catch {
+          return text
+            .split(/[,.;!?]+/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 5)
+            .slice(0, 5);
+        }
+      }
+
+      function renderKeyPoints(idx, points) {
+        const resultEl = document.getElementById("vdResult" + idx);
+        const kpEl = document.getElementById("vdKeyPoints" + idx);
+        const textarea = document.getElementById("vdAns" + idx);
+        resultEl.className = "voice-result show";
+        kpEl.innerHTML = points
+          .map(function (p) {
+            return (
+              '<div class="key-point"><div class="key-point-dot"></div><span>' +
+              p +
+              "</span></div>"
+            );
+          })
+          .join("");
+        textarea.value = points.join("\n");
+      }
+
+      function setVdMicState(idx, recording) {
+        const btn = document.getElementById("vdMicBtn" + idx);
+        if (!btn) return;
+        btn.className = "mic-btn" + (recording ? " recording" : "");
+        btn.innerHTML = recording
+          ? '<i class="fas fa-stop"></i>'
+          : '<i class="fas fa-microphone"></i>';
+        btn.setAttribute("aria-pressed", String(recording));
+        btn.setAttribute("aria-label", recording ? "Dừng ghi âm" : "Bắt đầu ghi âm");
+      }
+
+      function setVdStatus(idx, state, text) {
+        const el = document.getElementById("vdStatus" + idx);
+        if (!el) return;
+        el.className = "voice-status" + (state ? " " + state : "");
+        el.textContent = text;
+      }
+
+      // ── FOLLOWUP VOICE ──
+      function toggleFollowupVoice(qIdx, fIdx) {
+        const key = qIdx + "_" + fIdx;
+        if (activeRecognition) {
+          activeRecognition.stop();
+          activeRecognition = null;
+        }
+        if (activeFuKey === key) {
+          activeFuKey = null;
+          setFuMicState(qIdx, fIdx, false);
+          return;
+        }
+        if (!SpeechRecognition) {
+          alert("Dùng Chrome hoặc Edge để dùng tính năng này!");
+          return;
+        }
+        activeFuKey = key;
+        startFollowupRecognition(qIdx, fIdx);
+      }
+
+      function startFollowupRecognition(qIdx, fIdx) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = "vi-VN";
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        activeRecognition = recognition;
+        setFuMicState(qIdx, fIdx, true);
+
+        const transcriptEl = document.getElementById(
+          "fuTranscript" + qIdx + "_" + fIdx,
+        );
+        const answerEl = document.getElementById("fuAns" + qIdx + "_" + fIdx);
+        transcriptEl.textContent = "🔴 Đang nghe...";
+
+        let finalTranscript = "";
+        let silenceTimer = null;
+
+        recognition.onresult = (e) => {
+          let interim = "";
+          finalTranscript = "";
+          for (let i = 0; i < e.results.length; i++) {
+            if (e.results[i].isFinal)
+              finalTranscript += e.results[i][0].transcript + " ";
+            else interim += e.results[i][0].transcript;
+          }
+          transcriptEl.textContent = "🎤 " + (finalTranscript + interim);
+          clearTimeout(silenceTimer);
+          silenceTimer = setTimeout(() => {
+            if (activeRecognition) recognition.stop();
+          }, 5000);
+        };
+
+        recognition.onend = () => {
+          activeRecognition = null;
+          activeFuKey = null;
+          setFuMicState(qIdx, fIdx, false);
+          if (finalTranscript.trim()) {
+            answerEl.value = finalTranscript.trim();
+            transcriptEl.textContent = "✅ " + finalTranscript.trim();
+          } else {
+            transcriptEl.textContent = "⚠️ Không nhận được. Nhập tay nhé!";
+          }
+        };
+
+        recognition.onerror = () => {
+          activeRecognition = null;
+          activeFuKey = null;
+          setFuMicState(qIdx, fIdx, false);
+          transcriptEl.textContent = "Lỗi nhận diện. Nhập tay nhé!";
+        };
+
+        recognition.start();
+      }
+
+      function setFuMicState(qIdx, fIdx, recording) {
+        const btn = document.getElementById("fuMicBtn" + qIdx + "_" + fIdx);
+        if (!btn) return;
+        btn.className = "followup-mic-btn" + (recording ? " recording" : "");
+        btn.innerHTML = recording
+          ? '<i class="fas fa-stop"></i>'
+          : '<i class="fas fa-microphone"></i>';
+        btn.setAttribute("aria-pressed", String(recording));
+        btn.setAttribute("aria-label", recording ? "Dừng ghi âm" : "Bắt đầu ghi âm");
+      }
+
+      // ── Materials sidebar for exam page ──
+      async function loadMaterialsForExam() {
+        try {
+          const data = await listMaterials();
+          if (!data || !data.length) return;
+          document.getElementById("matCardTT").style.display = "block";
+          document.getElementById("matListTT").innerHTML = data
+            .map(
+              (m) =>
+                `<div class="mat-strip" onclick="window.open('giang-bai.html?mat=${m.id}','_blank')">
+        <span class="mat-strip-icon">📄</span>
+        <span class="mat-strip-title">${m.title}</span>
+        <span class="mat-strip-badge">${m.chapter || "Chung"}</span>
+        <i class="fas fa-external-link-alt" style="color:var(--gray-400);font-size:0.75rem;"></i>
+      </div>`,
+            )
+            .join("");
+        } catch (e) {}
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

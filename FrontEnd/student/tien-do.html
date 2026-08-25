@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Tiến độ</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../index.html" class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-info">
+            <div class="logo-title">Tiến độ học tập</div>
+            <div class="logo-sub">Theo dõi lộ trình học tập</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <!-- Rà soát Lần IV (2026-08-21) — 3 nút Tìm kiếm/Avatar/Đăng xuất đồng nhất trên MỌI trang học
+          viên (trước chỉ index.html có đủ, các trang khác chỉ có Đăng xuất từ Việc II). Tìm kiếm
+          điều hướng về index.html?search=1 (modal Tìm kiếm chỉ có ở đó, xem openQuickSearch()). -->
+          <button class="hdr-btn" id="searchBtn" aria-label="Tìm kiếm" onclick="location.href='../index.html?search=1'">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="hdr-btn" id="profileBtn" aria-label="Hồ sơ cá nhân"></button>
+          <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- Overall progress -->
+        <div class="card" style="text-align: center; padding: 24px 20px">
+          <div
+            style="
+              font-size: 0.75rem;
+              font-weight: 700;
+              letter-spacing: 0.8px;
+              color: var(--gray-500);
+              text-transform: uppercase;
+              margin-bottom: 8px;
+            "
+          >
+            Tiến độ toàn khóa
+          </div>
+          <div
+            style="
+              position: relative;
+              width: 120px;
+              height: 120px;
+              margin: 0 auto 12px;
+            "
+          >
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle
+                cx="60"
+                cy="60"
+                r="50"
+                fill="none"
+                stroke="#f0f0f0"
+                stroke-width="10"
+              />
+              <circle
+                cx="60"
+                cy="60"
+                r="50"
+                fill="none"
+                stroke="#c62828"
+                stroke-width="10"
+                stroke-dasharray="314"
+                id="progressCircle"
+                stroke-dashoffset="314"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+                style="transition: stroke-dashoffset 1s ease"
+              />
+            </svg>
+            <div
+              style="
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <div
+                style="
+                  font-family: &quot;Oswald&quot;, sans-serif;
+                  font-size: 1.8rem;
+                  font-weight: 700;
+                  color: var(--red);
+                  line-height: 1;
+                "
+                id="overallPct"
+              >
+                0%
+              </div>
+              <div style="font-size: 0.65rem; color: var(--gray-500)">
+                Hoàn thành
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 10px;
+              margin-top: 8px;
+            "
+          >
+            <div>
+              <div
+                style="
+                  font-family: &quot;Oswald&quot;, sans-serif;
+                  font-size: 1.2rem;
+                  font-weight: 700;
+                  color: var(--red);
+                "
+                id="chapDone"
+              >
+                —
+              </div>
+              <div style="font-size: 0.68rem; color: var(--gray-500)">
+                Chương xong
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  font-family: &quot;Oswald&quot;, sans-serif;
+                  font-size: 1.2rem;
+                  font-weight: 700;
+                  color: var(--gray-700);
+                "
+              >
+                19
+              </div>
+              <div style="font-size: 0.68rem; color: var(--gray-500)">
+                Tổng chương
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  font-family: &quot;Oswald&quot;, sans-serif;
+                  font-size: 1.2rem;
+                  font-weight: 700;
+                  color: var(--gold-light);
+                "
+                id="totalTimeDisplay"
+              >
+                —
+              </div>
+              <div style="font-size: 0.68rem; color: var(--gray-500)">
+                Thời gian học
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chapter stats from DB -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-chart-bar"></i>Kết quả luyện tập theo chương
+          </div>
+          <div id="chapterStats">
+            <div class="empty">
+              <i class="fas fa-spinner fa-spin"></i> Đang tải...
+            </div>
+          </div>
+        </div>
+
+        <!-- Week schedule -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-calendar-check"></i>Lịch học tuần này
+          </div>
+          <div id="weekSchedule"></div>
+        </div>
+
+        <button
+          class="btn btn-outline btn-sm btn-full"
+          style="margin-top: 4px"
+          onclick="window.location = 'tien-bo.html'"
+        >
+          <i class="fas fa-chart-line"></i> Xem phân tích chi tiết theo tuần/tháng →
+        </button>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="chat.html" class="nav-item"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="tien-do.html" class="nav-item active"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — gom về applyRoleGate() dùng chung (api-client.js), thay IIFE cũ
+      // (Việc D, 2026-08-16). Hành vi giữ nguyên 100%.
+      applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1")
+        document.body.classList.add("dark");
+
+      const chapterNames = {
+        0: "Tất cả chương",
+        1: "Chương 1 - Khái niệm & Cơ sở",
+        2: "Chương 2 - Độc lập dân tộc & CNXH",
+        3: "Chương 3 - Đạo đức cách mạng",
+        4: "Chương 4 - Nhà nước & Quân sự",
+      };
+
+      const TOTAL_CHAPTERS = 19;
+
+      async function init() {
+        if (!requireAuth()) return;
+        renderHeaderProfileBtn("../cai-dat.html");
+
+        const myProgress = await getMyProgress();
+        const results = await getMyQuizResults();
+        const practiceResults = results.filter((r) => r.kind === "practice" && r.chapter);
+
+        // Chapter stats from quiz-service my-results (practice attempts only)
+        const grouped = {};
+        practiceResults.forEach((r) => {
+          if (!grouped[r.chapter]) grouped[r.chapter] = [];
+          grouped[r.chapter].push(r);
+        });
+        const distinctChapters = Object.keys(grouped).length;
+
+        // Overall progress = tỉ lệ chương đã luyện tập trên tổng số chương
+        const prog = Math.min(100, Math.round((distinctChapters / TOTAL_CHAPTERS) * 100));
+        const circumference = 2 * Math.PI * 50;
+        document.getElementById("progressCircle").style.strokeDashoffset =
+          circumference - (prog / 100) * circumference;
+        document.getElementById("overallPct").textContent = prog + "%";
+        document.getElementById("chapDone").textContent = distinctChapters;
+        const totalMins = myProgress.totalStudyMinutes || 0;
+        const h = Math.floor(totalMins / 60),
+          m = totalMins % 60;
+        document.getElementById("totalTimeDisplay").textContent =
+          totalMins >= 60 ? `${h}h ${m}p` : `${totalMins}p`;
+
+        const chapterEl = document.getElementById("chapterStats");
+        if (distinctChapters === 0) {
+          chapterEl.innerHTML =
+            '<div class="empty"><i class="fas fa-book-open"></i>Chưa có dữ liệu luyện tập. Hãy bắt đầu luyện tập!</div>';
+        } else {
+          chapterEl.innerHTML = Object.entries(grouped)
+            .map(([ch, chResults]) => {
+              const avgScore =
+                chResults.reduce((s, r) => s + r.score, 0) / chResults.length;
+              const totalCorrect = chResults.reduce((s, r) => s + r.correct, 0);
+              const totalQ = chResults.reduce((s, r) => s + r.total, 0);
+              const name = chapterNames[ch] || `Chương ${ch}`;
+              const color =
+                avgScore >= 7
+                  ? "#2e7d32"
+                  : avgScore >= 5
+                    ? "#e65100"
+                    : "var(--red)";
+              return `<div class="chapter-row">
+        <div class="ch-info">
+          <div class="ch-name">${name}</div>
+          <div class="ch-prog">${chResults.length} lần luyện tập · ${totalCorrect}/${totalQ} câu đúng</div>
+          <div class="prog-track" style="margin-top:6px;"><div class="prog-fill" style="width:${Math.round(avgScore * 10)}%"></div></div>
+        </div>
+        <div style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;color:${color};min-width:40px;text-align:right;">${avgScore.toFixed(1)}</div>
+      </div>`;
+            })
+            .join("");
+        }
+
+        // Week schedule with real study_logs
+        const weekLogs = await getWeeklyStudyData();
+        const today = new Date();
+        const schedule = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const iso = d.toISOString().slice(0, 10);
+          const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+          const found = weekLogs.find((l) => l.studyDate === iso);
+          schedule.push({
+            day: dayNames[d.getDay()],
+            date: `${d.getDate()}/${d.getMonth() + 1}`,
+            mins: found ? found.minutes : 0,
+            isToday: d.toDateString() === today.toDateString(),
+          });
+        }
+        document.getElementById("weekSchedule").innerHTML = schedule
+          .map(
+            (s) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);${s.isToday ? "background:var(--red-bg);margin:0 -18px;padding:10px 18px;border-radius:var(--radius-sm);" : ""}">
+      <div style="text-align:center;min-width:36px;">
+        <div style="font-size:0.65rem;color:${s.isToday ? "var(--red)" : "var(--gray-500)"};font-weight:700;">${s.day}</div>
+        <div style="font-size:0.75rem;font-weight:700;color:${s.isToday ? "var(--red)" : "var(--gray-700)"};">${s.date}</div>
+      </div>
+      <div style="flex:1;">
+        ${
+          s.mins > 0
+            ? `<div style="font-size:0.82rem;font-weight:600;">Đã học ${s.mins} phút</div><div class="prog-track" style="margin-top:5px;height:5px;"><div class="prog-fill" style="width:${Math.min(100, (s.mins / 60) * 100)}%"></div></div>`
+            : s.isToday
+              ? `<div style="font-size:0.82rem;font-weight:700;color:var(--red);">📌 Hôm nay</div>`
+              : `<div style="font-size:0.82rem;color:var(--gray-400);">Chưa học</div>`
+        }
+      </div>
+      ${
+        s.mins > 0
+          ? `<i class="fas fa-check-circle" style="color:#2e7d32;font-size:1.1rem;"></i>`
+          : s.isToday
+            ? `<button class="btn btn-red btn-sm" onclick="window.location='luyen-tap.html'">Học</button>`
+            : `<i class="fas fa-circle" style="color:var(--gray-300);font-size:1.1rem;"></i>`
+      }
+    </div>`,
+          )
+          .join("");
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

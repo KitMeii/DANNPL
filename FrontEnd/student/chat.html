@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Chat AI</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <style>
+      body {
+        padding-top: 70px;
+        padding-bottom: 64px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ── SIDEBAR OVERLAY ── */
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+      .sidebar-overlay.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* ── SIDEBAR ── */
+      .history-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 300px;
+        max-width: 85vw;
+        background: #1a1a2e;
+        z-index: 201;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+      }
+      .history-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-head {
+        padding: 16px 16px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .sidebar-head-title {
+        font-family: "Be Vietnam Pro", sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sidebar-head-title i {
+        color: #f9a825;
+      }
+      .sidebar-close {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+      }
+      .sidebar-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #e2e8f0;
+      }
+
+      /* New Chat button inside sidebar */
+      .sidebar-new-btn {
+        margin: 12px 12px 8px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        background: linear-gradient(135deg, #b71c1c, #c62828);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "Be Vietnam Pro", sans-serif;
+        transition: opacity 0.15s;
+        width: calc(100% - 24px);
+        flex-shrink: 0;
+      }
+      .sidebar-new-btn:hover {
+        opacity: 0.88;
+      }
+      .sidebar-new-btn i {
+        font-size: 0.85rem;
+      }
+
+      /* Sessions list */
+      .sessions-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 4px 8px 16px;
+      }
+      .sessions-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sessions-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sessions-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+
+      .session-group-label {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: #475569;
+        padding: 10px 8px 4px;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+
+      .session-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-bottom: 2px;
+        position: relative;
+        group: true;
+      }
+      .session-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .session-item.active {
+        background: rgba(229, 57, 53, 0.15);
+      }
+      .session-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 3px;
+        background: #e53935;
+        border-radius: 0 3px 3px 0;
+      }
+
+      .session-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-top: 1px;
+      }
+      .session-item.active .session-icon {
+        background: rgba(229, 57, 53, 0.2);
+        color: #f87171;
+      }
+
+      .session-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .session-title {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #cbd5e1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+        margin-bottom: 3px;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .session-item.active .session-title {
+        color: #fca5a5;
+      }
+      .session-meta {
+        font-size: 0.63rem;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .session-delete {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        flex-shrink: 0;
+        background: transparent;
+        border: none;
+        color: #475569;
+        cursor: pointer;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.15s;
+        align-self: center;
+      }
+      .session-item:hover .session-delete {
+        opacity: 1;
+      }
+      .session-delete:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+      }
+
+      .sidebar-empty {
+        text-align: center;
+        padding: 32px 16px;
+        color: #475569;
+        font-size: 0.75rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .sidebar-empty i {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        display: block;
+        color: #334155;
+      }
+
+      /* ── CHAT WRAP ── */
+      .chat-wrap {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .chat-top {
+        padding: 8px 16px;
+        background: white;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      /* History toggle button */
+      .hist-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        flex-shrink: 0;
+        background: var(--gray-100);
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+      }
+      .hist-btn:hover {
+        background: var(--red-bg);
+        color: var(--red);
+        border-color: #ffcdd2;
+      }
+
+      /* New Chat button (header) */
+      .new-chat-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 9px;
+        flex-shrink: 0;
+        background: var(--red);
+        color: white;
+        border: none;
+        font-size: 0.72rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "Be Vietnam Pro", sans-serif;
+        transition: all 0.15s;
+      }
+      .new-chat-btn:hover {
+        opacity: 0.88;
+      }
+
+      .chat-title-wrap {
+        flex: 1;
+        min-width: 0;
+      }
+      .chat-name {
+        font-weight: 700;
+        font-size: 0.84rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .chat-status {
+        font-size: 0.68rem;
+        color: var(--gray-500);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .chat-online {
+        width: 6px;
+        height: 6px;
+        background: #4caf50;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      /* API key warning */
+      .key-bar {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .key-bar input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 6px 10px;
+        color: white;
+        font-size: 0.75rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .key-bar input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .key-bar input:focus {
+        outline: none;
+        border-color: #f9a825;
+      }
+      .key-bar button {
+        background: #f9a825;
+        color: #000;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .key-bar-label {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.7);
+        white-space: nowrap;
+      }
+
+      /* Messages */
+      .chat-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #fafafa;
+      }
+
+      .msg {
+        display: flex;
+        flex-direction: column;
+        max-width: 85%;
+      }
+      .msg.user {
+        align-self: flex-end;
+        align-items: flex-end;
+      }
+      .msg.bot {
+        align-self: flex-start;
+        align-items: flex-start;
+      }
+      .msg-bubble {
+        padding: 10px 14px;
+        border-radius: 16px;
+        font-size: 0.855rem;
+        line-height: 1.6;
+      }
+      .msg.user .msg-bubble {
+        background: var(--red);
+        color: white;
+        border-bottom-right-radius: 4px;
+      }
+      .msg.bot .msg-bubble {
+        background: white;
+        color: var(--gray-800);
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+      .msg-time {
+        font-size: 0.65rem;
+        color: var(--gray-400);
+        margin-top: 3px;
+        padding: 0 4px;
+      }
+
+      /* Source tags */
+      .source-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #e3f2fd;
+        color: #1565c0;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-size: 0.65rem;
+        margin: 4px 2px 0;
+        text-decoration: none;
+      }
+      .source-tag:hover {
+        background: #bbdefb;
+      }
+
+      /* Typing */
+      .typing {
+        display: flex;
+        gap: 4px;
+        padding: 10px 14px;
+        background: white;
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+      .typing span {
+        width: 7px;
+        height: 7px;
+        background: var(--gray-400);
+        border-radius: 50%;
+        animation: bounce 1.2s infinite;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes bounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-6px);
+        }
+      }
+
+      /* Welcome / empty state */
+      .chat-welcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        padding: 24px 20px;
+        text-align: center;
+      }
+      .welcome-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #b71c1c, #c62828);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 14px;
+        box-shadow: 0 8px 24px rgba(183, 28, 28, 0.25);
+      }
+      .welcome-title {
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+      .welcome-sub {
+        font-size: 0.78rem;
+        color: var(--gray-500);
+        line-height: 1.6;
+        margin-bottom: 20px;
+        max-width: 280px;
+      }
+
+      /* Chips */
+      .chip-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+        width: 100%;
+        max-width: 320px;
+      }
+      .chip {
+        background: white;
+        color: var(--gray-700);
+        border: 1.5px solid var(--gray-200);
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 0.71rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: "Be Vietnam Pro", sans-serif;
+        text-align: left;
+        transition: all 0.15s;
+        line-height: 1.4;
+      }
+      .chip:hover {
+        border-color: var(--red);
+        color: var(--red);
+        background: var(--red-bg);
+      }
+
+      /* Input */
+      .chat-footer {
+        padding: 10px 12px;
+        background: white;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        flex-shrink: 0;
+        padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      }
+      .input-wrap {
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+        border: 1.5px solid var(--gray-300);
+        border-radius: 14px;
+        background: white;
+        transition: border 0.2s;
+        overflow: hidden;
+      }
+      .input-wrap:focus-within {
+        border-color: var(--red);
+      }
+      .chat-input {
+        flex: 1;
+        border: none;
+        padding: 9px 14px;
+        font-size: 0.855rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        resize: none;
+        outline: none;
+        max-height: 100px;
+        line-height: 1.5;
+        background: transparent;
+      }
+      .web-toggle {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        color: var(--gray-400);
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 4px 4px 4px 0;
+        border-radius: 8px;
+        transition: all 0.15s;
+        flex-shrink: 0;
+      }
+      .web-toggle.on {
+        color: #1565c0;
+        background: #e3f2fd;
+      }
+      .web-toggle:hover {
+        background: var(--gray-100);
+      }
+      .chat-send {
+        width: 42px;
+        height: 42px;
+        background: var(--red);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+        transition: all 0.15s;
+      }
+      .chat-send:hover {
+        background: var(--red-dark);
+        transform: scale(1.04);
+      }
+      .chat-send:disabled {
+        background: var(--gray-300);
+        transform: none;
+        cursor: not-allowed;
+      }
+
+      /* Dark mode adjustments */
+      .dark .chat-body {
+        background: #111;
+      }
+      .dark .msg.bot .msg-bubble {
+        background: #1e1e2e;
+        color: #e2e8f0;
+      }
+      .dark .chat-top {
+        background: #1a1a2e;
+        border-color: rgba(255, 255, 255, 0.07);
+      }
+      .dark .chat-footer {
+        background: #1a1a2e;
+        border-color: rgba(255, 255, 255, 0.07);
+      }
+      .dark .input-wrap {
+        background: #111;
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+      .dark .chat-input {
+        color: #e2e8f0;
+      }
+      .dark .chip {
+        background: #1e1e2e;
+        color: #94a3b8;
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .dark .chat-name {
+        color: #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../index.html" class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-info">
+            <div class="logo-title">Chat AI - Giảng viên Ảo</div>
+            <div class="logo-sub">Powered by Llama 3.3 70B · Groq</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <!-- Rà soát Lần IV (2026-08-21) — 3 nút Tìm kiếm/Avatar/Đăng xuất đồng nhất trên MỌI trang học
+          viên (trước chỉ index.html có đủ, các trang khác chỉ có Đăng xuất từ Việc II). Tìm kiếm
+          điều hướng về index.html?search=1 (modal Tìm kiếm chỉ có ở đó, xem openQuickSearch()). -->
+          <button class="hdr-btn" id="searchBtn" aria-label="Tìm kiếm" onclick="location.href='../index.html?search=1'">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="hdr-btn" id="profileBtn" aria-label="Hồ sơ cá nhân"></button>
+          <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar Overlay -->
+    <div
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      onclick="closeSidebar()"
+    ></div>
+
+    <!-- History Sidebar -->
+    <div class="history-sidebar" id="historySidebar" role="dialog" aria-label="Lịch sử chat" aria-hidden="true">
+      <div class="sidebar-head">
+        <div class="sidebar-head-title">
+          <i class="fas fa-history"></i> Lịch sử Chat
+        </div>
+        <button class="sidebar-close" onclick="closeSidebar()" aria-label="Đóng lịch sử chat">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <button class="sidebar-new-btn" onclick="newChat()">
+        <i class="fas fa-plus"></i> Cuộc trò chuyện mới
+      </button>
+
+      <div class="sessions-list" id="sessionsList">
+        <div class="sidebar-empty">
+          <i class="fas fa-comment-slash"></i>
+          Chưa có cuộc trò chuyện nào
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <div class="chat-wrap">
+        <!-- Chat header -->
+        <div class="chat-top">
+          <button class="hist-btn" onclick="openSidebar()" title="Lịch sử chat" aria-label="Mở lịch sử chat">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="chat-title-wrap">
+            <div class="chat-name" id="chatSessionTitle" data-app-name>
+              Giảng viên Ảo
+            </div>
+            <div class="chat-status">
+              <span class="chat-online"></span>
+              <span id="modelLabel">Llama 3.3 · Groq</span>
+            </div>
+          </div>
+          <button class="new-chat-btn" onclick="newChat()">
+            <i class="fas fa-plus"></i> Mới
+          </button>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-body" id="chatBody">
+          <!-- Welcome state (shown when no history) -->
+          <div class="chat-welcome" id="chatWelcome">
+            <div class="welcome-icon"><i class="fas fa-robot"></i></div>
+            <div class="welcome-title" data-app-name>Giảng viên Ảo</div>
+            <div class="welcome-sub">
+              Hỏi tôi về <span data-subject-name>Môn học</span> — từ khái niệm cơ bản đến phân
+              tích chuyên sâu.
+            </div>
+            <div class="chip-grid">
+              <div class="chip" onclick="sendChip('Khái niệm cơ bản của môn học là gì?')">
+                💡 Khái niệm cơ bản
+              </div>
+              <div
+                class="chip"
+                onclick="sendChip('Cho tôi 1 ví dụ minh hoạ thực tế')"
+              >
+                ⚖️ Ví dụ minh hoạ
+              </div>
+              <div
+                class="chip"
+                onclick="sendChip('Tóm tắt nội dung chương gần nhất')"
+              >
+                🏴 Tóm tắt chương
+              </div>
+              <div
+                class="chip"
+                onclick="sendChip('Gợi ý câu hỏi ôn tập')"
+              >
+                🏛️ Câu hỏi ôn tập
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-footer">
+          <div class="input-wrap">
+            <textarea
+              class="chat-input"
+              id="userInput"
+              placeholder="Hỏi về nội dung môn học..."
+              rows="1"
+            ></textarea>
+            <button
+              class="web-toggle"
+              id="webToggle"
+              onclick="toggleWebMode()"
+              title="Tìm kiếm web"
+              aria-label="Bật/tắt tìm kiếm web"
+              aria-pressed="false"
+            >
+              <i class="fas fa-globe"></i>
+            </button>
+          </div>
+          <button class="chat-send" id="sendBtn" onclick="sendMessage()" aria-label="Gửi tin nhắn">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="chat.html" class="nav-item active"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — Chat AI là trải nghiệm học viên, không còn dành cho Admin — redirect
+      // thẳng sang trang quản trị (trước đây chỉ ẩn nav, Admin gõ thẳng URL vẫn vào được).
+      // applyRoleGate() dùng chung (api-client.js).
+      applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1")
+        document.body.classList.add("dark");
+
+      // ── STATE ──
+      let chatHistory = []; // messages of current session [{role,content}]
+      let webMode = false;
+      let isLoading = false;
+
+      // ── SESSION MANAGEMENT ──
+      // sessions: { id, title, createdAt, updatedAt, messages[] }
+      // Key gắn theo userId (audit 2026-08-14: dùng chung 1 key cố định cho mọi tài khoản khiến
+      // máy dùng chung — phòng máy, máy gia đình — bị lộ lịch sử chat của người dùng trước đó khi
+      // đổi tài khoản). currentUserId set trong init() sau khi getProfile() trả về, TRƯỚC khi gọi
+      // loadSessions() lần đầu. Không viết migration cho dữ liệu ở key cũ "chatSessions_v2" (không
+      // gắn userId) — dữ liệu demo, chấp nhận "mồ côi", code chỉ cần không lỗi khi key cũ tồn tại
+      // (đơn giản là không đọc tới nó nữa).
+      let currentUserId = null;
+      const sessionsKey = () => `chatSessions_v2_${currentUserId}`;
+      const currentSessionKey = () => `chatCurrentSession_${currentUserId}`;
+      let sessions = [];
+      let currentSessionId = null;
+
+      function loadSessions() {
+        try {
+          const raw = localStorage.getItem(sessionsKey());
+          sessions = raw ? JSON.parse(raw) : [];
+        } catch {
+          sessions = [];
+        }
+      }
+
+      function saveSessions() {
+        try {
+          localStorage.setItem(sessionsKey(), JSON.stringify(sessions));
+        } catch {}
+      }
+
+      function getCurrentSession() {
+        return sessions.find((s) => s.id === currentSessionId) || null;
+      }
+
+      function createSession() {
+        const id = "sess_" + Date.now();
+        const sess = {
+          id,
+          title: "Cuộc trò chuyện mới",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          messages: [],
+        };
+        sessions.unshift(sess);
+        saveSessions();
+        return sess;
+      }
+
+      function switchSession(id) {
+        currentSessionId = id;
+        localStorage.setItem(currentSessionKey(), id);
+        const sess = getCurrentSession();
+        chatHistory = sess ? [...sess.messages] : [];
+
+        // Render messages
+        const body = document.getElementById("chatBody");
+        body.innerHTML = "";
+
+        if (!chatHistory.length) {
+          body.innerHTML = `<div class="chat-welcome" id="chatWelcome">
+      <div class="welcome-icon"><i class="fas fa-robot"></i></div>
+      <div class="welcome-title">${window.APP_CONFIG.appName}</div>
+      <div class="welcome-sub">Hỏi tôi về ${window.APP_CONFIG.subjectName} — từ khái niệm cơ bản đến phân tích chuyên sâu.</div>
+      <div class="chip-grid">
+        <div class="chip" onclick="sendChip('Khái niệm cơ bản của môn học là gì?')">💡 Khái niệm cơ bản</div>
+        <div class="chip" onclick="sendChip('Cho tôi 1 ví dụ minh hoạ thực tế')">⚖️ Ví dụ minh hoạ</div>
+        <div class="chip" onclick="sendChip('Tóm tắt nội dung chương gần nhất')">🏴 Tóm tắt chương</div>
+        <div class="chip" onclick="sendChip('Gợi ý câu hỏi ôn tập')">🏛️ Câu hỏi ôn tập</div>
+      </div>
+    </div>`;
+        } else {
+          chatHistory.forEach((msg) =>
+            addMsg(msg.content, msg.role === "user" ? "user" : "bot", [], true),
+          );
+        }
+
+        // Update title display
+        document.getElementById("chatSessionTitle").textContent =
+          sess?.title || "Cuộc trò chuyện";
+        renderSessionList();
+        closeSidebar();
+      }
+
+      function saveCurrentSession() {
+        const sess = getCurrentSession();
+        if (!sess) return;
+        sess.messages = [...chatHistory];
+        sess.updatedAt = Date.now();
+        // Auto-title from first user message
+        const firstUser = chatHistory.find((m) => m.role === "user");
+        if (firstUser) {
+          sess.title =
+            firstUser.content.slice(0, 40) +
+            (firstUser.content.length > 40 ? "…" : "");
+        }
+        document.getElementById("chatSessionTitle").textContent = sess.title;
+        saveSessions();
+        renderSessionList();
+      }
+
+      function deleteSession(id, e) {
+        e.stopPropagation();
+        sessions = sessions.filter((s) => s.id !== id);
+        saveSessions();
+        if (currentSessionId === id) {
+          if (sessions.length > 0) switchSession(sessions[0].id);
+          else newChat();
+        } else {
+          renderSessionList();
+        }
+      }
+
+      function newChat() {
+        const sess = createSession();
+        switchSession(sess.id);
+      }
+
+      function renderSessionList() {
+        const el = document.getElementById("sessionsList");
+        if (!sessions.length) {
+          el.innerHTML = `<div class="sidebar-empty"><i class="fas fa-comment-slash"></i>Chưa có cuộc trò chuyện nào</div>`;
+          return;
+        }
+
+        // Group by Today / Yesterday / Older
+        const now = Date.now();
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const yestStart = new Date(todayStart);
+        yestStart.setDate(yestStart.getDate() - 1);
+
+        const groups = { today: [], yesterday: [], older: [] };
+        sessions.forEach((s) => {
+          if (s.updatedAt >= todayStart.getTime()) groups.today.push(s);
+          else if (s.updatedAt >= yestStart.getTime()) groups.yesterday.push(s);
+          else groups.older.push(s);
+        });
+
+        let html = "";
+        const renderGroup = (label, list) => {
+          if (!list.length) return;
+          html += `<div class="session-group-label">${label}</div>`;
+          list.forEach((s) => {
+            const active = s.id === currentSessionId ? "active" : "";
+            const msgCount = s.messages.length;
+            const timeStr = new Date(s.updatedAt).toLocaleTimeString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            html += `
+        <div class="session-item ${active}" onclick="switchSession('${s.id}')">
+          <div class="session-icon"><i class="fas fa-comment-alt"></i></div>
+          <div class="session-info">
+            <div class="session-title">${escHtml(s.title)}</div>
+            <div class="session-meta">
+              <i class="fas fa-clock" style="font-size:0.58rem;"></i>${timeStr}
+              <span style="margin-left:4px;">${msgCount} tin</span>
+            </div>
+          </div>
+          <button class="session-delete" onclick="deleteSession('${s.id}', event)" title="Xóa" aria-label="Xóa cuộc trò chuyện ${escHtml(s.title)}">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>`;
+          });
+        };
+
+        renderGroup("Hôm nay", groups.today);
+        renderGroup("Hôm qua", groups.yesterday);
+        renderGroup("Cũ hơn", groups.older);
+
+        el.innerHTML = html;
+      }
+
+      function escHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // ── SIDEBAR UI ──
+      function openSidebar() {
+        document.getElementById("historySidebar").classList.add("open");
+        document.getElementById("historySidebar").setAttribute("aria-hidden", "false");
+        document.getElementById("sidebarOverlay").classList.add("show");
+      }
+      function closeSidebar() {
+        document.getElementById("historySidebar").classList.remove("open");
+        document.getElementById("historySidebar").setAttribute("aria-hidden", "true");
+        document.getElementById("sidebarOverlay").classList.remove("show");
+      }
+
+      // ── INIT ──
+      // System prompt (giọng văn, phạm vi trả lời) giờ cố định ở server (ai-service/ChatService)
+      // — client không còn tự soạn/gửi system prompt, tránh học viên chèn prompt injection.
+      async function init() {
+        if (!requireAuth()) return;
+        renderHeaderProfileBtn("../cai-dat.html");
+
+        const profile = await getProfile();
+        document.getElementById("modelLabel").textContent =
+          `Llama 3.3 · ${profile.name || "Học viên"}`;
+        currentUserId = profile.id;
+
+        // Load sessions
+        loadSessions();
+        const savedId = localStorage.getItem(currentSessionKey());
+        const existingSession =
+          savedId && sessions.find((s) => s.id === savedId);
+
+        if (existingSession) {
+          currentSessionId = savedId;
+          switchSession(savedId);
+        } else if (sessions.length > 0) {
+          switchSession(sessions[0].id);
+        } else {
+          newChat();
+        }
+
+        logStudyTime(3).catch(() => {});
+      }
+
+      function toggleWebMode() {
+        webMode = !webMode;
+        const btn = document.getElementById("webToggle");
+        btn.className = `web-toggle${webMode ? " on" : ""}`;
+        btn.title = webMode ? "Web đang BẬT" : "Tìm kiếm web";
+        btn.setAttribute("aria-pressed", String(webMode));
+      }
+
+      // ── MESSAGES ──
+      function getTime() {
+        const n = new Date();
+        return (
+          n.getHours().toString().padStart(2, "0") +
+          ":" +
+          n.getMinutes().toString().padStart(2, "0")
+        );
+      }
+
+      function addMsg(html, role, sources = [], silent = false) {
+        // Remove welcome screen on first message
+        const welcome = document.getElementById("chatWelcome");
+        if (welcome) welcome.remove();
+
+        const body = document.getElementById("chatBody");
+        const div = document.createElement("div");
+        div.className = `msg ${role}`;
+
+        let formatted = html
+          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+          .replace(/\*(.*?)\*/g, "<em>$1</em>")
+          .replace(
+            /^>\s(.+)/gm,
+            '<blockquote style="border-left:3px solid var(--red);padding-left:10px;margin:6px 0;color:var(--gray-600);">$1</blockquote>',
+          )
+          .replace(/\n/g, "<br>");
+
+        let sourcesHtml = "";
+        if (sources.length > 0) {
+          sourcesHtml =
+            '<div style="margin-top:8px;">' +
+            sources
+              .map(
+                (s) =>
+                  `<a class="source-tag" href="${s.url}" target="_blank"><i class="fas fa-external-link-alt"></i>${s.title}</a>`,
+              )
+              .join("") +
+            "</div>";
+        }
+
+        div.innerHTML = `<div class="msg-bubble">${formatted}${sourcesHtml}</div><div class="msg-time">${role === "user" ? "Bạn" : "Giảng viên Ảo"} · ${getTime()}</div>`;
+        body.appendChild(div);
+        if (!silent) body.scrollTop = body.scrollHeight;
+        return div;
+      }
+
+      function showTyping() {
+        const body = document.getElementById("chatBody");
+        const div = document.createElement("div");
+        div.className = "msg bot";
+        div.id = "typingEl";
+        div.innerHTML =
+          '<div class="typing"><span></span><span></span><span></span></div>';
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+      }
+      function hideTyping() {
+        document.getElementById("typingEl")?.remove();
+      }
+
+      // ── SEND ──
+      async function sendMessage() {
+        if (isLoading) return;
+        const input = document.getElementById("userInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.value = "";
+        input.style.height = "auto";
+        addMsg(text, "user");
+
+        isLoading = true;
+        document.getElementById("sendBtn").disabled = true;
+        showTyping();
+
+        chatHistory.push({ role: "user", content: text });
+
+        let sources = [];
+        if (webMode) {
+          const searchResults = await duckDuckGoSearch(text);
+          sources = searchResults.sources;
+          if (searchResults.context) {
+            chatHistory[chatHistory.length - 1].content =
+              `${text}\n\n[Thông tin từ web:\n${searchResults.context}]`;
+          }
+        }
+
+        let reply;
+        try {
+          const result = await chatWithAI(chatHistory.slice(-12));
+          reply = result.reply;
+        } catch (err) {
+          reply = "⚠️ Không thể kết nối trợ lý AI lúc này: " + err.message;
+        }
+
+        hideTyping();
+        chatHistory.push({ role: "assistant", content: reply });
+        addMsg(reply, "bot", sources);
+        saveCurrentSession(); // lưu vào session hiện tại
+
+        isLoading = false;
+        document.getElementById("sendBtn").disabled = false;
+        logStudyTime(1).catch(() => {});
+      }
+
+      async function duckDuckGoSearch(query) {
+        try {
+          const encoded = encodeURIComponent(query + " " + window.APP_CONFIG.subjectName);
+          const res = await fetch(
+            `https://api.duckduckgo.com/?q=${encoded}&format=json&no_redirect=1&no_html=1`,
+          );
+          const data = await res.json();
+          let context = "",
+            sourcesArr = [];
+          if (data.AbstractText) {
+            context += data.AbstractText + "\n";
+            if (data.AbstractURL)
+              sourcesArr.push({
+                title: data.AbstractSource || "Wikipedia",
+                url: data.AbstractURL,
+              });
+          }
+          if (data.RelatedTopics?.length > 0) {
+            data.RelatedTopics.slice(0, 2).forEach((t) => {
+              if (t.Text) context += t.Text + "\n";
+              if (t.FirstURL)
+                sourcesArr.push({
+                  title: t.Text?.slice(0, 30) + "...",
+                  url: t.FirstURL,
+                });
+            });
+          }
+          return { context: context.slice(0, 1000), sources: sourcesArr };
+        } catch {
+          return { context: "", sources: [] };
+        }
+      }
+
+      function sendChip(text) {
+        document.getElementById("userInput").value = text;
+        sendMessage();
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        init();
+
+        const inp = document.getElementById("userInput");
+        inp.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+        inp.addEventListener("input", () => {
+          inp.style.height = "auto";
+          inp.style.height = Math.min(inp.scrollHeight, 100) + "px";
+        });
+      });
+    </script>
+  </body>
+</html>

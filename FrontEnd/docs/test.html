@@ -1,0 +1,2437 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Tổng quan hệ thống v3.0</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+      }
+
+      /* ---- HEADER ---- */
+      .hdr {
+        background: linear-gradient(135deg, #b71c1c 0%, #7b1fa2 100%);
+        padding: 20px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .hdr-badge {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 2px solid #f9a825;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+      .hdr h1 {
+        font-size: 1.15rem;
+        font-weight: 900;
+        letter-spacing: 0.3px;
+      }
+      .hdr p {
+        font-size: 0.72rem;
+        opacity: 0.75;
+        margin-top: 2px;
+      }
+      .version-badge {
+        margin-left: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+      }
+      .vb {
+        padding: 3px 10px;
+        border-radius: 8px;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+      .vb-now {
+        background: rgba(46, 125, 50, 0.3);
+        border: 1px solid #2e7d32;
+        color: #81c784;
+      }
+      .vb-next {
+        background: rgba(249, 168, 37, 0.2);
+        border: 1px solid #f9a825;
+        color: #ffd54f;
+      }
+
+      /* ---- TABS ---- */
+      .tabs {
+        display: flex;
+        background: #111118;
+        border-bottom: 1px solid #1e1e2e;
+        overflow-x: auto;
+      }
+      .tab {
+        padding: 12px 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: #666;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+      .tab:hover {
+        color: #aaa;
+      }
+      .tab.active {
+        color: #fff;
+        border-bottom-color: #c62828;
+      }
+
+      /* ---- WRAP ---- */
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px 20px;
+      }
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+      .sec-title {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #555;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sec-title::before {
+        content: "";
+        width: 3px;
+        height: 12px;
+        background: #c62828;
+        border-radius: 2px;
+        display: block;
+      }
+
+      /* ---- STATUS LEGEND ---- */
+      .legend {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .leg {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.7rem;
+      }
+      .leg-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* ============================================================
+   PANEL 1: OVERVIEW MAP
+   ============================================================ */
+      .map-grid {
+        display: grid;
+        grid-template-columns: 220px 1fr 220px;
+        gap: 0;
+        min-height: 600px;
+      }
+
+      /* Left: Users */
+      .map-users {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-right: 16px;
+        border-right: 1px solid #1e1e2e;
+      }
+      .user-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1.5px solid #2a2a3a;
+      }
+      .uc-head {
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .uc-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .uc-name {
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+      .uc-sub {
+        font-size: 0.62rem;
+        opacity: 0.7;
+      }
+      .uc-perms {
+        padding: 8px 12px;
+      }
+      .uc-perm {
+        font-size: 0.68rem;
+        padding: 3px 0;
+        color: #888;
+        display: flex;
+        gap: 6px;
+        align-items: flex-start;
+      }
+      .uc-perm.y {
+        color: #81c784;
+      }
+      .uc-perm.n {
+        color: #ef9a9a;
+      }
+      .uc-perm.new {
+        color: #ffd54f;
+      }
+
+      /* Middle: Pages */
+      .map-center {
+        padding: 0 16px;
+      }
+      .pages-title {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        color: #555;
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .pages-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+      .page-node {
+        border-radius: 10px;
+        border: 1.5px solid #2a2a3a;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .page-node:hover {
+        border-color: #666;
+      }
+      .page-node.done {
+        border-color: #2e7d32;
+      }
+      .page-node.new-feat {
+        border-color: #f9a825;
+      }
+      .page-node.teacher-only {
+        border-color: #c62828;
+      }
+      .pn-head {
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .pn-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+      }
+      .pn-name {
+        font-size: 0.72rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .pn-file {
+        font-size: 0.58rem;
+        color: #555;
+        font-family: monospace;
+      }
+      .pn-tags {
+        padding: 0 10px 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+      }
+      .pt {
+        padding: 1px 5px;
+        border-radius: 5px;
+        font-size: 0.58rem;
+        font-weight: 700;
+      }
+      .pt-done {
+        background: rgba(46, 125, 50, 0.2);
+        color: #81c784;
+      }
+      .pt-new {
+        background: rgba(249, 168, 37, 0.15);
+        color: #ffd54f;
+      }
+      .pt-ai {
+        background: rgba(123, 31, 162, 0.2);
+        color: #ce93d8;
+      }
+
+      /* Right: Services */
+      .map-services {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-left: 16px;
+        border-left: 1px solid #1e1e2e;
+      }
+      .svc-card {
+        border-radius: 10px;
+        border: 1.5px solid #2a2a3a;
+        padding: 10px 12px;
+      }
+      .svc-name {
+        font-size: 0.72rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .svc-detail {
+        font-size: 0.62rem;
+        color: #777;
+        line-height: 1.5;
+      }
+      .svc-free {
+        font-size: 0.58rem;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+
+      /* ============================================================
+   PANEL 2: REQUIREMENTS MATRIX
+   ============================================================ */
+      .req-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .req-section {
+        background: #111118;
+        border: 1.5px solid #1e1e2e;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .rs-head {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .rs-title {
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+      .rs-count {
+        font-size: 0.65rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2px 7px;
+        border-radius: 8px;
+      }
+      .rs-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .req-item {
+        border-radius: 9px;
+        padding: 10px 12px;
+        border-left: 3px solid transparent;
+      }
+      .req-item.done {
+        background: rgba(46, 125, 50, 0.08);
+        border-color: #2e7d32;
+      }
+      .req-item.inprog {
+        background: rgba(249, 168, 37, 0.08);
+        border-color: #f9a825;
+      }
+      .req-item.todo {
+        background: rgba(21, 101, 192, 0.08);
+        border-color: #1565c0;
+      }
+      .req-item.future {
+        background: #131318;
+        border-color: #333;
+      }
+      .ri-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .ri-name {
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .ri-status {
+        font-size: 0.6rem;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 6px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .s-done {
+        background: rgba(46, 125, 50, 0.25);
+        color: #81c784;
+      }
+      .s-prog {
+        background: rgba(249, 168, 37, 0.2);
+        color: #ffd54f;
+      }
+      .s-todo {
+        background: rgba(21, 101, 192, 0.2);
+        color: #82b1ff;
+      }
+      .s-future {
+        background: #1a1a2a;
+        color: #666;
+      }
+      .ri-detail {
+        font-size: 0.68rem;
+        color: #888;
+        line-height: 1.5;
+      }
+      .ri-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 0.62rem;
+        color: #555;
+        margin-top: 3px;
+      }
+      .ri-link i {
+        font-size: 0.55rem;
+      }
+
+      /* ============================================================
+   PANEL 3: DATA FLOW
+   ============================================================ */
+      .flow-diagram {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .flow-block {
+        background: #111118;
+        border: 1.5px solid #1e1e2e;
+        border-radius: 14px;
+        padding: 18px;
+      }
+      .fb-title {
+        font-size: 0.78rem;
+        font-weight: 800;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .flow-steps {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .fs {
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border: 1.5px solid transparent;
+      }
+      .fs-user {
+        background: #12162a;
+        border-color: #1565c0;
+        color: #82b1ff;
+      }
+      .fs-page {
+        background: #1a1212;
+        border-color: #c62828;
+        color: #ff8a80;
+      }
+      .fs-ai {
+        background: #16102a;
+        border-color: #7b1fa2;
+        color: #ce93d8;
+      }
+      .fs-db {
+        background: #101a10;
+        border-color: #2e7d32;
+        color: #a5d6a7;
+      }
+      .fs-out {
+        background: #1a1a10;
+        border-color: #f9a825;
+        color: #ffd54f;
+      }
+      .fs-new {
+        background: #1a1810;
+        border-color: #f9a825;
+        color: #ffd54f;
+        position: relative;
+      }
+      .fs-new::after {
+        content: "NEW";
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #f9a825;
+        color: #000;
+        font-size: 0.5rem;
+        font-weight: 900;
+        padding: 1px 3px;
+        border-radius: 3px;
+      }
+      .farrow {
+        color: #444;
+        font-size: 0.8rem;
+      }
+      .fb-sub {
+        font-size: 0.65rem;
+        color: #666;
+        margin-top: 8px;
+      }
+
+      /* ============================================================
+   PANEL 4: DB SCHEMA
+   ============================================================ */
+      .schema-wrap {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .tbl {
+        background: #111118;
+        border: 1.5px solid #2a2a3a;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .tbl.changed {
+        border-color: #f9a825;
+      }
+      .tbl.new-tbl {
+        border-color: #1565c0;
+      }
+      .tbl-head {
+        padding: 9px 12px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tbl-field {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 12px;
+        font-size: 0.62rem;
+        border-bottom: 1px solid #171720;
+      }
+      .tbl-field:last-child {
+        border: none;
+      }
+      .tf-name {
+        color: #e0e0e0;
+        font-family: monospace;
+      }
+      .tf-type {
+        color: #555;
+      }
+      .tf-pk {
+        color: #f9a825;
+      }
+      .tf-fk {
+        color: #82b1ff;
+      }
+      .tf-new {
+        color: #ffd54f;
+        font-style: italic;
+      }
+      .tbl-note {
+        padding: 4px 12px 8px;
+        font-size: 0.6rem;
+        color: #555;
+      }
+
+      /* ============================================================
+   PANEL 5: ROADMAP
+   ============================================================ */
+      .roadmap-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .phase-card {
+        background: #111118;
+        border: 1.5px solid #1e1e2e;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .pc-head {
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .pc-num {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: monospace;
+        font-size: 0.85rem;
+        font-weight: 900;
+        flex-shrink: 0;
+      }
+      .pc-title {
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+      .pc-eta {
+        font-size: 0.65rem;
+        opacity: 0.6;
+        margin-top: 1px;
+      }
+      .pc-items {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .pi {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        padding: 7px 10px;
+        border-radius: 8px;
+      }
+      .pi-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 5px;
+      }
+      .pi-text {
+        font-size: 0.72rem;
+        line-height: 1.5;
+      }
+      .pi-files {
+        font-size: 0.6rem;
+        color: #666;
+        font-family: monospace;
+        margin-top: 2px;
+      }
+      /* Phase colors */
+      .ph-done .pc-head {
+        background: linear-gradient(135deg, #1b2e1b, #1f3a1f);
+      }
+      .ph-done .pc-num {
+        background: rgba(46, 125, 50, 0.3);
+        border: 2px solid #2e7d32;
+        color: #81c784;
+      }
+      .ph-now .pc-head {
+        background: linear-gradient(135deg, #2a1a0a, #3a2510);
+      }
+      .ph-now .pc-num {
+        background: rgba(249, 168, 37, 0.2);
+        border: 2px solid #f9a825;
+        color: #ffd54f;
+      }
+      .ph-next .pc-head {
+        background: linear-gradient(135deg, #0d1a2e, #122040);
+      }
+      .ph-next .pc-num {
+        background: rgba(21, 101, 192, 0.2);
+        border: 2px solid #1565c0;
+        color: #82b1ff;
+      }
+      .ph-future .pc-head {
+        background: #151520;
+      }
+      .ph-future .pc-num {
+        background: #1a1a2a;
+        border: 2px solid #333;
+        color: #555;
+      }
+      .progress-bar {
+        height: 4px;
+        background: #1e1e2e;
+        margin: 0 12px 12px;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .pb-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 1s;
+      }
+
+      @media (max-width: 900px) {
+        .map-grid {
+          grid-template-columns: 1fr;
+        }
+        .map-users,
+        .map-services {
+          border: none;
+          padding: 0;
+        }
+        .map-center {
+          padding: 0;
+        }
+        .req-grid,
+        .roadmap-wrap,
+        .schema-wrap {
+          grid-template-columns: 1fr;
+        }
+        .pages-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hdr">
+      <div class="hdr-badge">⭐</div>
+      <div>
+        <h1><span data-app-name>Giảng viên Ảo</span> · Tổng quan hệ thống v3.0</h1>
+        <p>Kiến trúc đầy đủ · Yêu cầu mới tích hợp · Lộ trình phát triển</p>
+      </div>
+      <div class="version-badge">
+        <span class="vb vb-now">✓ v2.0 Đã có</span>
+        <span class="vb vb-next">→ v3.0 Đang lên kế hoạch</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('overview')">
+        🗺️ Bản đồ tổng thể
+      </div>
+      <div class="tab" onclick="showTab('requirements')">
+        📋 Yêu cầu & trạng thái
+      </div>
+      <div class="tab" onclick="showTab('dataflow')">🔄 Luồng dữ liệu</div>
+      <div class="tab" onclick="showTab('database')">🗄️ Cơ sở dữ liệu</div>
+      <div class="tab" onclick="showTab('roadmap')">🚀 Lộ trình</div>
+    </div>
+
+    <div class="wrap">
+      <!-- ======================================================
+     TAB 1: OVERVIEW MAP
+     ====================================================== -->
+      <div class="panel active" id="tab-overview">
+        <div class="legend" style="margin-bottom: 16px">
+          <div class="leg">
+            <div class="leg-dot" style="background: #2e7d32"></div>
+            Đã hoàn thành
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #f9a825"></div>
+            Yêu cầu mới / Đang làm
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #1565c0"></div>
+            Kế hoạch tiếp theo
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #7b1fa2"></div>
+            AI-powered
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #c62828"></div>
+            Giảng viên only
+          </div>
+        </div>
+
+        <div class="map-grid">
+          <!-- LEFT: Roles -->
+          <div class="map-users">
+            <div class="sec-title">Người dùng</div>
+
+            <div
+              class="user-card"
+              style="background: #12162a; border-color: #1565c0"
+            >
+              <div
+                class="uc-head"
+                style="background: linear-gradient(135deg, #0d47a1, #1565c0)"
+              >
+                <div
+                  class="uc-icon"
+                  style="background: rgba(255, 255, 255, 0.15); color: white"
+                >
+                  <i class="fas fa-user-graduate"></i>
+                </div>
+                <div>
+                  <div class="uc-name">Học viên</div>
+                  <div class="uc-sub">student · tự đăng ký</div>
+                </div>
+              </div>
+              <div class="uc-perms">
+                <div class="uc-perm y">
+                  <i
+                    class="fas fa-check"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Học tập toàn bộ module
+                </div>
+                <div class="uc-perm y">
+                  <i
+                    class="fas fa-check"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Xem kết quả bản thân
+                </div>
+                <div class="uc-perm new">
+                  <i
+                    class="fas fa-star"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Xem bảng xếp hạng lớp ★
+                </div>
+                <div class="uc-perm new">
+                  <i
+                    class="fas fa-star"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Ôn tập câu sai ★
+                </div>
+                <div class="uc-perm n">
+                  <i
+                    class="fas fa-times"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Không vào Admin
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="user-card"
+              style="background: #1a1212; border-color: #c62828"
+            >
+              <div
+                class="uc-head"
+                style="background: linear-gradient(135deg, #b71c1c, #c62828)"
+              >
+                <div
+                  class="uc-icon"
+                  style="background: rgba(255, 255, 255, 0.15); color: white"
+                >
+                  <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div>
+                  <div class="uc-name">Giảng viên</div>
+                  <div class="uc-sub">teacher · được cấp quyền</div>
+                </div>
+              </div>
+              <div class="uc-perms">
+                <div class="uc-perm y">
+                  <i
+                    class="fas fa-check"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Toàn bộ quyền học viên
+                </div>
+                <div class="uc-perm y">
+                  <i
+                    class="fas fa-check"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Import câu hỏi Excel/Word
+                </div>
+                <div class="uc-perm y">
+                  <i
+                    class="fas fa-check"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Xem kết quả toàn lớp
+                </div>
+                <div class="uc-perm y">
+                  <i
+                    class="fas fa-check"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Xuất báo cáo Excel
+                </div>
+                <div class="uc-perm new">
+                  <i
+                    class="fas fa-star"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Lịch học cá nhân HV ★
+                </div>
+                <div class="uc-perm new">
+                  <i
+                    class="fas fa-star"
+                    style="font-size: 0.6rem; width: 10px"
+                  ></i>
+                  Xuất báo cáo PDF ★
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="
+                margin-top: 8px;
+                background: #131318;
+                border-radius: 10px;
+                padding: 10px;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.62rem;
+                  color: #555;
+                  font-weight: 700;
+                  margin-bottom: 6px;
+                "
+              >
+                SUPABASE RLS
+              </div>
+              <div style="font-size: 0.65rem; color: #888; line-height: 1.6">
+                ✓ questions: chỉ teacher INSERT/UPDATE/DELETE<br />
+                ✓ exam_results: teacher đọc được tất cả<br />
+                ✓ profiles: teacher cập nhật role người khác
+              </div>
+            </div>
+          </div>
+
+          <!-- CENTER: Pages -->
+          <div class="map-center">
+            <div class="pages-title">CÁC TRANG VÀ MODULE</div>
+            <div class="pages-grid">
+              <div class="page-node done">
+                <div class="pn-head" style="background: #12162a">
+                  <div
+                    class="pn-icon"
+                    style="background: #1a2a4a; color: #82b1ff"
+                  >
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Trang chủ</div>
+                    <div class="pn-file">index.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">Dashboard</span>
+                  <span class="pt pt-done">Streak</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Onboarding ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node done">
+                <div class="pn-head" style="background: #161026">
+                  <div
+                    class="pn-icon"
+                    style="background: #2a1a3a; color: #ce93d8"
+                  >
+                    <i class="fas fa-robot"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Chat AI</div>
+                    <div class="pn-file">chat.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-ai">Groq LLM</span>
+                  <span class="pt pt-done">Web Search</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Context HV ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node done">
+                <div class="pn-head" style="background: #1a1212">
+                  <div
+                    class="pn-icon"
+                    style="background: #2a1818; color: #ff8a80"
+                  >
+                    <i class="fas fa-book"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Luyện tập</div>
+                    <div class="pn-file">luyen-tap.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">Import Word/PDF</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Ôn câu sai ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node done">
+                <div class="pn-head" style="background: #0f1a2a">
+                  <div
+                    class="pn-icon"
+                    style="background: #1a2a3a; color: #82b1ff"
+                  >
+                    <i class="fas fa-pencil-alt"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Thi thử</div>
+                    <div class="pn-file">thi-thu.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">40 câu TN</span>
+                  <span class="pt pt-ai">Vấn đáp AI</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Rubric 4 tiêu chí ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node done">
+                <div class="pn-head" style="background: #132018">
+                  <div
+                    class="pn-icon"
+                    style="background: #1a2a1a; color: #a5d6a7"
+                  >
+                    <i class="fas fa-chalkboard-teacher"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">AI Giảng bài</div>
+                    <div class="pn-file">giang-bai.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">PDF + TTS</span>
+                  <span class="pt pt-ai">Groq Q&A</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >PDF slide view ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node done">
+                <div class="pn-head" style="background: #1a1a12">
+                  <div
+                    class="pn-icon"
+                    style="background: #2a2a12; color: #ffd54f"
+                  >
+                    <i class="fas fa-calendar-alt"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Tiến độ</div>
+                    <div class="pn-file">tien-do.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">Streak</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Lịch học ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node done">
+                <div class="pn-head" style="background: #1a121a">
+                  <div
+                    class="pn-icon"
+                    style="background: #2a1a2a; color: #f48fb1"
+                  >
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Tiến bộ</div>
+                    <div class="pn-file">tien-bo.html</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">Biểu đồ</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Bảng XH ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node teacher-only">
+                <div class="pn-head" style="background: #1a1212">
+                  <div
+                    class="pn-icon"
+                    style="background: #2a1212; color: #ff8a80"
+                  >
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Admin</div>
+                    <div class="pn-file">admin.html 🔒</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span class="pt pt-done">Import</span>
+                  <span class="pt pt-done">Quản lý HV</span>
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Xuất PDF ★</span
+                  >
+                </div>
+              </div>
+
+              <div class="page-node" style="border-color: #f9a825">
+                <div class="pn-head" style="background: #1a1810">
+                  <div
+                    class="pn-icon"
+                    style="background: #2a2410; color: #ffd54f"
+                  >
+                    <i class="fas fa-trophy"></i>
+                  </div>
+                  <div>
+                    <div class="pn-name">Bảng XH</div>
+                    <div class="pn-file">xep-hang.html ★ MỚI</div>
+                  </div>
+                </div>
+                <div class="pn-tags">
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Top lớp</span
+                  >
+                  <span
+                    class="pt"
+                    style="background: rgba(249, 168, 37, 0.15); color: #ffd54f"
+                    >Tuần/Tháng</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Auth -->
+            <div
+              style="
+                margin-top: 10px;
+                background: #111118;
+                border: 1.5px solid #1e1e2e;
+                border-radius: 10px;
+                padding: 10px 14px;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.62rem;
+                  color: #555;
+                  font-weight: 700;
+                  margin-bottom: 4px;
+                "
+              >
+                AUTH FLOW
+              </div>
+              <div
+                style="
+                  font-size: 0.65rem;
+                  color: #888;
+                  display: flex;
+                  align-items: center;
+                  gap: 5px;
+                  flex-wrap: wrap;
+                "
+              >
+                <span style="color: #82b1ff">auth.html</span> → Supabase Auth →
+                profiles(role='student') → <span>check role</span> →
+                <span style="color: #a5d6a7">student: index.html</span> /
+                <span style="color: #ff8a80">teacher: + admin.html</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Services -->
+          <div class="map-services">
+            <div class="sec-title">Dịch vụ & API</div>
+
+            <div
+              class="svc-card"
+              style="background: #161026; border-color: #7b1fa2"
+            >
+              <div class="svc-name">
+                <i class="fas fa-bolt" style="color: #ce93d8"></i> Groq API
+                <span
+                  class="svc-free"
+                  style="background: rgba(46, 125, 50, 0.2); color: #81c784"
+                  >FREE</span
+                >
+              </div>
+              <div class="svc-detail">
+                Llama 3.3 70B · 30 req/min<br />
+                Chat AI · Chấm vấn đáp<br />
+                Phân tích PDF giảng bài<br />
+                <span style="color: #ffd54f">★ Sinh bài tập từ PDF</span>
+              </div>
+            </div>
+
+            <div
+              class="svc-card"
+              style="background: #102018; border-color: #2e7d32"
+            >
+              <div class="svc-name">
+                <i class="fas fa-database" style="color: #a5d6a7"></i> Supabase
+                <span
+                  class="svc-free"
+                  style="background: rgba(46, 125, 50, 0.2); color: #81c784"
+                  >FREE</span
+                >
+              </div>
+              <div class="svc-detail">
+                PostgreSQL · Auth · RLS<br />
+                8 bảng dữ liệu<br />
+                Row-level security<br />
+                <span style="color: #ffd54f">★ Email notification</span>
+              </div>
+            </div>
+
+            <div
+              class="svc-card"
+              style="background: #161618; border-color: #555"
+            >
+              <div class="svc-name">
+                <i class="fas fa-volume-up" style="color: #80cbc4"></i> Web
+                Speech API
+                <span
+                  class="svc-free"
+                  style="background: rgba(46, 125, 50, 0.2); color: #81c784"
+                  >FREE</span
+                >
+              </div>
+              <div class="svc-detail">
+                Browser built-in · Chrome<br />TTS tiếng Việt · điều chỉnh speed
+              </div>
+            </div>
+
+            <div
+              class="svc-card"
+              style="background: #0f1520; border-color: #333"
+            >
+              <div class="svc-name">
+                <i class="fas fa-file-pdf" style="color: #ff8a80"></i> PDF.js /
+                Mammoth / SheetJS
+              </div>
+              <div class="svc-detail">
+                Đọc PDF, Word, Excel<br />Client-side · không cần server
+              </div>
+            </div>
+
+            <div
+              class="svc-card"
+              style="background: #101818; border-color: #333"
+            >
+              <div class="svc-name">
+                <i class="fas fa-globe" style="color: #82b1ff"></i> DuckDuckGo
+                API
+                <span
+                  class="svc-free"
+                  style="background: rgba(46, 125, 50, 0.2); color: #81c784"
+                  >FREE</span
+                >
+              </div>
+              <div class="svc-detail">
+                Web search cho Chat AI<br />Không cần API key
+              </div>
+            </div>
+
+            <div
+              class="svc-card"
+              style="background: #101010; border-color: #333"
+            >
+              <div class="svc-name">
+                <i class="fas fa-rocket" style="color: #ffd54f"></i> Netlify /
+                GitHub Pages
+                <span
+                  class="svc-free"
+                  style="background: rgba(46, 125, 50, 0.2); color: #81c784"
+                  >FREE</span
+                >
+              </div>
+              <div class="svc-detail">
+                Static hosting<br />Deploy tự động · custom domain
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+     TAB 2: REQUIREMENTS
+     ====================================================== -->
+      <div class="panel" id="tab-requirements">
+        <div class="legend" style="margin-bottom: 16px">
+          <div class="leg">
+            <div class="leg-dot" style="background: #2e7d32"></div>
+            Đã có (v2.0)
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #f9a825"></div>
+            Đang làm (v2.x)
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #1565c0"></div>
+            Tiếp theo (v3.0)
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #555"></div>
+            Tương lai
+          </div>
+        </div>
+
+        <div class="req-grid">
+          <div class="req-section">
+            <div
+              class="rs-head"
+              style="background: linear-gradient(135deg, #1a1212, #2a1818)"
+            >
+              <i
+                class="fas fa-desktop"
+                style="color: #ff8a80; font-size: 1rem"
+              ></i>
+              <div class="rs-title">UX / Trải nghiệm người dùng</div>
+              <span class="rs-count">6 yêu cầu</span>
+            </div>
+            <div class="rs-body">
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Dark/Light mode</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">
+                  Toggle tất cả trang · lưu localStorage
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> style.css · tất cả HTML
+                </div>
+              </div>
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Bottom nav 8 mục</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">Tất cả trang đã có nav đồng nhất</div>
+              </div>
+              <div class="req-item inprog">
+                <div class="ri-top">
+                  <span class="ri-name">Onboarding học viên mới</span
+                  ><span class="ri-status s-prog">→ Sắp làm</span>
+                </div>
+                <div class="ri-detail">
+                  Màn hình chào 4 bước khi lần đầu đăng nhập: điền hồ sơ → nhập
+                  Groq key → chọn chương → bắt đầu học
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> index.html · auth.html
+                </div>
+              </div>
+              <div class="req-item inprog">
+                <div class="ri-top">
+                  <span class="ri-name">Groq key lưu trong profile</span
+                  ><span class="ri-status s-prog">→ Sắp làm</span>
+                </div>
+                <div class="ri-detail">
+                  Nhập 1 lần trong Cài đặt → lưu Supabase → mọi trang dùng
+                  chung, không phải nhập lại
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> cai-dat.html ·
+                  supabase-config.js
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">Empty state & loading skeleton</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Màn hình đẹp khi chưa có dữ liệu + skeleton loading thay
+                  spinner
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">Nhắc học hàng ngày</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Email reminder qua Supabase Edge Functions khi streak bị gián
+                  đoạn
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="req-section">
+            <div
+              class="rs-head"
+              style="background: linear-gradient(135deg, #101a10, #162016)"
+            >
+              <i
+                class="fas fa-book"
+                style="color: #a5d6a7; font-size: 1rem"
+              ></i>
+              <div class="rs-title">Nội dung học tập</div>
+              <span class="rs-count">5 yêu cầu</span>
+            </div>
+            <div class="rs-body">
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Import câu hỏi Word/PDF/Excel</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">
+                  Giảng viên import qua admin.html. Học viên import tạm qua
+                  luyen-tap.html
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> admin.html · luyen-tap.html
+                </div>
+              </div>
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Câu hỏi vấn đáp built-in</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">
+                  4 câu hỏi mẫu. Cần giảng viên import thêm từ giáo trình thật
+                </div>
+              </div>
+              <div class="req-item inprog">
+                <div class="ri-top">
+                  <span class="ri-name">Ôn tập câu trả lời sai</span
+                  ><span class="ri-status s-prog">→ Sắp làm</span>
+                </div>
+                <div class="ri-detail">
+                  Lưu danh sách câu sai vào Supabase → tạo chế độ "Ôn lại" chỉ
+                  hiện câu đã sai trước đó
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> luyen-tap.html + bảng
+                  wrong_answers mới
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">PDF slide view trong Giảng bài</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Hiển thị từng trang PDF dạng hình ảnh bên cạnh phần text đang
+                  được đọc, sync realtime
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> giang-bai.html · PDF.js
+                  canvas
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">AI sinh bài tập từ bài giảng</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Sau khi hoàn thành 1 chương PDF → Groq tự sinh 5 câu hỏi → học
+                  viên làm ngay
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> giang-bai.html · Groq API
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="req-section">
+            <div
+              class="rs-head"
+              style="background: linear-gradient(135deg, #16102a, #1e1430)"
+            >
+              <i
+                class="fas fa-robot"
+                style="color: #ce93d8; font-size: 1rem"
+              ></i>
+              <div class="rs-title">Chất lượng AI</div>
+              <span class="rs-count">4 yêu cầu</span>
+            </div>
+            <div class="rs-body">
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Chat AI nhớ lịch sử</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">
+                  Giữ 12 tin nhắn gần nhất trong bộ nhớ tạm, gửi kèm mỗi request
+                </div>
+              </div>
+              <div class="req-item inprog">
+                <div class="ri-top">
+                  <span class="ri-name">Chat AI biết context học viên</span
+                  ><span class="ri-status s-prog">→ Sắp làm</span>
+                </div>
+                <div class="ri-detail">
+                  Inject tên, lớp, tiến độ, chương đang học vào system prompt →
+                  AI tư vấn học gì tiếp theo
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> chat.html · SYSTEM_PROMPT
+                  động
+                </div>
+              </div>
+              <div class="req-item inprog">
+                <div class="ri-top">
+                  <span class="ri-name">Rubric chấm vấn đáp 4 tiêu chí</span
+                  ><span class="ri-status s-prog">→ Sắp làm</span>
+                </div>
+                <div class="ri-detail">
+                  Thay vì chấm tổng → chấm riêng: (1) Nội dung đúng, (2) Lập
+                  luận rõ, (3) Ví dụ cụ thể, (4) Diễn đạt. Điểm rõ ràng hơn.
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> thi-thu.html · Groq prompt
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">AI sinh câu hỏi tự động từ PDF</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Sau khi giảng viên upload PDF bài giảng → AI tự sinh ngân hàng
+                  câu hỏi → auto thêm vào DB
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> giang-bai.html → questions
+                  table
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="req-section">
+            <div
+              class="rs-head"
+              style="background: linear-gradient(135deg, #1a1810, #252015)"
+            >
+              <i
+                class="fas fa-plus-circle"
+                style="color: #ffd54f; font-size: 1rem"
+              ></i>
+              <div class="rs-title">Tính năng mới hoàn toàn</div>
+              <span class="rs-count">5 yêu cầu</span>
+            </div>
+            <div class="rs-body">
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Trang Admin đầy đủ</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">
+                  Dashboard · Import · Quản lý HV · Kết quả · Phân quyền
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> admin.html
+                </div>
+              </div>
+              <div class="req-item done">
+                <div class="ri-top">
+                  <span class="ri-name">Phân quyền 2 role</span
+                  ><span class="ri-status s-done">✓ Có</span>
+                </div>
+                <div class="ri-detail">
+                  student / teacher · RLS Supabase · protect admin.html
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> setup-v3.sql
+                </div>
+              </div>
+              <div class="req-item inprog">
+                <div class="ri-top">
+                  <span class="ri-name">Bảng xếp hạng lớp</span
+                  ><span class="ri-status s-prog">→ Sắp làm</span>
+                </div>
+                <div class="ri-detail">
+                  Trang mới xep-hang.html · Top theo điểm TB / streak / số câu
+                  đã làm · lọc theo tuần/tháng/tổng
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> xep-hang.html (trang mới)
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">Lịch học cá nhân</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Học viên tự đặt mục tiêu học ngày/tuần → hiển thị tiến độ so
+                  với kế hoạch
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> tien-do.html nâng cấp
+                </div>
+              </div>
+              <div class="req-item todo">
+                <div class="ri-top">
+                  <span class="ri-name">Xuất báo cáo PDF</span
+                  ><span class="ri-status s-todo">Kế hoạch</span>
+                </div>
+                <div class="ri-detail">
+                  Giảng viên xuất báo cáo kết quả lớp dạng PDF có bảng, biểu đồ
+                  đẹp
+                </div>
+                <div class="ri-link">
+                  <i class="fas fa-file-code"></i> admin.html · jsPDF
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+     TAB 3: DATA FLOW
+     ====================================================== -->
+      <div class="panel" id="tab-dataflow">
+        <div class="flow-diagram">
+          <div class="flow-block">
+            <div class="fb-title">
+              <span
+                style="
+                  width: 22px;
+                  height: 22px;
+                  background: #1565c0;
+                  border-radius: 5px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.7rem;
+                "
+                >1</span
+              >
+              Học viên luyện tập Quiz
+            </div>
+            <div class="flow-steps">
+              <div class="fs fs-user">HV chọn chương</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">luyen-tap.html lấy questions từ DB</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">Shuffle + hiển thị từng câu</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">HV trả lời → check đáp án</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Lưu quiz_results</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Update profiles (learned, avg_score)</div>
+            </div>
+            <div class="fb-sub">
+              Câu hỏi lấy từ: Supabase (questions table) → fallback built-in nếu
+              DB trống
+            </div>
+          </div>
+
+          <div class="flow-block">
+            <div class="fb-title">
+              <span
+                style="
+                  width: 22px;
+                  height: 22px;
+                  background: #1565c0;
+                  border-radius: 5px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.7rem;
+                "
+                >2</span
+              >
+              Thi vấn đáp AI
+            </div>
+            <div class="flow-steps">
+              <div class="fs fs-user">HV chọn Vấn đáp</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Lấy oral_questions từ Supabase</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">Hiển thị 2 câu tự luận</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-ai">Groq sinh câu hỏi phụ (2-3 câu)</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-ai">Groq chấm từng câu</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-new">★ Rubric 4 tiêu chí</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Lưu oral_results + exam_results</div>
+            </div>
+          </div>
+
+          <div class="flow-block">
+            <div class="fb-title">
+              <span
+                style="
+                  width: 22px;
+                  height: 22px;
+                  background: #7b1fa2;
+                  border-radius: 5px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.7rem;
+                "
+                >3</span
+              >
+              Chat AI (có context)
+            </div>
+            <div class="flow-steps">
+              <div class="fs fs-user">HV gửi câu hỏi</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Đọc profile (tên, lớp, tiến độ)</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-new">★ Build system prompt động</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-ai">Groq LLM + lịch sử 12 tin</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-out">Phản hồi hiển thị + lưu lịch sử</div>
+            </div>
+            <div class="fb-sub">
+              ★ Mới: AI biết "Học viên X, lớp KT2, đang ở Chương 3, điểm TB 7.2"
+              → tư vấn chính xác hơn
+            </div>
+          </div>
+
+          <div class="flow-block">
+            <div class="fb-title">
+              <span
+                style="
+                  width: 22px;
+                  height: 22px;
+                  background: #2e7d32;
+                  border-radius: 5px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.7rem;
+                "
+                >4</span
+              >
+              Giảng viên import câu hỏi
+            </div>
+            <div class="flow-steps">
+              <div class="fs fs-user">GV mở admin.html</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">Check role = teacher</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">Upload Excel/Word/Text</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">Parse client-side (SheetJS/Mammoth)</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Batch insert → questions table</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-out">Học viên thấy câu hỏi ngay</div>
+            </div>
+          </div>
+
+          <div class="flow-block">
+            <div class="fb-title">
+              <span
+                style="
+                  width: 22px;
+                  height: 22px;
+                  background: #f9a825;
+                  border-radius: 5px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.7rem;
+                "
+                >5</span
+              >
+              ★ AI Giảng bài (nâng cấp)
+            </div>
+            <div class="flow-steps">
+              <div class="fs fs-user">HV upload PDF</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-ai">Groq phân tích → chương + đoạn giảng</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-new">★ Render PDF slide song song</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-out">TTS đọc từng đoạn</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-ai">Groq hỏi kiểm tra + đánh giá</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-new">★ Groq sinh câu hỏi → lưu DB</div>
+            </div>
+          </div>
+
+          <div class="flow-block">
+            <div class="fb-title">
+              <span
+                style="
+                  width: 22px;
+                  height: 22px;
+                  background: #f9a825;
+                  border-radius: 5px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.7rem;
+                "
+                >6</span
+              >
+              ★ Ôn tập câu sai (tính năng mới)
+            </div>
+            <div class="flow-steps">
+              <div class="fs fs-user">HV trả lời sai câu X</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">
+                Ghi vào wrong_answers (question_id, user_id)
+              </div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">luyen-tap.html: chế độ "Ôn câu sai"</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Load wrong_answers của user</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-page">Hiển thị lại các câu đã sai</div>
+              <div class="farrow">→</div>
+              <div class="fs fs-db">Trả lời đúng → xóa khỏi wrong_answers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+     TAB 4: DATABASE
+     ====================================================== -->
+      <div class="panel" id="tab-database">
+        <div class="legend" style="margin-bottom: 16px">
+          <div class="leg">
+            <div class="leg-dot" style="background: #2e7d32"></div>
+            Bảng hiện có
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #f9a825"></div>
+            Cột mới thêm
+          </div>
+          <div class="leg">
+            <div class="leg-dot" style="background: #1565c0"></div>
+            Bảng mới cần tạo
+          </div>
+        </div>
+
+        <div class="schema-wrap">
+          <div class="tbl changed">
+            <div class="tbl-head" style="background: #1a1f10">
+              <i class="fas fa-user" style="color: #a5d6a7"></i> profiles
+              <span style="font-size: 0.55rem; color: #f9a825; margin-left: 4px"
+                >★ đã sửa</span
+              >
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-pk">id</span
+              ><span class="tf-type">UUID PK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">name / email</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-new">role</span
+              ><span class="tf-type">student|teacher ★</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">course / class_name</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">streak / learned</span
+              ><span class="tf-type">INTEGER</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">avg_score / progress</span
+              ><span class="tf-type">NUMERIC</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-new">groq_api_key</span
+              ><span class="tf-type">TEXT ★ mới</span>
+            </div>
+            <div class="tbl-note">RLS: teacher đọc/sửa profile tất cả</div>
+          </div>
+
+          <div class="tbl">
+            <div class="tbl-head" style="background: #101a20">
+              <i class="fas fa-question" style="color: #82b1ff"></i> questions
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-pk">id</span
+              ><span class="tf-type">UUID PK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id</span
+              ><span class="tf-type">FK → profiles</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">chapter</span
+              ><span class="tf-type">TEXT · index</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">question</span
+              ><span class="tf-type">TEXT NOT NULL</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">option_a/b/c/d</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">correct_answer</span
+              ><span class="tf-type">INT 0-3</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">explanation</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-note">
+              RLS: mọi user đọc · chỉ teacher INSERT/DELETE
+            </div>
+          </div>
+
+          <div class="tbl">
+            <div class="tbl-head" style="background: #16102a">
+              <i class="fas fa-comments" style="color: #ce93d8"></i>
+              oral_questions
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-pk">id</span
+              ><span class="tf-type">UUID PK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id</span
+              ><span class="tf-type">FK → profiles</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">chapter / question</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">expected_answer</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">difficulty</span
+              ><span class="tf-type">1|2|3</span>
+            </div>
+            <div class="tbl-note">RLS: mọi user đọc · chỉ teacher ghi</div>
+          </div>
+
+          <div class="tbl">
+            <div class="tbl-head" style="background: #1a1810">
+              <i class="fas fa-file-alt" style="color: #ffd54f"></i>
+              exam_results
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-pk">id</span
+              ><span class="tf-type">UUID PK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id</span
+              ><span class="tf-type">FK → profiles</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">score</span
+              ><span class="tf-type">NUMERIC 0-10</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">correct / total</span
+              ><span class="tf-type">INTEGER</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">time_spent_seconds</span
+              ><span class="tf-type">INTEGER</span>
+            </div>
+            <div class="tbl-note">RLS: owner đọc + teacher đọc tất cả</div>
+          </div>
+
+          <div class="tbl">
+            <div class="tbl-head" style="background: #101810">
+              <i class="fas fa-book-open" style="color: #a5d6a7"></i>
+              quiz_results
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-pk">id</span
+              ><span class="tf-type">UUID PK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id</span
+              ><span class="tf-type">FK → profiles</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">chapter / score</span
+              ><span class="tf-type">INT / NUMERIC</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">correct / total</span
+              ><span class="tf-type">INTEGER</span>
+            </div>
+            <div class="tbl-note">RLS: owner + teacher đọc</div>
+          </div>
+
+          <div class="tbl">
+            <div class="tbl-head" style="background: #1a1218">
+              <i class="fas fa-microphone" style="color: #f48fb1"></i>
+              oral_results
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-pk">id</span
+              ><span class="tf-type">UUID PK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id / question_id</span
+              ><span class="tf-type">FK</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">main_answer</span
+              ><span class="tf-type">TEXT</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">followup_answers</span
+              ><span class="tf-type">JSONB</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">ai_score / comment</span
+              ><span class="tf-type">NUMERIC / TEXT</span>
+            </div>
+            <div class="tbl-note">★ Sắp thêm: rubric_scores JSONB</div>
+          </div>
+
+          <div class="tbl">
+            <div class="tbl-head" style="background: #101820">
+              <i class="fas fa-clock" style="color: #80cbc4"></i> study_log
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id</span
+              ><span class="tf-type">FK → profiles</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">study_date</span
+              ><span class="tf-type">DATE · index</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">minutes / activity</span
+              ><span class="tf-type">INT / TEXT</span>
+            </div>
+            <div class="tbl-note">Tính streak · biểu đồ tuần</div>
+          </div>
+
+          <div class="tbl new-tbl">
+            <div class="tbl-head" style="background: #0f1520">
+              <i class="fas fa-times-circle" style="color: #ff8a80"></i>
+              wrong_answers
+              <span style="font-size: 0.55rem; color: #1565c0; margin-left: 4px"
+                >★ BẢng MỚI</span
+              >
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">user_id</span
+              ><span class="tf-type">FK → profiles</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name tf-fk">question_id</span
+              ><span class="tf-type">FK → questions</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">wrong_count</span
+              ><span class="tf-type">INT DEFAULT 1</span>
+            </div>
+            <div class="tbl-field">
+              <span class="tf-name">last_wrong_at</span
+              ><span class="tf-type">TIMESTAMPTZ</span>
+            </div>
+            <div class="tbl-note">Dùng cho chế độ "Ôn câu sai"</div>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 12px;
+            background: #111118;
+            border: 1.5px solid #1e1e2e;
+            border-radius: 10px;
+            padding: 14px;
+          "
+        >
+          <div
+            style="
+              font-size: 0.65rem;
+              font-weight: 800;
+              color: #555;
+              margin-bottom: 8px;
+              letter-spacing: 1px;
+            "
+          >
+            SQL CẦN CHẠY THÊM (setup-v4.sql)
+          </div>
+          <pre
+            style="
+              font-size: 0.68rem;
+              color: #a5d6a7;
+              line-height: 1.7;
+              overflow-x: auto;
+              white-space: pre-wrap;
+            "
+          >
+-- Lưu Groq key vào profile
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS groq_api_key TEXT DEFAULT '';
+
+-- Bảng ôn câu sai
+CREATE TABLE IF NOT EXISTS wrong_answers (
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  question_id UUID REFERENCES questions(id) ON DELETE CASCADE,
+  wrong_count INTEGER DEFAULT 1,
+  last_wrong_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (user_id, question_id)
+);
+ALTER TABLE wrong_answers ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "wa_own" ON wrong_answers USING (auth.uid() = user_id);
+
+-- Rubric scores cho vấn đáp
+ALTER TABLE oral_results ADD COLUMN IF NOT EXISTS rubric_scores JSONB DEFAULT '{}';</pre
+          >
+        </div>
+      </div>
+
+      <!-- ======================================================
+     TAB 5: ROADMAP
+     ====================================================== -->
+      <div class="panel" id="tab-roadmap">
+        <div class="roadmap-wrap">
+          <div class="phase-card ph-done">
+            <div class="pc-head">
+              <div class="pc-num">✓</div>
+              <div>
+                <div class="pc-title">v2.0 — Đã hoàn thành</div>
+                <div class="pc-eta">Hiện tại</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div
+                class="pb-fill"
+                style="width: 100%; background: #2e7d32"
+              ></div>
+            </div>
+            <div class="pc-items">
+              <div class="pi" style="background: rgba(46, 125, 50, 0.08)">
+                <div class="pi-dot" style="background: #2e7d32"></div>
+                <div>
+                  <div class="pi-text">8 module UI đầy đủ · Auth Supabase</div>
+                  <div class="pi-files">
+                    index, chat, luyen-tap, thi-thu, giang-bai, tien-do,
+                    tien-bo, cai-dat
+                  </div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(46, 125, 50, 0.08)">
+                <div class="pi-dot" style="background: #2e7d32"></div>
+                <div>
+                  <div class="pi-text">
+                    Groq Llama 3.3 70B · Web search · TTS
+                  </div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(46, 125, 50, 0.08)">
+                <div class="pi-dot" style="background: #2e7d32"></div>
+                <div>
+                  <div class="pi-text">
+                    Admin dashboard · Import Excel/Word/PDF
+                  </div>
+                  <div class="pi-files">admin.html · setup-v3.sql</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(46, 125, 50, 0.08)">
+                <div class="pi-dot" style="background: #2e7d32"></div>
+                <div>
+                  <div class="pi-text">Phân quyền 2 role · RLS Supabase</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(46, 125, 50, 0.08)">
+                <div class="pi-dot" style="background: #2e7d32"></div>
+                <div>
+                  <div class="pi-text">
+                    Thi vấn đáp AI · 40 câu TN · Dark mode
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card ph-now">
+            <div class="pc-head">
+              <div class="pc-num">→</div>
+              <div>
+                <div class="pc-title">v2.1 — Việc làm ngay</div>
+                <div class="pc-eta">Ưu tiên cao nhất</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div
+                class="pb-fill"
+                style="width: 15%; background: #f9a825"
+              ></div>
+            </div>
+            <div class="pc-items">
+              <div class="pi" style="background: rgba(249, 168, 37, 0.08)">
+                <div class="pi-dot" style="background: #f9a825"></div>
+                <div>
+                  <div class="pi-text">
+                    Chạy setup-v3.sql + cấp quyền teacher
+                  </div>
+                  <div class="pi-files">Supabase SQL Editor</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(249, 168, 37, 0.08)">
+                <div class="pi-dot" style="background: #f9a825"></div>
+                <div>
+                  <div class="pi-text">
+                    Import ngân hàng câu hỏi thật từ giáo trình
+                  </div>
+                  <div class="pi-files">
+                    template_cau_hoi.xlsx → admin.html
+                  </div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(249, 168, 37, 0.08)">
+                <div class="pi-dot" style="background: #f9a825"></div>
+                <div>
+                  <div class="pi-text">Groq key lưu vào Supabase profile</div>
+                  <div class="pi-files">cai-dat.html + setup-v4.sql</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(249, 168, 37, 0.08)">
+                <div class="pi-dot" style="background: #f9a825"></div>
+                <div>
+                  <div class="pi-text">
+                    Chat AI biết context học viên (tiến độ, lớp)
+                  </div>
+                  <div class="pi-files">chat.html · SYSTEM_PROMPT động</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(249, 168, 37, 0.08)">
+                <div class="pi-dot" style="background: #f9a825"></div>
+                <div>
+                  <div class="pi-text">
+                    Rubric chấm vấn đáp 4 tiêu chí rõ ràng
+                  </div>
+                  <div class="pi-files">
+                    thi-thu.html · Groq prompt nâng cấp
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card ph-next">
+            <div class="pc-head">
+              <div class="pc-num">3</div>
+              <div>
+                <div class="pc-title">v3.0 — Nâng chất lượng học</div>
+                <div class="pc-eta">Sau khi có nội dung thật</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="pb-fill" style="width: 0%; background: #1565c0"></div>
+            </div>
+            <div class="pc-items">
+              <div class="pi" style="background: rgba(21, 101, 192, 0.08)">
+                <div class="pi-dot" style="background: #1565c0"></div>
+                <div>
+                  <div class="pi-text">
+                    Bảng xếp hạng lớp (Top điểm TB / streak)
+                  </div>
+                  <div class="pi-files">xep-hang.html (trang mới)</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(21, 101, 192, 0.08)">
+                <div class="pi-dot" style="background: #1565c0"></div>
+                <div>
+                  <div class="pi-text">Ôn tập câu trả lời sai</div>
+                  <div class="pi-files">
+                    luyen-tap.html + bảng wrong_answers
+                  </div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(21, 101, 192, 0.08)">
+                <div class="pi-dot" style="background: #1565c0"></div>
+                <div>
+                  <div class="pi-text">Onboarding học viên mới (4 bước)</div>
+                  <div class="pi-files">index.html / auth.html</div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(21, 101, 192, 0.08)">
+                <div class="pi-dot" style="background: #1565c0"></div>
+                <div>
+                  <div class="pi-text">
+                    PDF slide view song song khi giảng bài
+                  </div>
+                  <div class="pi-files">
+                    giang-bai.html · PDF.js canvas render
+                  </div>
+                </div>
+              </div>
+              <div class="pi" style="background: rgba(21, 101, 192, 0.08)">
+                <div class="pi-dot" style="background: #1565c0"></div>
+                <div>
+                  <div class="pi-text">
+                    AI sinh câu hỏi tự động từ PDF upload
+                  </div>
+                  <div class="pi-files">
+                    giang-bai.html → Groq → questions table
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card ph-future">
+            <div class="pc-head">
+              <div class="pc-num">4</div>
+              <div>
+                <div class="pc-title">v4.0 — Mở rộng</div>
+                <div class="pc-eta">Sau khi hệ thống ổn định</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="pb-fill" style="width: 0%; background: #555"></div>
+            </div>
+            <div class="pc-items">
+              <div class="pi">
+                <div class="pi-dot" style="background: #555"></div>
+                <div>
+                  <div class="pi-text" style="color: #888">
+                    Xuất báo cáo kết quả lớp dạng PDF đẹp
+                  </div>
+                  <div class="pi-files" style="color: #555">
+                    admin.html · jsPDF
+                  </div>
+                </div>
+              </div>
+              <div class="pi">
+                <div class="pi-dot" style="background: #555"></div>
+                <div>
+                  <div class="pi-text" style="color: #888">
+                    Lịch học cá nhân + nhắc học email
+                  </div>
+                  <div class="pi-files" style="color: #555">
+                    tien-do.html · Supabase Edge Functions
+                  </div>
+                </div>
+              </div>
+              <div class="pi">
+                <div class="pi-dot" style="background: #555"></div>
+                <div>
+                  <div class="pi-text" style="color: #888">
+                    Nhiều môn học (LLCT, GDQP...)
+                  </div>
+                  <div class="pi-files" style="color: #555">
+                    Thêm cột subject vào questions
+                  </div>
+                </div>
+              </div>
+              <div class="pi">
+                <div class="pi-dot" style="background: #555"></div>
+                <div>
+                  <div class="pi-text" style="color: #888">
+                    Deploy lên Netlify + tên miền riêng
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /wrap -->
+
+    <script>
+      // Tài liệu kiến trúc/schema/RLS nội bộ — chỉ Giảng viên/Admin được xem (khắc phục F7:
+      // trang này trước đây public hoàn toàn, không cần đăng nhập).
+      (function guardAccess() {
+        if (!requireAuth()) return;
+        const session = getSession();
+        if (!session || !["Teacher", "Admin"].includes(session.user.role)) {
+          alert("⚠️ Trang tài liệu kỹ thuật chỉ dành cho Giảng viên/Admin.");
+          window.location.href = "../index.html";
+        }
+      })();
+
+      function showTab(id) {
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("tab-" + id).classList.add("active");
+        event.target.classList.add("active");
+      }
+    </script>
+  </body>
+</html>

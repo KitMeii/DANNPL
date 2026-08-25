@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Tiến bộ</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../api-client.js?v=20260822b"></script>
+    <style>
+      .period-btn {
+        padding: 7px 16px;
+        border-radius: 20px;
+        border: 1.5px solid var(--gray-300);
+        background: white;
+        font-family: "Be Vietnam Pro", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        color: var(--gray-600);
+        transition: all 0.15s;
+      }
+      .period-btn.active {
+        background: var(--red);
+        color: white;
+        border-color: var(--red);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../index.html" class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-info">
+            <div class="logo-title">Tiến bộ học tập</div>
+            <div class="logo-sub">Phân tích kết quả học tập</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <!-- Rà soát Lần IV (2026-08-21) — 3 nút Tìm kiếm/Avatar/Đăng xuất đồng nhất trên MỌI trang học
+          viên (trước chỉ index.html có đủ, các trang khác chỉ có Đăng xuất từ Việc II). Tìm kiếm
+          điều hướng về index.html?search=1 (modal Tìm kiếm chỉ có ở đó, xem openQuickSearch()). -->
+          <button class="hdr-btn" id="searchBtn" aria-label="Tìm kiếm" onclick="location.href='../index.html?search=1'">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="hdr-btn" id="profileBtn" aria-label="Hồ sơ cá nhân"></button>
+          <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <div
+          style="display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto"
+        >
+          <button
+            class="period-btn active"
+            id="btnWeek"
+            onclick="setPeriod('week', this)"
+          >
+            7 ngày
+          </button>
+        </div>
+
+        <!-- Key metrics từ Supabase -->
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+          "
+        >
+          <div class="stat-card">
+            <div class="stat-label">Tổng học</div>
+            <div class="stat-value" style="font-size: 1.4rem" id="totalMins">
+              —
+            </div>
+            <div class="stat-unit">phút</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Điểm TB</div>
+            <div
+              class="stat-value"
+              style="font-size: 1.4rem"
+              id="avgScoreDisplay"
+            >
+              —
+            </div>
+            <div class="stat-unit">Thi thử</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bài thi</div>
+            <div
+              class="stat-value"
+              style="font-size: 1.4rem"
+              id="examCountDisplay"
+            >
+              —
+            </div>
+            <div class="stat-unit">Đã hoàn thành</div>
+          </div>
+        </div>
+
+        <!-- Biểu đồ học tập thật -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-clock"></i>Thời gian học theo ngày
+          </div>
+          <div style="height: 200px"><canvas id="timeChart"></canvas></div>
+          <div
+            style="
+              font-size: 0.7rem;
+              color: var(--gray-500);
+              text-align: center;
+              margin-top: 6px;
+            "
+            id="chartSubtitle"
+          >
+            —
+          </div>
+        </div>
+
+        <!-- Biểu đồ điểm thi thật -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-star"></i>Điểm số bài thi gần đây
+          </div>
+          <div style="height: 200px; position: relative">
+            <canvas id="scoreChart"></canvas>
+            <div
+              id="noExamMsg"
+              style="
+                display: none;
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <div class="empty">
+                <i class="fas fa-pencil-alt"></i>Chưa có bài thi nào.
+                <a href="thi-thu.html" style="color: var(--red)">Thi ngay!</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thành tích -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
+          <div id="badgeGrid"></div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="chat.html" class="nav-item"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — "Tiến bộ" là sub-page của "Tiến độ" (đã redirect Admin từ trước,
+      // Việc D) — đồng bộ redirect ở đây luôn, phòng Admin gõ thẳng URL bỏ qua trang cha.
+      // applyRoleGate() dùng chung (api-client.js).
+      applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1")
+        document.body.classList.add("dark");
+
+      let profile = null,
+        myProgress = null;
+      let timeChart = null,
+        scoreChart = null;
+      let weekData = [],
+        weekLabels = [];
+
+      async function init() {
+        if (!requireAuth()) return;
+        renderHeaderProfileBtn("../cai-dat.html");
+        profile = await getProfile();
+        myProgress = await getMyProgress();
+
+        // Metrics
+        document.getElementById("totalMins").textContent = myProgress.totalStudyMinutes || 0;
+        document.getElementById("avgScoreDisplay").textContent = (myProgress.avgScore || 0).toFixed(1);
+
+        // Exam history
+        const results = await getMyQuizResults();
+        const examHistory = results.filter((r) => r.kind === "exam");
+        document.getElementById("examCountDisplay").textContent =
+          examHistory.length;
+
+        // Study logs - 7 ngày
+        const logs = await getWeeklyStudyData();
+        weekLabels = [];
+        weekData = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const iso = d.toISOString().slice(0, 10);
+          weekLabels.push(
+            ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][d.getDay()],
+          );
+          const found = logs.find((l) => l.studyDate === iso);
+          weekData.push(found ? found.minutes : 0);
+        }
+
+        drawTimeChart("week");
+        drawScoreChart(examHistory);
+        drawBadges(myProgress, examHistory);
+      }
+
+      function drawTimeChart(period) {
+        const labels = weekLabels;
+        const data = weekData;
+        const avg = Math.round(data.reduce((s, v) => s + v, 0) / data.length);
+        document.getElementById("chartSubtitle").textContent =
+          `Trung bình: ${avg} phút/ngày`;
+
+        if (timeChart) timeChart.destroy();
+        timeChart = new Chart(document.getElementById("timeChart"), {
+          type: "line",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Phút học",
+                data,
+                borderColor: "#c62828",
+                backgroundColor: "rgba(198,40,40,0.1)",
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: "#c62828",
+                pointRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+              y: {
+                grid: { color: "#f5f5f5" },
+                ticks: { font: { size: 10 } },
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+
+      function drawScoreChart(history) {
+        if (!history.length) {
+          document.getElementById("noExamMsg").style.display = "flex";
+          return;
+        }
+        const recent = [...history].reverse().slice(-8);
+        if (scoreChart) scoreChart.destroy();
+        scoreChart = new Chart(document.getElementById("scoreChart"), {
+          type: "bar",
+          data: {
+            labels: recent.map((h) => formatDate(h.createdAtUtc)),
+            datasets: [
+              {
+                label: "Điểm",
+                data: recent.map((h) => h.score),
+                backgroundColor: recent.map((h) =>
+                  h.score >= 5
+                    ? "rgba(198,40,40,0.8)"
+                    : "rgba(198,40,40,0.3)",
+                ),
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+              y: {
+                min: 0,
+                max: 10,
+                grid: { color: "#f5f5f5" },
+                ticks: { font: { size: 10 } },
+              },
+            },
+          },
+        });
+      }
+
+      function drawBadges(p, examHistory) {
+        const streak = p.streak || 0;
+        const best = examHistory.length
+          ? Math.max(...examHistory.map((h) => h.score))
+          : 0;
+        const attemptCount = p.totalAttempts || 0;
+        const badges = [
+          {
+            icon: "🔥",
+            label: "Streak 7 ngày",
+            desc: `Hiện tại: ${streak} ngày`,
+            earned: streak >= 7,
+          },
+          {
+            icon: "⭐",
+            label: "Điểm cao nhất 9+",
+            desc: `Cao nhất: ${best.toFixed(1)}`,
+            earned: best >= 9,
+          },
+          {
+            icon: "📚",
+            label: "Luyện tập 100 lượt",
+            desc: `Đã luyện tập: ${attemptCount} lượt`,
+            earned: attemptCount >= 100,
+          },
+          {
+            icon: "🏆",
+            label: "Học 300 phút",
+            desc: `Thời gian học: ${p.totalStudyMinutes || 0} phút`,
+            earned: (p.totalStudyMinutes || 0) >= 300,
+          },
+          {
+            icon: "💯",
+            label: "Điểm tuyệt đối",
+            desc: "Đạt 10/10 trong bài thi",
+            earned: best >= 10,
+          },
+          {
+            icon: "🎯",
+            label: `Chuyên gia ${window.APP_CONFIG.subjectName}`,
+            desc: "Học 1000 phút",
+            earned: (p.totalStudyMinutes || 0) >= 1000,
+          },
+          {
+            icon: "⚡",
+            label: "Thi 5 lần",
+            desc: `Đã thi: ${examHistory.length} lần`,
+            earned: examHistory.length >= 5,
+          },
+          {
+            icon: "🌟",
+            label: "Streak 30 ngày",
+            desc: `Hiện tại: ${streak} ngày`,
+            earned: streak >= 30,
+          },
+        ];
+        document.getElementById("badgeGrid").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      ${badges
+        .map(
+          (b) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${b.earned ? "var(--red-bg)" : "var(--gray-50)"};border-radius:var(--radius);border:1px solid ${b.earned ? "#ffcdd2" : "var(--gray-200)"};">
+          <div style="font-size:1.8rem;${!b.earned ? "filter:grayscale(1);opacity:0.4" : ""}">${b.icon}</div>
+          <div>
+            <div style="font-size:0.78rem;font-weight:700;color:${b.earned ? "var(--red)" : "var(--gray-500)"}">${b.label}</div>
+            <div style="font-size:0.65rem;color:var(--gray-400);margin-top:2px;">${b.desc}</div>
+          </div>
+        </div>`,
+        )
+        .join("")}
+    </div>`;
+      }
+
+      function setPeriod(period, btn) {
+        document
+          .querySelectorAll(".period-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        drawTimeChart(period);
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

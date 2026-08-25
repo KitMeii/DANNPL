@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Đăng nhập</title>
+    <link rel="stylesheet" href="css/base/variables.css" />
+    <link rel="stylesheet" href="css/base/reset.css" />
+    <link rel="stylesheet" href="css/layout/layout.css" />
+    <link rel="stylesheet" href="css/components/header.css" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="css/components/card.css" />
+    <link rel="stylesheet" href="css/components/button.css" />
+    <link rel="stylesheet" href="css/components/modal.css" />
+    <link rel="stylesheet" href="css/components/form.css" />
+    <link rel="stylesheet" href="css/components/table-grid.css" />
+    <link rel="stylesheet" href="css/components/badge.css" />
+    <link rel="stylesheet" href="css/components/chat.css" />
+    <link rel="stylesheet" href="css/components/quiz.css" />
+    <link rel="stylesheet" href="css/components/progress-list.css" />
+    <link rel="stylesheet" href="css/components/settings-row.css" />
+    <link rel="stylesheet" href="css/components/misc.css" />
+    <link rel="stylesheet" href="css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="api-client.js?v=20260822b"></script>
+    <style>
+      body {
+        padding: 0;
+        background: linear-gradient(
+          160deg,
+          #b71c1c 0%,
+          #c62828 40%,
+          #e53935 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .auth-wrap {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .auth-box {
+        background: white;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 420px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+      .auth-hero {
+        background: linear-gradient(135deg, #8b0000, #c62828);
+        padding: 28px 24px;
+        text-align: center;
+        color: white;
+      }
+      .hero-badge {
+        width: 64px;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid #f9a825;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+      }
+      .hero-badge i {
+        color: #f9a825;
+        font-size: 1.4rem;
+      }
+      .hero-badge span {
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 1px;
+      }
+      .auth-hero h2 {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      .auth-hero p {
+        font-size: 0.75rem;
+        opacity: 0.8;
+        margin-top: 4px;
+      }
+      .tab-bar {
+        display: flex;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .tab {
+        flex: 1;
+        padding: 14px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        cursor: pointer;
+        color: var(--gray-400);
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+      }
+      .tab.active {
+        color: var(--red);
+        border-bottom-color: var(--red);
+      }
+      .auth-body {
+        padding: 24px;
+      }
+      .alert {
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        font-size: 0.82rem;
+        margin-bottom: 16px;
+        display: none;
+      }
+      .alert.error {
+        background: #ffebee;
+        color: #c62828;
+        border: 1px solid #ffcdd2;
+      }
+      .alert.success {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .auth-footer {
+        text-align: center;
+        padding: 0 24px 20px;
+        font-size: 0.75rem;
+        color: var(--gray-400);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-wrap">
+      <div class="auth-box">
+        <!-- Hero -->
+        <div class="auth-hero">
+          <div class="hero-badge">
+            <i class="fas fa-star"></i><span>MTA</span>
+          </div>
+          <h2>HỆ THỐNG <span data-app-name style="text-transform: uppercase">GIẢNG VIÊN ẢO</span></h2>
+          <p><span data-school-name>Học viện</span> · Khoa Điện - Điện tử</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-bar">
+          <div class="tab active" id="loginTab" onclick="switchTab('login')">
+            <i class="fas fa-sign-in-alt"></i> Đăng nhập
+          </div>
+          <div class="tab" id="registerTab" onclick="switchTab('register')">
+            <i class="fas fa-user-plus"></i> Đăng ký
+          </div>
+        </div>
+
+        <!-- Alert -->
+        <div style="padding: 0 24px">
+          <div class="alert" id="alertBox"></div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div class="auth-body" id="loginForm">
+          <div class="form-group">
+            <label class="form-label"
+              ><i
+                class="fas fa-envelope"
+                style="color: var(--red); margin-right: 5px"
+              ></i
+              >Email</label
+            >
+            <input
+              class="form-input"
+              id="loginEmail"
+              type="email"
+              placeholder="email@example.com"
+              autocomplete="email"
+            />
+          </div>
+          <div class="form-group" style="position: relative">
+            <label class="form-label"
+              ><i
+                class="fas fa-lock"
+                style="color: var(--red); margin-right: 5px"
+              ></i
+              >Mật khẩu</label
+            >
+            <input
+              class="form-input"
+              id="loginPass"
+              type="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <span
+              onclick="togglePwd('loginPass')"
+              style="
+                position: absolute;
+                right: 14px;
+                bottom: 11px;
+                cursor: pointer;
+                color: var(--gray-400);
+              "
+              ><i class="fas fa-eye"></i
+            ></span>
+          </div>
+          <button
+            class="btn btn-red btn-full"
+            style="padding: 13px; font-size: 0.9rem"
+            id="loginBtn"
+            onclick="doLogin()"
+          >
+            <i class="fas fa-sign-in-alt"></i> Đăng nhập
+          </button>
+          <div style="text-align: center; margin-top: 14px">
+            <a
+              href="#"
+              style="
+                font-size: 0.78rem;
+                color: var(--red);
+                text-decoration: none;
+              "
+              onclick="switchTab('forgot')"
+              >Quên mật khẩu?</a
+            >
+          </div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div class="auth-body" id="registerForm" style="display: none">
+          <div class="form-group">
+            <label class="form-label"
+              ><i
+                class="fas fa-user-soldier"
+                style="color: var(--red); margin-right: 5px"
+              ></i
+              >Họ tên đầy đủ</label
+            >
+            <input
+              class="form-input"
+              id="regName"
+              type="text"
+              placeholder="NGUYỄN VĂN A"
+              style="text-transform: uppercase"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label"
+              ><i
+                class="fas fa-envelope"
+                style="color: var(--red); margin-right: 5px"
+              ></i
+              >Email</label
+            >
+            <input
+              class="form-input"
+              id="regEmail"
+              type="email"
+              placeholder="email@example.com"
+            />
+          </div>
+          <div class="form-group" style="position: relative">
+            <label class="form-label"
+              ><i
+                class="fas fa-lock"
+                style="color: var(--red); margin-right: 5px"
+              ></i
+              >Mật khẩu</label
+            >
+            <input
+              class="form-input"
+              id="regPass"
+              type="password"
+              placeholder="Tối thiểu 6 ký tự"
+            />
+            <span
+              onclick="togglePwd('regPass')"
+              style="
+                position: absolute;
+                right: 14px;
+                bottom: 11px;
+                cursor: pointer;
+                color: var(--gray-400);
+              "
+              ><i class="fas fa-eye"></i
+            ></span>
+          </div>
+
+          <!-- Việc 3.1 (2026-08-19) — tùy chọn, không bắt buộc, chỉ áp dụng cho Student (đăng ký
+               luôn tạo tài khoản Student). Lớp/Khóa KHÔNG có ở đây — vẫn do Admin/GV gán sau. -->
+          <div
+            style="
+              font-size: 0.72rem;
+              color: var(--gray-500);
+              margin: 4px 0 10px;
+              padding-top: 10px;
+              border-top: 1px dashed var(--gray-200);
+            "
+          >
+            Thông tin thêm (không bắt buộc, có thể bổ sung sau ở Hồ sơ cá nhân)
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cấp bậc</label>
+            <select class="form-input" id="regCapBac"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số điện thoại</label>
+            <input
+              class="form-input"
+              id="regPhone"
+              type="tel"
+              placeholder="09xxxxxxxx"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Năm học</label>
+            <select class="form-input" id="regNamHoc"></select>
+          </div>
+
+          <button
+            class="btn btn-red btn-full"
+            style="padding: 13px; font-size: 0.9rem"
+            id="regBtn"
+            onclick="doRegister()"
+          >
+            <i class="fas fa-user-plus"></i> Tạo tài khoản
+          </button>
+        </div>
+
+        <!-- FORGOT FORM -->
+        <div class="auth-body" id="forgotForm" style="display: none">
+          <p
+            style="
+              font-size: 0.82rem;
+              color: var(--gray-600);
+              margin-bottom: 16px;
+            "
+          >
+            Nhập email đã đăng ký. Chúng tôi sẽ gửi link đặt lại mật khẩu.
+          </p>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              class="form-input"
+              id="forgotEmail"
+              type="email"
+              placeholder="email@example.com"
+            />
+          </div>
+          <button
+            class="btn btn-red btn-full"
+            style="padding: 13px"
+            onclick="doForgot()"
+          >
+            <i class="fas fa-paper-plane"></i> Gửi link đặt lại
+          </button>
+          <div style="text-align: center; margin-top: 12px">
+            <a
+              href="#"
+              style="
+                font-size: 0.78rem;
+                color: var(--gray-500);
+                text-decoration: none;
+              "
+              onclick="switchTab('login')"
+              >← Quay lại đăng nhập</a
+            >
+          </div>
+        </div>
+
+        <div class="auth-footer">© 2026 · <span data-school-name>Học viện</span> · Phiên bản 1.0.0</div>
+      </div>
+    </div>
+
+    <script>
+      // Nếu đã đăng nhập → vào thẳng trang chủ
+      if (isAuthenticated()) window.location.href = "index.html";
+
+      function switchTab(tab) {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("registerForm").style.display = "none";
+        document.getElementById("forgotForm").style.display = "none";
+        document.getElementById("loginTab").classList.remove("active");
+        document.getElementById("registerTab").classList.remove("active");
+        hideAlert();
+
+        if (tab === "login") {
+          document.getElementById("loginForm").style.display = "block";
+          document.getElementById("loginTab").classList.add("active");
+        } else if (tab === "register") {
+          document.getElementById("registerForm").style.display = "block";
+          document.getElementById("registerTab").classList.add("active");
+        } else {
+          document.getElementById("forgotForm").style.display = "block";
+        }
+      }
+
+      function showAlert(msg, type = "error") {
+        const el = document.getElementById("alertBox");
+        el.textContent = msg;
+        el.className = `alert ${type}`;
+        el.style.display = "block";
+      }
+      function hideAlert() {
+        document.getElementById("alertBox").style.display = "none";
+      }
+
+      function setLoading(btnId, loading) {
+        const btn = document.getElementById(btnId);
+        btn.disabled = loading;
+        btn.innerHTML = loading
+          ? '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...'
+          : btn.dataset.orig;
+      }
+
+      function togglePwd(id) {
+        const inp = document.getElementById(id);
+        inp.type = inp.type === "password" ? "text" : "password";
+      }
+
+      // Save original button text
+      document.getElementById("loginBtn").dataset.orig =
+        document.getElementById("loginBtn").innerHTML;
+      document.getElementById("regBtn").dataset.orig =
+        document.getElementById("regBtn").innerHTML;
+
+      // Việc 3.1 (2026-08-19) — tùy chọn "-- Không chọn --" luôn đứng đầu (giá trị rỗng, KHÔNG
+      // gửi field khi không chọn). CAP_BAC_OPTIONS[0] ("Chưa cập nhật") là 1 lựa chọn TRONG danh
+      // sách backend chấp nhận, khác với "để trống hoàn toàn không gửi field" — cả 2 đều hợp lệ.
+      function populateRegisterOptionalFields() {
+        const capBacSel = document.getElementById("regCapBac");
+        capBacSel.innerHTML =
+          `<option value="">-- Không chọn --</option>` +
+          CAP_BAC_OPTIONS.map((cb) => `<option value="${cb}">${cb}</option>`).join("");
+
+        const namHocSel = document.getElementById("regNamHoc");
+        const currentYear = new Date().getFullYear();
+        const years = [];
+        for (let y = currentYear - 1; y <= currentYear + 2; y++) years.push(`${y}-${y + 1}`);
+        namHocSel.innerHTML =
+          `<option value="">-- Không chọn --</option>` +
+          years.map((nh) => `<option value="${nh}">${nh}</option>`).join("");
+      }
+      populateRegisterOptionalFields();
+
+      async function doLogin() {
+        hideAlert();
+        const email = document.getElementById("loginEmail").value.trim();
+        const pass = document.getElementById("loginPass").value;
+        if (!email || !pass)
+          return showAlert("Vui lòng nhập đầy đủ email và mật khẩu.");
+
+        setLoading("loginBtn", true);
+        try {
+          const user = await login(email, pass);
+          showAlert("Đăng nhập thành công! Đang chuyển trang...", "success");
+          // Rà soát Lần VII (2026-08-21) — Admin/Teacher trước đăng nhập xong đều tạt qua
+          // index.html (trang chủ học viên) trước khi vào đúng trang quản trị của mình — giờ đi
+          // thẳng luôn, đỡ 1 bước dư. Cả Admin lẫn Teacher vẫn xem được index.html bình thường sau
+          // này qua mục "Trang chủ" riêng trong sidebar (Rà soát Lần XIII, không còn bị gate chặn),
+          // chỉ khác lúc ĐĂNG NHẬP xong đi thẳng, không vòng qua index.html.
+          const dest =
+            user.role === "Admin"
+              ? "admin/quan-tri-he-thong.html"
+              : user.role === "Teacher"
+                ? "teacher/quan-ly-noi-dung.html"
+                : "index.html";
+          setTimeout(() => (window.location.href = dest), 800);
+        } catch (err) {
+          showAlert(err.message || "Đăng nhập thất bại.");
+        } finally {
+          setLoading("loginBtn", false);
+        }
+      }
+
+      async function doRegister() {
+        hideAlert();
+        const name = document
+          .getElementById("regName")
+          .value.trim()
+          .toUpperCase();
+        const email = document.getElementById("regEmail").value.trim();
+        const pass = document.getElementById("regPass").value;
+
+        if (!name || !email || !pass)
+          return showAlert("Vui lòng nhập đầy đủ thông tin bắt buộc.");
+        if (pass.length < 8) return showAlert("Mật khẩu cần ít nhất 8 ký tự.");
+
+        const capBac = document.getElementById("regCapBac").value;
+        const phone = document.getElementById("regPhone").value.trim();
+        const namHoc = document.getElementById("regNamHoc").value;
+        if (phone && !/^0\d{9}$/.test(phone)) {
+          return showAlert("Số điện thoại phải gồm đúng 10 số, bắt đầu bằng 0.");
+        }
+
+        setLoading("regBtn", true);
+        try {
+          await register(email, pass, name, capBac, phone, namHoc);
+          showAlert("Tạo tài khoản thành công! Đang đăng nhập...", "success");
+          setTimeout(() => (window.location.href = "index.html"), 1000);
+        } catch (err) {
+          showAlert(err.message || "Đăng ký thất bại.");
+        } finally {
+          setLoading("regBtn", false);
+        }
+      }
+
+      function doForgot() {
+        // Đặt lại mật khẩu qua email chưa được triển khai ở phiên bản backend hiện tại
+        // (chưa có hạ tầng gửi email) — báo rõ cho học viên thay vì giả vờ đã gửi.
+        showAlert(
+          "Tính năng đặt lại mật khẩu qua email chưa khả dụng. Vui lòng liên hệ quản trị viên để được hỗ trợ.",
+          "error",
+        );
+      }
+
+      // Enter key support
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        if (document.getElementById("loginForm").style.display !== "none")
+          doLogin();
+        else if (
+          document.getElementById("registerForm").style.display !== "none"
+        )
+          doRegister();
+      });
+    </script>
+  </body>
+</html>

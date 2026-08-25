@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title data-title-suffix>Tech Stack</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <style>
+      :root {
+        --bg: #09090f;
+        --surface: #111118;
+        --border: #1c1c2e;
+        --border-bright: #2a2a3e;
+        --red: #e53935;
+        --red-glow: rgba(229, 57, 53, 0.15);
+        --gold: #f9a825;
+        --gold-glow: rgba(249, 168, 37, 0.12);
+        --purple: #7c3aed;
+        --purple-glow: rgba(124, 58, 237, 0.12);
+        --blue: #1d4ed8;
+        --blue-glow: rgba(29, 78, 216, 0.12);
+        --green: #16a34a;
+        --green-glow: rgba(22, 163, 74, 0.12);
+        --cyan: #0891b2;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --dim: #475569;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── GRID BACKGROUND ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(229, 57, 53, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(229, 57, 53, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── GLOW ORBS ── */
+      .orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .orb-1 {
+        width: 500px;
+        height: 500px;
+        background: rgba(229, 57, 53, 0.06);
+        top: -100px;
+        right: -100px;
+      }
+      .orb-2 {
+        width: 400px;
+        height: 400px;
+        background: rgba(124, 58, 237, 0.05);
+        bottom: 100px;
+        left: -100px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+      }
+
+      /* ── HEADER ── */
+      header {
+        margin-bottom: 60px;
+      }
+      .header-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--red-glow);
+        border: 1px solid rgba(229, 57, 53, 0.25);
+        border-radius: 100px;
+        padding: 4px 14px;
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 20px;
+      }
+      .eyebrow-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--red);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      header h1 {
+        font-family: "Syne", sans-serif;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.5px;
+        margin-bottom: 14px;
+      }
+      header h1 span {
+        color: var(--red);
+      }
+
+      header p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.7;
+        max-width: 560px;
+      }
+
+      .header-stats {
+        display: flex;
+        gap: 24px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+      }
+      .hs {
+        text-align: center;
+      }
+      .hs-num {
+        font-family: "Syne", sans-serif;
+        font-size: 1.8rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .hs-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--dim);
+      }
+
+      /* ── SECTION LABEL ── */
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "DM Mono", monospace;
+        font-size: 0.62rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--dim);
+        margin-bottom: 20px;
+        margin-top: 48px;
+      }
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ── CATEGORY CARD ── */
+      .cat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2px;
+      }
+
+      .cat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 28px;
+        transition: border-color 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .cat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--accent-color, transparent);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .cat-card:hover {
+        border-color: var(--border-bright);
+      }
+      .cat-card:hover::before {
+        opacity: 1;
+      }
+      .cat-card:first-child {
+        border-radius: 14px 0 0 0;
+      }
+      .cat-card:nth-child(2) {
+        border-radius: 0 14px 0 0;
+      }
+      .cat-card:nth-last-child(2) {
+        border-radius: 0 0 0 14px;
+      }
+      .cat-card:last-child {
+        border-radius: 0 0 14px 0;
+      }
+
+      .cat-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .cat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+      .cat-title {
+        font-family: "Syne", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .cat-sub {
+        font-size: 0.68rem;
+        color: var(--dim);
+        margin-top: 3px;
+      }
+
+      /* ── TECH ITEM ── */
+      .tech-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .tech-item {
+        border-radius: 8px;
+        padding: 12px 14px;
+        border: 1px solid transparent;
+        transition: all 0.15s;
+      }
+      .tech-item:hover {
+        border-color: var(--border-bright);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .ti-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      .ti-name {
+        font-family: "DM Mono", monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .ti-name code {
+        font-size: 0.68rem;
+        color: var(--dim);
+        font-family: "DM Mono", monospace;
+      }
+      .ti-badge {
+        font-size: 0.58rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 100px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .badge-free {
+        background: var(--green-glow);
+        color: #4ade80;
+        border: 1px solid rgba(74, 222, 128, 0.2);
+      }
+      .badge-core {
+        background: var(--red-glow);
+        color: #f87171;
+        border: 1px solid rgba(248, 113, 113, 0.2);
+      }
+      .badge-ai {
+        background: var(--purple-glow);
+        color: #c084fc;
+        border: 1px solid rgba(192, 132, 252, 0.2);
+      }
+      .badge-db {
+        background: var(--green-glow);
+        color: #86efac;
+        border: 1px solid rgba(134, 239, 172, 0.2);
+      }
+      .badge-lib {
+        background: var(--blue-glow);
+        color: #93c5fd;
+        border: 1px solid rgba(147, 197, 253, 0.2);
+      }
+
+      .ti-desc {
+        font-size: 0.71rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .ti-usage {
+        font-size: 0.65rem;
+        color: var(--dim);
+        margin-top: 4px;
+        font-style: italic;
+      }
+
+      /* ── FLOW SECTION ── */
+      .flow-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 28px;
+        margin-top: 2px;
+      }
+      .flow-title {
+        font-family: "Syne", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .flow-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .flow-row:last-child {
+        margin-bottom: 0;
+      }
+      .flow-label {
+        font-size: 0.62rem;
+        font-weight: 700;
+        color: var(--dim);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .flow-steps {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .fstep {
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+      }
+      .fs-user {
+        background: rgba(29, 78, 216, 0.12);
+        border-color: rgba(29, 78, 216, 0.3);
+        color: #93c5fd;
+      }
+      .fs-page {
+        background: rgba(229, 57, 53, 0.1);
+        border-color: rgba(229, 57, 53, 0.25);
+        color: #f87171;
+      }
+      .fs-ai {
+        background: rgba(124, 58, 237, 0.1);
+        border-color: rgba(124, 58, 237, 0.25);
+        color: #c084fc;
+      }
+      .fs-db {
+        background: rgba(22, 163, 74, 0.1);
+        border-color: rgba(22, 163, 74, 0.25);
+        color: #86efac;
+      }
+      .fs-out {
+        background: rgba(249, 168, 37, 0.1);
+        border-color: rgba(249, 168, 37, 0.25);
+        color: #fcd34d;
+      }
+      .farrow {
+        color: var(--dim);
+        font-size: 0.75rem;
+      }
+
+      /* ── PATTERN TABLE ── */
+      .pattern-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+        margin-top: 2px;
+      }
+      .pattern-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 20px 22px;
+      }
+      .pattern-item:first-child {
+        border-radius: 14px 0 0 0;
+      }
+      .pattern-item:nth-child(2) {
+        border-radius: 0 14px 0 0;
+      }
+      .pattern-item:nth-last-child(2) {
+        border-radius: 0 0 0 14px;
+      }
+      .pattern-item:last-child {
+        border-radius: 0 0 14px 0;
+      }
+
+      .pi-name {
+        font-family: "DM Mono", monospace;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--gold);
+        margin-bottom: 6px;
+      }
+      .pi-desc {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .pi-where {
+        font-size: 0.63rem;
+        color: var(--dim);
+        margin-top: 5px;
+        font-style: italic;
+      }
+
+      /* ── SECURITY ROW ── */
+      .security-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        margin-top: 2px;
+      }
+      .sec-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 20px;
+      }
+      .sec-item:first-child {
+        border-radius: 14px 0 0 14px;
+      }
+      .sec-item:last-child {
+        border-radius: 0 14px 14px 0;
+      }
+      .sec-icon {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+      }
+      .sec-name {
+        font-family: "Syne", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .sec-desc {
+        font-size: 0.68rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* ── SUMMARY TABLE ── */
+      .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+        background: var(--surface);
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .summary-table th {
+        padding: 12px 16px;
+        text-align: left;
+        font-family: "DM Mono", monospace;
+        font-size: 0.62rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--dim);
+        border-bottom: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .summary-table td {
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      .summary-table tr:last-child td {
+        border-bottom: none;
+      }
+      .summary-table tr:hover td {
+        background: rgba(255, 255, 255, 0.015);
+      }
+      .td-name {
+        font-family: "DM Mono", monospace;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .td-type {
+        color: var(--muted);
+      }
+      .td-use {
+        color: var(--muted);
+      }
+      .cost-free {
+        color: #4ade80;
+        font-weight: 700;
+      }
+      .cost-opt {
+        color: #fcd34d;
+        font-weight: 700;
+      }
+
+      @media (max-width: 700px) {
+        .cat-grid {
+          grid-template-columns: 1fr;
+        }
+        .cat-card {
+          border-radius: 12px !important;
+        }
+        .pattern-grid,
+        .security-grid {
+          grid-template-columns: 1fr;
+        }
+        .pattern-item,
+        .sec-item {
+          border-radius: 10px !important;
+        }
+        .header-stats {
+          gap: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="content">
+      <!-- HEADER -->
+      <header>
+        <div class="header-eyebrow">
+          <span class="eyebrow-dot"></span>Tech Documentation
+        </div>
+        <h1>Công nghệ trong<br /><span data-app-name>Giảng viên Ảo</span></h1>
+        <p>
+          Toàn bộ công nghệ đã áp dụng — từ frontend, AI, database, bảo mật, đến
+          các thư viện xử lý file. 100% miễn phí, không cần server riêng.
+        </p>
+        <div class="header-stats">
+          <div class="hs">
+            <div class="hs-num" style="color: var(--red)">14</div>
+            <div class="hs-label">Thư viện</div>
+          </div>
+          <div class="hs">
+            <div class="hs-num" style="color: var(--gold)">8</div>
+            <div class="hs-label">Module UI</div>
+          </div>
+          <div class="hs">
+            <div class="hs-num" style="color: var(--purple)">8</div>
+            <div class="hs-label">Bảng DB</div>
+          </div>
+          <div class="hs">
+            <div class="hs-num" style="color:#4ade80);">100%</div>
+            <div class="hs-label">Miễn phí</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 1. FRONTEND -->
+      <div class="section-label">01 — Frontend Core</div>
+      <div class="cat-grid">
+        <div class="cat-card" style="--accent-color: #e53935">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--red-glow)">🌐</div>
+            <div>
+              <div class="cat-title">HTML5 / CSS3 / JavaScript</div>
+              <div class="cat-sub">Không dùng framework — Vanilla JS thuần</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">HTML5 Semantic</span
+                ><span class="ti-badge badge-core">Core</span>
+              </div>
+              <div class="ti-desc">
+                Cấu trúc tất cả 9 trang UI. Dùng các thẻ semantic: nav, main,
+                section, article. Hỗ trợ File API để upload PDF/Word/Excel
+                client-side mà không cần server.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">CSS3 + Custom Properties</span
+                ><span class="ti-badge badge-core">Core</span>
+              </div>
+              <div class="ti-desc">
+                CSS Variables (--red, --gray, --bg...) dùng nhất quán toàn hệ
+                thống. Flexbox + Grid layout. CSS transitions/animations. Dark
+                mode qua class toggle trên &lt;body&gt;.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Vanilla JavaScript ES2020+</span
+                ><span class="ti-badge badge-core">Core</span>
+              </div>
+              <div class="ti-desc">
+                async/await cho mọi API call. Destructuring, optional chaining
+                (?.), nullish coalescing (??). Template literals. Module pattern
+                trong từng file HTML.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">localStorage API</span
+                ><span class="ti-badge badge-core">Core</span>
+              </div>
+              <div class="ti-desc">
+                Lưu Groq API key, dark mode preference, lịch sử chat tạm thời.
+                Dùng như cache layer trước khi sync lên Supabase.
+              </div>
+              <div class="ti-usage">→ Dùng trong: tất cả trang</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-card" style="--accent-color: #f9a825">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--gold-glow)">🎨</div>
+            <div>
+              <div class="cat-title">Typography & Icons</div>
+              <div class="cat-sub">Google Fonts + Font Awesome</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Google Fonts <code>— CDN</code></span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                <strong>Be Vietnam Pro</strong> — font chính toàn bộ UI, thiết
+                kế cho tiếng Việt, có đủ weight 300–700.
+                <strong>Oswald</strong> — dùng cho số, badge, heading thi cử tạo
+                cảm giác nghiêm túc học thuật.
+              </div>
+              <div class="ti-usage">→ Load từ: fonts.googleapis.com</div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Font Awesome 6.5 <code>— CDN</code></span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                Icon library với 2000+ icon. Dùng cho toàn bộ nav icons, button
+                icons, status indicators, module badges. Class-based: &lt;i
+                class="fas fa-robot"&gt;
+              </div>
+              <div class="ti-usage">→ Load từ: cdnjs.cloudflare.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. AI -->
+      <div class="section-label">02 — Artificial Intelligence</div>
+      <div class="cat-grid">
+        <div
+          class="cat-card"
+          style="--accent-color: #7c3aed; grid-column: 1 / -1"
+        >
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--purple-glow)">
+              🤖
+            </div>
+            <div>
+              <div class="cat-title">Groq API — Llama 3.3 70B Versatile</div>
+              <div class="cat-sub">
+                Large Language Model inference · REST API · 30 req/min miễn phí
+              </div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Chat AI có context học viên</span
+                ><span class="ti-badge badge-ai">AI</span>
+              </div>
+              <div class="ti-desc">
+                System prompt động: inject tên học viên, lớp, tiến độ %, điểm
+                TB, chương đang học vào mỗi request. Giữ 12 tin nhắn gần nhất
+                (sliding window context). Toggle web search qua DuckDuckGo khi
+                cần thông tin mới.
+              </div>
+              <div class="ti-usage">
+                → File: chat.html · Endpoint:
+                api.groq.com/openai/v1/chat/completions
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name"
+                  >Chấm điểm vấn đáp — Rubric 4 tiêu chí</span
+                ><span class="ti-badge badge-ai">AI</span>
+              </div>
+              <div class="ti-desc">
+                Prompt engineering yêu cầu AI trả về JSON cấu trúc:
+                <code
+                  >{"rubric":{"noi_dung":8,"lap_luan":7,"vi_du":5,"dien_dat":9},"score":7.2,"comment":"..."}</code
+                >. Tính điểm theo trọng số: Nội dung 40% + Lập luận 25% + Ví dụ
+                20% + Diễn đạt 15%.
+              </div>
+              <div class="ti-usage">
+                → File: thi-thu.html · max_tokens: 300 · temperature: 0.5
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Sinh câu hỏi phụ vấn đáp</span
+                ><span class="ti-badge badge-ai">AI</span>
+              </div>
+              <div class="ti-desc">
+                Sau khi học viên trả lời câu chính, Groq phân tích câu trả lời
+                và sinh 2–3 câu hỏi phụ để đào sâu hơn. Trả về JSON array:
+                <code>{"questions":[{"q":"..."},...]}</code>
+              </div>
+              <div class="ti-usage">→ File: thi-thu.html · max_tokens: 400</div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name"
+                  >Phân tích & cấu trúc hóa PDF bài giảng</span
+                ><span class="ti-badge badge-ai">AI</span>
+              </div>
+              <div class="ti-desc">
+                Nhận raw text từ PDF (tối đa 8000 ký tự đầu tiên), phân tích và
+                trả về JSON: chapters[] mỗi chapter có title, segments[],
+                questions[]. AI tự nhận biết cấu trúc chương mục từ văn bản thô.
+              </div>
+              <div class="ti-usage">
+                → File: giang-bai.html · max_tokens: 2000 · temperature: 0.3
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Kiểm tra kiến thức giữa bài giảng</span
+                ><span class="ti-badge badge-ai">AI</span>
+              </div>
+              <div class="ti-desc">
+                Dừng giảng sau mỗi chương → AI hỏi 2 câu kiểm tra → học viên trả
+                lời bằng giọng nói (Speech-to-Text) → AI đánh giá và đọc phản
+                hồi bằng TTS.
+              </div>
+              <div class="ti-usage">→ File: giang-bai.html</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. BACKEND / DATABASE -->
+      <div class="section-label">03 — Backend & Database</div>
+      <div class="cat-grid">
+        <div class="cat-card" style="--accent-color: #16a34a">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--green-glow)">🗄️</div>
+            <div>
+              <div class="cat-title">Supabase</div>
+              <div class="cat-sub">
+                PostgreSQL as a Service · BaaS · Free tier 500MB
+              </div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">PostgreSQL Database</span
+                ><span class="ti-badge badge-db">DB</span>
+              </div>
+              <div class="ti-desc">
+                8 bảng chính: profiles, questions, oral_questions, exam_results,
+                quiz_results, oral_results, study_logs, wrong_answers. 1 view
+                tổng hợp: admin_student_summary. JSONB cho rubric_scores linh
+                hoạt.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Row Level Security (RLS)</span
+                ><span class="ti-badge badge-db">DB</span>
+              </div>
+              <div class="ti-desc">
+                Bảo mật cấp dòng dữ liệu trong PostgreSQL. Mỗi bảng có policy
+                riêng: học viên chỉ đọc/ghi dữ liệu của mình, giảng viên đọc
+                được toàn bộ. Không thể bypass dù gọi API trực tiếp.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Supabase Auth</span
+                ><span class="ti-badge badge-db">DB</span>
+              </div>
+              <div class="ti-desc">
+                JWT-based authentication. Email/password signup với email
+                verification. Session management tự động refresh token. Trigger
+                tự động tạo profile khi đăng ký.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Supabase JS Client v2</span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                SDK JavaScript load từ CDN. Cung cấp: sb.auth.*,
+                sb.from().select/insert/update/delete, realtime subscriptions.
+                Dùng chung qua supabase-config.js trong toàn dự án.
+              </div>
+              <div class="ti-usage">
+                → Load từ: cdn.jsdelivr.net/npm/@supabase/supabase-js
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-card" style="--accent-color: #0891b2">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: rgba(8, 145, 178, 0.12)">
+              🔊
+            </div>
+            <div>
+              <div class="cat-title">Web Speech API</div>
+              <div class="cat-sub">
+                Browser built-in · Không cần key · Chrome/Edge
+              </div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">SpeechSynthesis (TTS)</span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                Text-to-Speech built-in trình duyệt. Đọc bài giảng từng đoạn
+                bằng giọng tiếng Việt (vi-VN). Điều chỉnh: tốc độ 0.8×/1×/1.3×,
+                chọn giọng nam/nữ. Dừng/tiếp tục/bỏ qua đoạn.
+              </div>
+              <div class="ti-usage">
+                → API: window.speechSynthesis · SpeechSynthesisUtterance
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">SpeechRecognition (STT)</span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                Speech-to-Text để học viên trả lời câu hỏi bằng giọng nói trong
+                phần kiểm tra giữa bài giảng. Nhận diện tiếng Việt liên tục,
+                hiển thị transcript realtime.
+              </div>
+              <div class="ti-usage">
+                → API: webkitSpeechRecognition · lang: vi-VN
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. FILE PROCESSING -->
+      <div class="section-label">04 — Xử lý File Client-side</div>
+      <div class="cat-grid">
+        <div class="cat-card" style="--accent-color: #e53935">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--red-glow)">📄</div>
+            <div>
+              <div class="cat-title">PDF.js (Mozilla)</div>
+              <div class="cat-sub">v3.11.174 · CDN · Không cần server</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">PDF Text Extraction</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Load PDF từ ArrayBuffer, lặp qua từng trang:
+                page.getTextContent() → items[].str → ghép thành fullText. Dùng
+                để feed vào Groq AI phân tích nội dung.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">PDF Canvas Rendering (Slide View)</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Render từng trang PDF thành hình ảnh trên &lt;canvas&gt; HTML.
+                Scale tự động theo viewport. Hiển thị song song với text đang
+                được đọc. Điều hướng trang trước/sau.
+              </div>
+              <div class="ti-usage">
+                → API: pdf.getPage(n).render({canvasContext, viewport})
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-card" style="--accent-color: #1d4ed8">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--blue-glow)">📝</div>
+            <div>
+              <div class="cat-title">Mammoth.js</div>
+              <div class="cat-sub">v1.6.0 · CDN · Word → HTML/Text</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Word .docx Text Extract</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Đọc file .docx upload từ người dùng, extract raw text. Dùng cho
+                import câu hỏi từ Word: mammoth.extractRawText({arrayBuffer}) →
+                parse câu hỏi theo format "Câu X: ... / A. ... / ĐÁP ÁN: A".
+              </div>
+              <div class="ti-usage">
+                → Dùng trong: admin.html (import), luyen-tap.html (import tạm)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-card" style="--accent-color: #16a34a">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--green-glow)">📊</div>
+            <div>
+              <div class="cat-title">SheetJS (xlsx.js)</div>
+              <div class="cat-sub">v0.18.5 · CDN · Excel read/write</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Excel Import — Câu hỏi</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Đọc file .xlsx template có 3 sheet: HƯỚNG DẪN, CÂU HỎI, VẤN ĐÁP.
+                Map cột → object, batch insert 50 câu/lần vào Supabase. Hiển thị
+                progress bar realtime.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Excel Export — Báo cáo</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Giảng viên xuất kết quả thi toàn lớp ra file .xlsx.
+                XLSX.utils.json_to_sheet() → workbook → XLSX.writeFile(). Tự
+                động download về máy.
+              </div>
+              <div class="ti-usage">→ Dùng trong: admin.html</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-card" style="--accent-color: #f9a825">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--gold-glow)">🔍</div>
+            <div>
+              <div class="cat-title">DuckDuckGo Instant Answer API</div>
+              <div class="cat-sub">Không cần API key · Public API</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Web Search trong Chat AI</span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                Khi học viên bật Web Search mode trong Chat AI: query gửi lên
+                DDG Instant Answer API → nhận AbstractText + RelatedTopics →
+                inject vào system prompt → Groq trả lời có thông tin thực tế.
+              </div>
+              <div class="ti-usage">
+                → Endpoint: api.duckduckgo.com/?q=...&format=json&no_html=1
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. DATA VIZ -->
+      <div class="section-label">05 — Data Visualization</div>
+      <div class="cat-grid">
+        <div class="cat-card" style="--accent-color: #7c3aed">
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--purple-glow)">
+              📈
+            </div>
+            <div>
+              <div class="cat-title">Chart.js</div>
+              <div class="cat-sub">v3 · CDN · Canvas-based charts</div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Line Chart — Điểm thi theo thời gian</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Biểu đồ điểm thi 10 lần gần nhất trong trang Tiến bộ. Fill
+                gradient dưới đường. Tooltip hiển thị ngày + điểm. Responsive
+                theo màn hình.
+              </div>
+            </div>
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Bar Chart — Thời gian học 7 ngày</span
+                ><span class="ti-badge badge-lib">Lib</span>
+              </div>
+              <div class="ti-desc">
+                Biểu đồ cột thời gian học mỗi ngày trong tuần qua từ bảng
+                study_logs. Màu gradient đỏ-vàng theo thương hiệu. Dùng trong:
+                index.html dashboard, tien-do.html.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. ARCHITECTURE PATTERNS -->
+      <div class="section-label">06 — Kiến trúc & Design Patterns</div>
+      <div class="pattern-grid">
+        <div class="pattern-item">
+          <div class="pi-name">Shared Config Module</div>
+          <div class="pi-desc">
+            supabase-config.js load một lần, expose các helper function toàn
+            cục: requireAuth(), getProfile(), saveExamResult(),
+            logStudyTime()... Tất cả trang HTML đều include file này trước mọi
+            script khác.
+          </div>
+          <div class="pi-where">→ supabase-config.js</div>
+        </div>
+        <div class="pattern-item">
+          <div class="pi-name">Guard Pattern — Route Protection</div>
+          <div class="pi-desc">
+            Mỗi trang bắt đầu bằng requireAuth() — nếu không có session thì
+            redirect về auth.html. Trang admin.html thêm check role = teacher,
+            nếu là student thì redirect về index.html.
+          </div>
+          <div class="pi-where">→ Tất cả trang HTML, đặc biệt admin.html</div>
+        </div>
+        <div class="pattern-item">
+          <div class="pi-name">Fallback Content Strategy</div>
+          <div class="pi-desc">
+            Mọi tính năng đều có fallback: Groq fail → dùng câu trả lời cứng
+            built-in. Supabase trống → dùng 40 câu hỏi built-in. TTS không có
+            giọng Việt → dùng giọng mặc định. Hệ thống không bao giờ crash.
+          </div>
+          <div class="pi-where">
+            → chat.html, luyen-tap.html, thi-thu.html, giang-bai.html
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pi-name">Batch Insert với Progress Bar</div>
+          <div class="pi-desc">
+            Import hàng trăm câu hỏi không gửi một lần (timeout). Chia thành
+            batch 50 câu, insert tuần tự, cập nhật progress bar sau mỗi batch.
+            Tránh rate limit Supabase.
+          </div>
+          <div class="pi-where">→ admin.html — import Excel</div>
+        </div>
+        <div class="pattern-item">
+          <div class="pi-name">Dynamic System Prompt</div>
+          <div class="pi-desc">
+            Thay vì system prompt tĩnh, buildSystemPrompt(profile) inject
+            realtime data: tên học viên, lớp, tiến độ, điểm TB, streak, chương
+            đang học → AI trả lời cá nhân hóa hơn.
+          </div>
+          <div class="pi-where">→ chat.html</div>
+        </div>
+        <div class="pattern-item">
+          <div class="pi-name">Structured JSON Prompting</div>
+          <div class="pi-desc">
+            Mọi Groq call cần dữ liệu có cấu trúc đều yêu cầu AI trả về JSON
+            thuần, không markdown. Sau đó parse và validate trước khi dùng.
+            Fallback nếu JSON parse fail.
+          </div>
+          <div class="pi-where">→ thi-thu.html, giang-bai.html</div>
+        </div>
+      </div>
+
+      <!-- 7. SECURITY -->
+      <div class="section-label">07 — Bảo mật</div>
+      <div class="security-grid">
+        <div class="sec-item">
+          <div class="sec-icon">🔐</div>
+          <div class="sec-name">Row Level Security</div>
+          <div class="sec-desc">
+            PostgreSQL RLS policies trong Supabase. Mỗi user chỉ thấy dữ liệu
+            của mình. Teacher thấy tất cả. Không thể bypass bằng cách gọi REST
+            API trực tiếp — enforce ở database level.
+          </div>
+        </div>
+        <div class="sec-item">
+          <div class="sec-icon">🎫</div>
+          <div class="sec-name">JWT Authentication</div>
+          <div class="sec-desc">
+            Supabase Auth dùng JWT token. Token tự động refresh. Groq API key
+            lưu trong Supabase profiles (mã hóa) thay vì plain text trong
+            localStorage. Mỗi request đính kèm Bearer token.
+          </div>
+        </div>
+        <div class="sec-item">
+          <div class="sec-icon">👁️</div>
+          <div class="sec-name">Anon Key vs Service Key</div>
+          <div class="sec-desc">
+            Chỉ dùng anon key trong frontend — key này bị giới hạn bởi RLS.
+            Service key (full access) không bao giờ expose ra client. Mọi quyền
+            phân cấp được enforce qua RLS, không phải client code.
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. DEPLOYMENT -->
+      <div class="section-label">08 — Deployment & Hosting</div>
+      <div class="cat-grid">
+        <div
+          class="cat-card"
+          style="--accent-color: #f9a825; grid-column: 1/-1"
+        >
+          <div class="cat-header">
+            <div class="cat-icon" style="background: var(--gold-glow)">🚀</div>
+            <div>
+              <div class="cat-title">
+                Static Hosting — Netlify / GitHub Pages
+              </div>
+              <div class="cat-sub">
+                Không cần server · Deploy bằng drag &amp; drop · Free forever
+              </div>
+            </div>
+          </div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="ti-top">
+                <span class="ti-name">Static Site Architecture</span
+                ><span class="ti-badge badge-free">Free</span>
+              </div>
+              <div class="ti-desc">
+                Toàn bộ website là file HTML/CSS/JS tĩnh — không có server-side
+                code (Node.js, PHP...). Mọi logic chạy trong trình duyệt.
+                Backend duy nhất là Supabase (managed) và Groq API (external).
+                Hosting hoàn toàn miễn phí trên Netlify hoặc GitHub Pages.
+              </div>
+              <div class="ti-usage">
+                → Deploy: kéo thả folder vào netlify.com → tự động publish ·
+                Không cần cấu hình gì thêm
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. SUMMARY TABLE -->
+      <div class="section-label">09 — Tổng hợp tất cả công nghệ</div>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Công nghệ</th>
+            <th>Loại</th>
+            <th>Dùng cho</th>
+            <th>Chi phí</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-name">HTML5 / CSS3 / JS</td>
+            <td class="td-type">Frontend</td>
+            <td class="td-use">Toàn bộ 9 trang UI</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Be Vietnam Pro + Oswald</td>
+            <td class="td-type">Typography</td>
+            <td class="td-use">Font chính toàn hệ thống</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Font Awesome 6.5</td>
+            <td class="td-type">Icons</td>
+            <td class="td-use">2000+ icon UI</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Groq API / Llama 3.3 70B</td>
+            <td class="td-type">AI / LLM</td>
+            <td class="td-use">Chat, chấm thi, phân tích PDF</td>
+            <td class="cost-opt">Miễn phí 30 req/min</td>
+          </tr>
+          <tr>
+            <td class="td-name">Supabase (PostgreSQL)</td>
+            <td class="td-type">Database</td>
+            <td class="td-use">8 bảng, Auth, RLS</td>
+            <td class="cost-free">Miễn phí 500MB</td>
+          </tr>
+          <tr>
+            <td class="td-name">Supabase Auth</td>
+            <td class="td-type">Auth</td>
+            <td class="td-use">Đăng ký / đăng nhập JWT</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Web Speech API (TTS)</td>
+            <td class="td-type">Browser API</td>
+            <td class="td-use">Đọc bài giảng bằng giọng Việt</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Web Speech API (STT)</td>
+            <td class="td-type">Browser API</td>
+            <td class="td-use">Nhận diện giọng nói trả lời</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">PDF.js (Mozilla)</td>
+            <td class="td-type">Thư viện</td>
+            <td class="td-use">Đọc PDF, render slide canvas</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Mammoth.js</td>
+            <td class="td-type">Thư viện</td>
+            <td class="td-use">Đọc file Word .docx</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">SheetJS (xlsx)</td>
+            <td class="td-type">Thư viện</td>
+            <td class="td-use">Import/export Excel</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Chart.js</td>
+            <td class="td-type">Thư viện</td>
+            <td class="td-use">Biểu đồ học tập, điểm thi</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">DuckDuckGo API</td>
+            <td class="td-type">External API</td>
+            <td class="td-use">Web search trong Chat AI</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+          <tr>
+            <td class="td-name">Netlify / GitHub Pages</td>
+            <td class="td-type">Hosting</td>
+            <td class="td-use">Deploy static website</td>
+            <td class="cost-free">Miễn phí</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- DATA FLOWS -->
+      <div class="section-label">10 — Luồng dữ liệu chính</div>
+      <div class="flow-wrap">
+        <div class="flow-row">
+          <div class="flow-label">Chat AI</div>
+          <div class="flow-steps">
+            <div class="fstep fs-user">Học viên nhập</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-db">Đọc profile</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-page">Build system prompt động</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-ai">Groq LLM</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-out">Hiển thị + lưu lịch sử</div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-label">Thi vấn đáp</div>
+          <div class="flow-steps">
+            <div class="fstep fs-db">Lấy câu hỏi DB</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-user">HV trả lời</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-ai">Groq sinh câu phụ</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-ai">Groq chấm Rubric 4 tiêu chí</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-db">Lưu oral_results</div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-label">Giảng bài</div>
+          <div class="flow-steps">
+            <div class="fstep fs-user">Upload PDF</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-page">PDF.js extract text</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-ai">Groq phân tích → chapters[]</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-page">TTS đọc + canvas slide</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-ai">Groq hỏi + đánh giá</div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-label">Import GV</div>
+          <div class="flow-steps">
+            <div class="fstep fs-user">Upload Excel/Word</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-page">SheetJS/Mammoth parse</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-page">Batch 50 câu/lần</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-db">Insert → questions table</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-out">HV thấy ngay</div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-label">Ôn câu sai</div>
+          <div class="flow-steps">
+            <div class="fstep fs-user">Trả lời sai</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-db">Upsert wrong_answers</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-page">Chế độ "Ôn câu sai"</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-db">Load wrong_answers của HV</div>
+            <div class="farrow">→</div>
+            <div class="fstep fs-db">Trả lời đúng → xóa khỏi DB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /content -->
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="../student/chat.html" class="nav-item"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="../student/luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="../student/thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="../student/tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="../student/xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="../student/giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      (function () {
+        var session = getSession();
+        var role = session && session.user && session.user.role;
+        if (role === "Teacher" || role === "Admin") {
+          document.getElementById("navSettings")?.remove();
+          var navAdmin = document.getElementById("navAdmin");
+          if (navAdmin) {
+            navAdmin.href =
+              role === "Admin"
+                ? "../admin/quan-tri-he-thong.html"
+                : "../teacher/quan-ly-noi-dung.html";
+          }
+        } else {
+          document.getElementById("navAdmin")?.remove();
+        }
+      })();
+    </script>
+    <script>
+      // Tài liệu tech stack nội bộ — chỉ Giảng viên/Admin được xem (khắc phục F7: trang này
+      // trước đây public hoàn toàn, không cần đăng nhập).
+      (function guardAccess() {
+        if (!requireAuth()) return;
+        const session = getSession();
+        if (!session || !["Teacher", "Admin"].includes(session.user.role)) {
+          alert("⚠️ Trang tài liệu kỹ thuật chỉ dành cho Giảng viên/Admin.");
+          window.location.href = "../index.html";
+        }
+      })();
+    </script>
+  </body>
+</html>

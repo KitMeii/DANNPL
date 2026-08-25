@@ -1,0 +1,2306 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>AI Giảng bài</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <!-- PDF.js (đọc text từ PDF ở client trước khi gửi cho ai-service tạo bài giảng) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+      /* ===================== LAYOUT ===================== */
+      body {
+        background: #f8f7f5;
+        padding-top: 70px;
+        padding-bottom: 72px;
+      }
+
+      .lecture-wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      /* Việc E (2026-08-16) — khi đang xem player, nới rộng khung trang (vẫn dưới trần
+         .container 1200px toàn app) để khung slide có đủ không gian "chiếm phần lớn màn
+         hình" thay vì bị bó trong 860px như màn upload — không phải breakpoint mới, chỉ
+         nới container của riêng trang này lúc cần. */
+      /* Việc 3.0 (2026-08-18) — nới rộng đáng kể hơn nữa (1040px → 1600px) để bố cục 3 cột có đủ
+         không gian, giảm khoảng trắng thừa 2 bên trên màn hình rộng. */
+      .lecture-wrap:has(.player-wrap.active) {
+        max-width: 1600px;
+      }
+
+      /* Groq key setup */
+      .setup-card {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border-radius: 16px;
+        padding: 20px;
+        color: white;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .setup-icon {
+        font-size: 1.8rem;
+        flex-shrink: 0;
+      }
+      .groq-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 9px 14px;
+        color: white;
+        font-size: 0.82rem;
+        flex: 1;
+      }
+      .groq-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .groq-input:focus {
+        outline: none;
+        border-color: #f9a825;
+      }
+
+      /* ===================== PLAYER (Việc E, 2026-08-16 — "media player"; tinh chỉnh
+         2026-08-17 — hợp nhất slide + phụ đề thành 1 khung nhìn dọc duy nhất, bỏ bố cục 2 cột
+         cũ vì buộc người xem liếc qua liếc lại) ===================== */
+      .player-wrap {
+        display: none;
+      }
+      .player-wrap.active {
+        display: block;
+      }
+      @media (min-width: 768px) {
+        /* Việc 3.0 (2026-08-18) — bố cục 3 cột ngang tỷ lệ 6.5/2.5/1: slide (trọng tâm) | nội
+           dung AI đọc + phụ đề | danh sách các phần. Thay bố cục 2 cột 70/30 (Việc 2.2). Tái
+           dùng breakpoint 768px đã có sẵn — không tạo quy ước mới. Dưới 768px (mobile) giữ
+           display:block, 3 cột xếp dọc tuần tự theo đúng thứ tự trong HTML. */
+        .player-wrap.active {
+          display: grid;
+          grid-template-columns: minmax(0, 6.5fr) minmax(280px, 2.5fr) minmax(120px, 1fr);
+          gap: 16px;
+          align-items: start;
+        }
+        .lecture-side-col,
+        .lecture-playlist-col {
+          position: sticky;
+          top: 12px;
+          max-height: calc(100vh - 24px);
+          overflow-y: auto;
+        }
+        .caption-area {
+          max-height: 420px;
+        }
+      }
+
+      /* Rà soát Lần IV (2026-08-21) — bỏ hẳn "sân khấu tối" (nền đen dày + đổ bóng lớn), thay bằng
+      1 đường viền mỏng — nội dung slide (PDF) tự thân đã có nền trắng, không cần khung tối bọc
+      ngoài mới nổi bật; đồng thời giảm padding để tăng diện tích hiển thị thật cho slide. */
+      .stage-slide-area {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 6px;
+        margin-bottom: 14px;
+      }
+      .stage-slide-frame {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 220px;
+        max-height: 80vh;
+      }
+      #pdfCanvas {
+        max-width: 100%;
+        max-height: 80vh;
+        width: auto;
+        height: auto;
+        border-radius: 6px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+        display: block;
+        transition: opacity 0.2s ease;
+      }
+      .stage-slide-empty {
+        color: var(--gray-400);
+        text-align: center;
+        padding: 30px 16px;
+      }
+      .stage-slide-empty i {
+        font-size: 2.2rem;
+        display: block;
+        margin-bottom: 8px;
+        opacity: 0.6;
+      }
+      .stage-slide-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 12px;
+      }
+      .stage-nav-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid var(--gray-200);
+        background: var(--gray-50);
+        color: var(--gray-600);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+        font-size: 0.8rem;
+      }
+      .stage-nav-btn:hover:not(:disabled) {
+        background: var(--gray-100);
+      }
+      .stage-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .stage-page-info {
+        color: var(--gray-500);
+        font-size: 0.72rem;
+        font-weight: 700;
+        font-family: "Oswald", sans-serif;
+        letter-spacing: 0.3px;
+        min-width: 150px;
+        text-align: center;
+      }
+
+      /* ── Phụ đề thông minh (kiểu lyrics đồng bộ) — NGAY DƯỚI slide, hợp nhất "đang phát" +
+         toàn bộ văn bản AI tóm tắt của phần hiện tại vào 1 khối duy nhất. ── */
+      .caption-card {
+        background: white;
+        border-radius: 16px;
+        padding: 16px 18px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        margin-bottom: 14px;
+      }
+      .caption-top-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .caption-now-playing {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+      }
+      .np-label {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: var(--red);
+        text-transform: uppercase;
+      }
+      .np-title-inline {
+        font-family: "Oswald", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-800);
+      }
+      .np-sub-inline {
+        font-size: 0.72rem;
+        color: var(--gray-500);
+      }
+      .caption-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .caption-action-btn {
+        background: var(--gray-100);
+        border: none;
+        color: var(--gray-600);
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 0.68rem;
+        cursor: pointer;
+        font-family: "Be Vietnam Pro", sans-serif;
+        white-space: nowrap;
+      }
+      .caption-action-btn:hover {
+        background: var(--gray-200);
+      }
+      /* Toàn bộ văn bản của PHẦN đang đọc — không cắt còn 1-2 dòng như phụ đề phim thường */
+      .caption-area {
+        font-size: 0.92rem;
+        line-height: 2;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-top: 10px;
+        border-top: 1px solid var(--gray-100);
+        scroll-behavior: smooth;
+      }
+      .caption-area .lecture-empty {
+        padding: 10px 0;
+      }
+      /* Việc 3.0 — mỗi đoạn văn AI trả về (xem ParagraphStructureInstruction, LectureService.cs)
+         render thành 1 khối riêng, cách nhau rõ ràng, thay vì dồn hết câu vào 1 khối liền mạch. */
+      .cap-para {
+        margin-bottom: 14px;
+      }
+      .cap-para:last-child {
+        margin-bottom: 0;
+      }
+      .cap-sentence {
+        color: var(--gray-400);
+        transition:
+          color 0.3s ease,
+          background 0.3s ease;
+        padding: 2px 3px;
+        border-radius: 4px;
+      }
+      /* Đã đọc qua — rõ hơn câu chưa tới nhưng không nổi bật bằng câu đang đọc */
+      .cap-sentence.done {
+        color: var(--gray-700);
+      }
+      /* Câu/đoạn ĐANG được đọc — nổi bật, nền sáng, đúng yêu cầu "kiểu lyrics" */
+      .cap-sentence.current {
+        color: var(--red-dark);
+        font-weight: 700;
+        background: var(--red-bg);
+      }
+      /* Phương án dự phòng khi giọng đọc không phát onboundary (xem báo cáo audit) — tô sáng cả
+         đoạn văn của phần hiện tại như 1 khối, không chi tiết tới từng câu. */
+      .caption-area.cap-fallback-whole .cap-sentence {
+        color: var(--red-dark);
+        font-weight: 600;
+        background: var(--red-bg);
+      }
+
+      /* ── Thanh điều khiển kiểu media player ── */
+      .media-bar {
+        background: white;
+        border-radius: 16px;
+        padding: 14px 18px 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        margin-bottom: 14px;
+      }
+      .media-bar-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+      .media-btn-secondary {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: none;
+        background: var(--gray-100);
+        color: var(--gray-600);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        font-size: 0.82rem;
+      }
+      .media-btn-secondary:hover {
+        background: var(--gray-200);
+      }
+      .media-btn-play {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: none;
+        background: var(--red);
+        color: white;
+        font-size: 1.15rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 14px rgba(198, 40, 40, 0.35);
+        transition: all 0.15s;
+      }
+      .media-btn-play:hover {
+        background: var(--red-dark);
+        transform: scale(1.05);
+      }
+      .media-bar-progress {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      /* Tinh chỉnh 2026-08-17 — dãy pill số thứ tự gọn, vẫn bấm nhảy phần được (jumpToPart) + hiện
+         tiến trình. Việc 3.0 (2026-08-18) — trên desktop, dãy này chuyển vào cột riêng
+         (.lecture-playlist-col) và đổi thành list dọc "Phần N" đầy đủ chữ (xem @media bên dưới);
+         mặc định (mobile, <768px) VẪN giữ dạng pill ngang gọn như cũ, chỉ đổi vị trí trong HTML. */
+      .media-dots {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .media-dot {
+        min-width: 24px;
+        height: 28px;
+        padding: 0 9px;
+        border-radius: 14px;
+        background: var(--gray-100);
+        color: var(--gray-500);
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 0.7rem;
+        font-weight: 700;
+        font-family: "Be Vietnam Pro", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+      }
+      .media-dot:hover {
+        background: var(--gray-200);
+      }
+      .media-dot.done {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .media-dot.current {
+        background: var(--red);
+        color: white;
+        transform: scale(1.05);
+      }
+      .playlist-col-header {
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--gray-500);
+        margin-bottom: 8px;
+        padding: 0 2px;
+      }
+      @media (min-width: 768px) {
+        .lecture-playlist-col .media-dots {
+          flex-direction: column;
+          flex-wrap: nowrap;
+        }
+        .lecture-playlist-col .media-dot {
+          width: 100%;
+          height: auto;
+          min-height: 38px;
+          padding: 8px 12px;
+          border-radius: 10px;
+          justify-content: flex-start;
+          text-align: left;
+        }
+        .lecture-playlist-col .media-dot.current {
+          transform: none;
+        }
+      }
+      .media-time {
+        font-size: 0.7rem;
+        color: var(--gray-500);
+        font-family: "Oswald", sans-serif;
+        white-space: nowrap;
+      }
+      .media-bar-tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid var(--gray-100);
+        flex-wrap: wrap;
+      }
+
+      /* ── MATERIAL CARDS ── */
+      .mat-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      @media (min-width: 768px) {
+        .mat-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+      }
+      .mat-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 14px;
+        padding: 14px;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .mat-card:hover {
+        border-color: var(--red);
+        background: var(--red-bg);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(183, 28, 28, 0.1);
+      }
+      .mat-card-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+      .mat-card-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .mat-card-title {
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mat-card-meta {
+        font-size: 0.68rem;
+        color: var(--gray-500);
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .mat-card-badge {
+        background: var(--red-bg);
+        color: var(--red);
+        padding: 2px 7px;
+        border-radius: 100px;
+        font-size: 0.62rem;
+        font-weight: 700;
+      }
+      .mat-card-arrow {
+        color: var(--gray-300);
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      .mat-card:hover .mat-card-arrow {
+        color: var(--red);
+      }
+      /* Dùng chung trong .media-bar-tools mới (Việc E) */
+      .speed-btn {
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 1.5px solid var(--gray-300);
+        background: white;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "Be Vietnam Pro", sans-serif;
+        color: var(--gray-600);
+      }
+      .speed-btn.active {
+        border-color: var(--red);
+        color: var(--red);
+        background: var(--red-bg);
+      }
+
+      /* ===================== Q&A OVERLAY ===================== */
+      .qa-panel {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: none;
+        margin-bottom: 14px;
+        border: 2px solid #1565c0;
+      }
+      .qa-panel.show {
+        display: block;
+        animation: slideUp 0.3s ease;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .qa-header {
+        background: linear-gradient(135deg, #0d47a1, #1565c0);
+        padding: 14px 18px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .qa-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .qa-body {
+        padding: 18px;
+      }
+      .qa-question {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 14px;
+        line-height: 1.5;
+      }
+      .qa-hint {
+        font-size: 0.72rem;
+        color: var(--gray-500);
+        margin-bottom: 10px;
+      }
+      .qa-textarea {
+        width: 100%;
+        border: 1.5px solid var(--gray-300);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 0.85rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        resize: none;
+        outline: none;
+        transition: border 0.2s;
+        min-height: 80px;
+        box-sizing: border-box;
+      }
+      .qa-textarea:focus {
+        border-color: #1565c0;
+      }
+      .qa-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .qa-submit {
+        flex: 1;
+      }
+
+      /* AI feedback */
+      .ai-feedback {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 0.83rem;
+        line-height: 1.6;
+        display: none;
+      }
+      .ai-feedback.good {
+        background: #e8f5e9;
+        border-left: 3px solid #2e7d32;
+        color: #1b5e20;
+      }
+      .ai-feedback.bad {
+        background: #fff3e0;
+        border-left: 3px solid #e65100;
+        color: #bf360c;
+      }
+      .ai-feedback.show {
+        display: block;
+        animation: slideUp 0.2s ease;
+      }
+
+      /* ===================== KIỂM TRA NHANH (audit 2026-08-16 mục 3) =====================
+      Panel riêng, KHÔNG dùng chung state với .qa-panel (Q&A tự động chèn giữa lúc phát bài giảng)
+      — 2 tính năng khác hẳn nhau, cùng tồn tại độc lập. */
+      .quick-check-panel {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: none;
+        margin-bottom: 14px;
+        border: 2px solid #5e35b1;
+      }
+      .quick-check-panel.show {
+        display: block;
+        animation: slideUp 0.3s ease;
+      }
+      .quick-check-header {
+        background: linear-gradient(135deg, #4527a0, #5e35b1);
+        padding: 14px 18px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .quick-check-body {
+        padding: 18px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+      .qc-question-card {
+        border: 1.5px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+      .qc-question-text {
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        color: var(--gray-800);
+      }
+      .qc-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.82rem;
+        margin-bottom: 6px;
+        border: 1.5px solid var(--gray-200);
+      }
+      .qc-option:hover {
+        background: var(--gray-100);
+      }
+      .qc-option.selected {
+        border-color: #5e35b1;
+        background: #ede7f6;
+      }
+      .qc-option.correct {
+        background: #e8f5e9;
+        border-color: #2e7d32;
+        color: #1b5e20;
+      }
+      .qc-option.wrong {
+        background: #ffebee;
+        border-color: #c62828;
+        color: #b71c1c;
+      }
+      .qc-explanation {
+        font-size: 0.76rem;
+        color: var(--gray-500);
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--gray-200);
+        display: none;
+      }
+      .qc-explanation.show {
+        display: block;
+      }
+
+      /* Loading */
+      .ai-loading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        padding: 8px 0;
+      }
+      .ai-loading i {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Status badge */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .status-badge.reading {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .status-badge.speaking {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .status-badge.question {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .status-badge.paused {
+        background: var(--gray-100);
+        color: var(--gray-600);
+      }
+      .pulse {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* Voice select — nằm trong .media-bar-tools (Việc E), không còn hàng riêng */
+      .voice-select {
+        flex: 1;
+        min-width: 120px;
+        border: 1.5px solid var(--gray-300);
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 0.78rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        background: white;
+      }
+
+      /* Empty state */
+      .lecture-empty {
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .lecture-empty i {
+        font-size: 3rem;
+        color: var(--gray-300);
+        margin-bottom: 12px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="../index.html" class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-info">
+            <div class="logo-title">AI Giảng bài</div>
+            <div class="logo-sub">Học tập tương tác với Giảng viên Ảo</div>
+          </div>
+        </a>
+        <div class="header-actions">
+          <span class="status-badge paused" id="statusBadge">
+            <span class="pulse"></span> Chờ tải lên
+          </span>
+          <!-- Rà soát Lần IV (2026-08-21) — 3 nút Tìm kiếm/Avatar/Đăng xuất đồng nhất trên MỌI trang học
+          viên (trước chỉ index.html có đủ, các trang khác chỉ có Đăng xuất từ Việc II). Tìm kiếm
+          điều hướng về index.html?search=1 (modal Tìm kiếm chỉ có ở đó, xem openQuickSearch()). -->
+          <button class="hdr-btn" id="searchBtn" aria-label="Tìm kiếm" onclick="location.href='../index.html?search=1'">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="hdr-btn" id="profileBtn" aria-label="Hồ sơ cá nhân"></button>
+          <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="lecture-wrap">
+        <!-- Upload Zone -->
+        <div id="uploadSection">
+          <!-- Materials from DB (teacher-uploaded) -->
+          <div id="materialsSection">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 12px;
+              "
+            >
+              <div style="font-weight: 700; font-size: 0.9rem">
+                📚 Tài liệu bài giảng
+              </div>
+            </div>
+            <div
+              id="matLoadingEl"
+              style="text-align: center; padding: 20px; color: var(--gray-400)"
+            >
+              <i class="fas fa-spinner fa-spin"></i> Đang tải tài liệu...
+            </div>
+            <div id="matGridEl" style="display: none"></div>
+            <div
+              id="matEmptyEl"
+              style="
+                display: none;
+                text-align: center;
+                padding: 28px 16px;
+                color: var(--gray-400);
+              "
+            >
+              <i
+                class="fas fa-folder-open"
+                style="font-size: 2.5rem; margin-bottom: 10px; display: block"
+              ></i>
+              <div style="font-weight: 700; margin-bottom: 4px">
+                Chưa có tài liệu nào
+              </div>
+              <div style="font-size: 0.75rem">
+                Giáo viên chưa đăng tải tài liệu cho lớp bạn. Vui lòng quay lại sau.
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="margin-top: 10px"
+            id="processingInfo"
+            style="display: none"
+          >
+            <div class="card" style="text-align: center; padding: 20px">
+              <div class="ai-loading" style="justify-content: center">
+                <i
+                  class="fas fa-spinner fa-spin"
+                  style="color: var(--red); font-size: 1.2rem"
+                ></i>
+                <span id="processingMsg">Đang đọc PDF...</span>
+              </div>
+              <div style="margin-top: 10px" id="processingProg"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player -->
+        <div class="player-wrap" id="playerWrap">
+          <!-- Việc 3.0 (2026-08-18) — bố cục 3 cột ngang trên desktop: cột 1 (~6.5) CHỈ slide,
+               trọng tâm màn hình; cột 2 (~2.5) phụ đề + control; cột 3 (~1) danh sách các phần.
+               Mobile (<768px) vẫn xếp dọc, xem @media bên dưới. -->
+          <div class="lecture-slide-col">
+            <!-- Khung slide PDF — sân khấu tối, trung tâm tuyệt đối -->
+            <div class="stage-slide-area">
+              <div class="stage-slide-frame" id="stageSlideFrame">
+                <canvas id="pdfCanvas"></canvas>
+                <div class="stage-slide-empty" id="stageSlideEmpty">
+                  <i class="fas fa-file-pdf"></i>
+                  <div>Đang chuẩn bị slide…</div>
+                </div>
+              </div>
+              <div class="stage-slide-nav">
+                <button
+                  class="stage-nav-btn"
+                  id="slidePrev"
+                  onclick="changeSlidePage(-1)"
+                  aria-label="Trang trước (trong phần này)"
+                >
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="stage-page-info"
+                  >Trang <span id="slidePageNum">1</span> /
+                  <span id="slideTotalPages">—</span> · Phần
+                  <span id="stagePartNum">1</span></span
+                >
+                <button
+                  class="stage-nav-btn"
+                  id="slideNext"
+                  onclick="changeSlidePage(1)"
+                  aria-label="Trang tiếp theo (trong phần này)"
+                >
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột 2: phụ đề thông minh + control — hợp nhất "đang phát" (tên chương/phần, giữ
+               nguyên khi chuyển slide thủ công) + TOÀN BỘ văn bản AI tóm tắt của phần hiện tại,
+               câu đang đọc được highlight kiểu lyrics đồng bộ. -->
+          <div class="lecture-side-col">
+            <div class="caption-card">
+              <div class="caption-top-row">
+                <div class="caption-now-playing">
+                  <div class="np-label">Đang phát</div>
+                  <div class="np-title-inline" id="chTitle">Đang tải...</div>
+                  <div class="np-sub-inline" id="chSub">Phần 0 / 0</div>
+                </div>
+                <div class="caption-actions">
+                  <button class="caption-action-btn" onclick="openQuickCheck()">
+                    <i class="fas fa-brain"></i> Kiểm tra nhanh
+                  </button>
+                  <button class="caption-action-btn" onclick="uploadNew()">
+                    <i class="fas fa-upload"></i> Tải file mới
+                  </button>
+                </div>
+              </div>
+              <div
+                id="lectureTruncatedNotice"
+                style="
+                  display: none;
+                  font-size: 0.72rem;
+                  color: var(--yellow, #b8860b);
+                  background: rgba(184, 134, 11, 0.1);
+                  border-radius: 6px;
+                  padding: 6px 10px;
+                  margin: 0 0 8px;
+                "
+              ></div>
+              <div class="caption-area" id="transcriptArea">
+                <div class="lecture-empty">
+                  <i class="fas fa-volume-up"></i>
+                  <div style="font-size: 0.85rem; color: var(--gray-500)">
+                    Nhấn <strong>Phát</strong> để bắt đầu giảng bài
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thanh điều khiển kiểu media player -->
+            <div class="media-bar">
+              <div class="media-bar-controls">
+                <button
+                  class="media-btn-secondary"
+                  onclick="replaySegment()"
+                  title="Đọc lại phần này"
+                  aria-label="Đọc lại phần này"
+                >
+                  <i class="fas fa-rotate-left"></i>
+                </button>
+                <button
+                  class="media-btn-play"
+                  id="playBtn"
+                  onclick="togglePlay()"
+                  aria-label="Phát hoặc tạm dừng"
+                >
+                  <i class="fas fa-play" id="playIcon"></i>
+                </button>
+                <button
+                  class="media-btn-secondary"
+                  onclick="stopSpeech()"
+                  title="Dừng hẳn"
+                  aria-label="Dừng hẳn"
+                >
+                  <i class="fas fa-stop"></i>
+                </button>
+              </div>
+              <div class="media-bar-progress">
+                <span class="media-time" id="ctrlTime">0 / 0 phần</span>
+              </div>
+              <div class="media-bar-tools">
+                <i
+                  class="fas fa-volume-up"
+                  style="color: var(--gray-500); font-size: 0.85rem"
+                ></i>
+                <select class="voice-select" id="voiceSelect"></select>
+                <span style="font-size: 0.7rem; color: var(--gray-500)"
+                  >Tốc độ:</span
+                >
+                <button class="speed-btn" onclick="setSpeed(0.8)">0.8×</button>
+                <button class="speed-btn active" id="spd1" onclick="setSpeed(1)">
+                  1×
+                </button>
+                <button class="speed-btn" onclick="setSpeed(1.3)">1.3×</button>
+              </div>
+            </div>
+
+            <!-- Kiểm tra nhanh kiến thức (audit 2026-08-16 mục 3) — độc lập với Q&A Panel bên dưới -->
+          <div class="quick-check-panel" id="quickCheckPanel">
+            <div class="quick-check-header">
+              <div class="qa-icon"><i class="fas fa-brain"></i></div>
+              <div style="flex: 1">
+                <div>Kiểm tra nhanh kiến thức</div>
+                <div style="font-size: 0.68rem; opacity: 0.8; font-weight: 400">
+                  Câu hỏi tạm thời, không lưu lại — chỉ để bạn tự kiểm tra
+                </div>
+              </div>
+              <button
+                onclick="closeQuickCheck()"
+                style="
+                  background: rgba(255, 255, 255, 0.15);
+                  border: none;
+                  color: white;
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  font-size: 0.9rem;
+                "
+                aria-label="Đóng"
+              >
+                ×
+              </button>
+            </div>
+            <div class="quick-check-body">
+              <div id="qcLoading" style="text-align: center; padding: 20px; color: var(--gray-500); font-size: 0.85rem">
+                <i class="fas fa-spinner fa-spin" style="font-size: 1.4rem; display: block; margin-bottom: 8px"></i>
+                Đang tạo câu hỏi...
+              </div>
+              <div id="qcQuestions" style="display: none"></div>
+              <div id="qcResultSummary" style="display: none; font-weight: 700; margin-bottom: 10px; font-size: 0.85rem"></div>
+              <div style="display: flex; gap: 8px; margin-top: 8px">
+                <button id="qcSubmitBtn" class="btn btn-red" style="flex: 1; display: none" onclick="submitQuickCheck()">
+                  <i class="fas fa-check"></i> Xem kết quả
+                </button>
+                <button id="qcRetryBtn" class="btn btn-outline" style="flex: 1; display: none" onclick="retryQuickCheck()">
+                  <i class="fas fa-rotate"></i> Làm lại
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q&A Panel -->
+          <div class="qa-panel" id="qaPanel">
+            <div class="qa-header">
+              <div class="qa-icon"><i class="fas fa-robot"></i></div>
+              <div>
+                <div>Giảng viên Ảo hỏi</div>
+                <div
+                  style="font-size: 0.68rem; opacity: 0.8; font-weight: 400"
+                  id="qaCounter"
+                >
+                  Câu hỏi 1/2
+                </div>
+              </div>
+              <div
+                style="margin-left: auto; font-size: 0.7rem; opacity: 0.7"
+                id="qaTimer"
+              ></div>
+            </div>
+            <div class="qa-body">
+              <div class="qa-question" id="qaQuestion">—</div>
+              <div class="qa-hint">
+                💡 Hãy trả lời bằng ngôn ngữ của bạn, không cần chính xác từng
+                từ
+              </div>
+              <textarea
+                class="qa-textarea"
+                id="qaAnswer"
+                placeholder="Nhập câu trả lời của bạn..."
+                rows="3"
+              ></textarea>
+              <div class="ai-feedback" id="aiFeedback"></div>
+              <div class="qa-actions">
+                <button
+                  class="btn btn-red qa-submit"
+                  id="qaSubmitBtn"
+                  onclick="submitAnswer()"
+                >
+                  <i class="fas fa-paper-plane"></i> Gửi câu trả lời
+                </button>
+                <button class="btn btn-outline" onclick="skipQuestion()">
+                  Bỏ qua
+                </button>
+              </div>
+              <div class="ai-loading" id="qaLoading" style="display: none">
+                <i class="fas fa-spinner"></i> Giảng viên Ảo đang đánh giá...
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <!-- Cột 3: danh sách các phần (playlist) — desktop: list dọc "Phần N"; mobile: dãy pill
+               ngang gọn (xem @media trong CSS .media-dots/.media-dot). -->
+          <div class="lecture-playlist-col">
+            <div class="playlist-col-header">Các phần</div>
+            <div class="media-dots" id="segDots"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="chat.html" class="nav-item"
+        ><i class="fas fa-comment-dots"></i><span>Chat AI</span></a
+      >
+      <a href="luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="giang-bai.html" class="nav-item active"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="../cai-dat.html" class="nav-item" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — Giảng bài là trải nghiệm học viên, không còn dành cho Admin —
+      // redirect thẳng sang trang quản trị (trước đây chỉ ẩn nav, Admin gõ thẳng URL vẫn vào được).
+      // applyRoleGate() dùng chung (api-client.js).
+      applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1")
+        document.body.classList.add("dark");
+
+      // PDF.js worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      // ===================== STATE =====================
+      let chapters = []; // [{title, content, segments:[], questions:[]}]
+
+      // Audit 2026-08-18 — tài khoản Groq có trần 8.000 token/phút (TPM), áp dụng cho MỌI model,
+      // nên 1 lượt gọi AI với toàn bộ tài liệu dài (20.000+ ký tự) luôn bị 413/429. Giải pháp: chia
+      // sourceText thành nhiều chunk nhỏ, gọi AI TUẦN TỰ (không song song), có khoảng nghỉ giữa các
+      // lượt để không cộng dồn vượt trần trong cùng 1 phút.
+      //   - LECTURE_CHUNK_CHARS=6000: khớp đúng MaximumLength ở AiValidators.cs (server có validate
+      //     lại, không chỉ tin client). Ước lượng ~0.4 token/ký tự tiếng Việt (làm tròn lên từ tỉ lệ
+      //     đo thực tế ~0.336 khi test 1 payload dài thật) => ~2400 token prompt + ~350 token chỉ
+      //     dẫn nối mạch/previousTail + maxTokens=1500 (LectureService.cs) ≈ 4250 token/lượt — dưới
+      //     53% trần 8.000, còn dư nhiều để bù sai số ước lượng.
+      //   - LECTURE_CHUNK_PACE_MS=45000: ở nhịp 1 lượt/45s, thông lượng ổn định của riêng luồng này
+      //     ≈ 4250×(60/45) ≈ 5.670 token/phút (~71% trần), còn ~29% (~2.300 token/phút) dự phòng cho
+      //     các lượt gọi AI khác (chat, quick-check...) dùng chung tài khoản trong cùng thời điểm.
+      //   - Lưới an toàn PHẢN ỨNG (quan trọng hơn con số tính trước, vì tỉ lệ token/ký tự thực tế
+      //     thay đổi theo nội dung): nếu vẫn dính 429 giữa chừng, server (HttpGroqClient.cs) đọc
+      //     đúng số giây Groq yêu cầu chờ và trả về qua ApiError.retryAfterSeconds — client chờ đúng
+      //     ngần ấy (+2s đệm) rồi thử lại CHÍNH chunk đó, tối đa 3 lần trước khi báo lỗi rõ ràng.
+      //   - LECTURE_MAX_CHUNKS=5 (tối đa 30.000 ký tự nguồn) là lớp an toàn cuối — tài liệu dài hơn
+      //     bị cắt bớt có thông báo rõ ràng, thay vì lặp vô tận hoặc dồn quá nhiều lượt gọi liên tiếp.
+      const LECTURE_CHUNK_CHARS = 6000;
+      const LECTURE_MAX_CHUNKS = 5;
+      const LECTURE_CHUNK_PACE_MS = 45000;
+      let lectureTruncatedNotice = null;
+
+      // "Kiểm tra nhanh kiến thức" (audit 2026-08-16 mục 3) — giữ lại text gốc đã trích + thông
+      // tin tài liệu đang xem để nút quick-check dùng ngay, không phải trích lại PDF lần nữa.
+      let currentMaterialText = "";
+      let currentMaterialId = null;
+      let currentMaterialLabel = "";
+
+      // PDF Slide state — Việc E (2026-08-16): slide luôn hiển thị (bỏ toggle ẩn/hiện cũ, mặc
+      // định TẮT — nguyên nhân chính khiến slide "không phải trọng tâm" trước đây). Mỗi PHẦN AI
+      // đang đọc (segment) ứng với 1 khoảng trang PDF liên tục, chia theo tỉ lệ số trang/số phần
+      // — KHÔNG gọi AI thêm để lấy ranh giới thật (đã audit, xem báo cáo Việc E: prompt AI không
+      // trả cấu trúc phần cố định, suy ra ranh giới bằng AI sẽ tốn thêm 1 lượt gọi/quota mỗi lần).
+      let pdfDocObj = null; // giữ PDF document object để render slide
+      let currentSlidePage = 1;
+      let partPageRanges = []; // [{start,end}] theo index segment, tính lại mỗi khi có bài giảng mới
+      let currentPartBounds = { start: 1, end: 1 }; // khóa prev/next trong đúng phần đang đọc
+
+      /** Chia đều số trang cho số phần theo tỉ lệ. segCount có thể nhiều hơn totalPages (PDF
+       * ngắn, bài giảng dài) — khi đó vài phần trùng chung 1 trang, chấp nhận được vì đây là ước
+       * lượng minh họa, không phải mapping nội dung tuyệt đối (không có dữ liệu để làm chính xác
+       * hơn nếu không gọi thêm AI, xem báo cáo audit). */
+      function computePartPageRanges(segCount, totalPages) {
+        if (!segCount) return [];
+        if (!totalPages || totalPages < 1) {
+          return Array.from({ length: segCount }, () => ({ start: 1, end: 1 }));
+        }
+        const ranges = [];
+        for (let i = 0; i < segCount; i++) {
+          const start = Math.max(1, Math.min(totalPages, Math.floor((i * totalPages) / segCount) + 1));
+          const end = Math.max(start, Math.min(totalPages, Math.floor(((i + 1) * totalPages) / segCount)));
+          ranges.push({ start, end });
+        }
+        return ranges;
+      }
+
+      /** Slide tự nhảy tới trang ĐẦU của phần segIdx khi phần đó bắt đầu được đọc/được chọn từ
+       * playlist — đúng thiết kế đã duyệt. Đồng thời khóa phạm vi chuyển trang thủ công (prev/
+       * next) trong đúng khoảng trang của phần này — chuyển slide thủ công trong phần KHÔNG đổi
+       * "đang phát" (chTitle/chSub/transcript giữ nguyên), chỉ đổi khi sang phần khác. */
+      function jumpSlideToPart(segIdx) {
+        const range = partPageRanges[segIdx] || { start: 1, end: pdfDocObj ? pdfDocObj.numPages : 1 };
+        currentPartBounds = range;
+        const partNumEl = document.getElementById("stagePartNum");
+        if (partNumEl) partNumEl.textContent = segIdx + 1;
+        if (pdfDocObj) renderSlidePage(range.start);
+      }
+
+      async function renderSlidePage(pageNum) {
+        const emptyEl = document.getElementById("stageSlideEmpty");
+        if (!pdfDocObj) {
+          if (emptyEl) emptyEl.style.display = "block";
+          return;
+        }
+        if (emptyEl) emptyEl.style.display = "none";
+
+        const { start, end } = currentPartBounds;
+        pageNum = Math.max(start, Math.min(pageNum, end));
+        currentSlidePage = pageNum;
+        document.getElementById("slidePageNum").textContent = pageNum;
+        document.getElementById("slideTotalPages").textContent =
+          pdfDocObj.numPages;
+        document.getElementById("slidePrev").disabled = pageNum <= start;
+        document.getElementById("slideNext").disabled = pageNum >= end;
+
+        const page = await pdfDocObj.getPage(pageNum);
+        const canvas = document.getElementById("pdfCanvas");
+        const ctx = canvas.getContext("2d");
+        const containerWidth = canvas.parentElement.clientWidth - 16;
+        const viewport = page.getViewport({ scale: 1 });
+        // Không còn trần 1.8x cứng (nguyên nhân slide nhỏ trước đây) — chỉ chặn trên 2.5x để
+        // tránh render canvas quá lớn không cần thiết trên màn rất rộng; kích thước HIỂN THỊ thật
+        // sự do CSS max-height/max-width trên #pdfCanvas quyết định (không méo, giữ tỷ lệ gốc).
+        const scale = containerWidth > 0 ? Math.min(containerWidth / viewport.width, 2.5) : 1;
+        const scaledViewport = page.getViewport({ scale });
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        await page.render({ canvasContext: ctx, viewport: scaledViewport })
+          .promise;
+      }
+
+      function changeSlidePage(delta) {
+        if (!pdfDocObj) return;
+        renderSlidePage(currentSlidePage + delta);
+      }
+
+      let currentChapter = 0;
+      let currentSegment = 0;
+      let isPlaying = false;
+      let isPaused = false;
+      let awaitingContinue = false; // Việc E: đọc xong 1 phần thì dừng, chờ người dùng bấm Phát
+      let ttsUtterance = null;
+      let speechSpeed = 1;
+      let voices = [];
+      let selectedVoice = null;
+
+      // Q&A state
+      let activeQuestions = []; // list of questions for current stop
+      let currentQIndex = 0;
+      let qaAnswers = [];
+      let qaTimerInterval = null;
+      let qaTimeLeft = 120; // 2 minutes per question
+
+      // ===================== INIT =====================
+      async function init() {
+        if (!requireAuth()) return;
+        renderHeaderProfileBtn("../cai-dat.html");
+
+        // Load voices
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+
+        // Load teacher-uploaded materials
+        await loadMaterials();
+
+        // Auto-open nếu được gọi từ trang khác (VD: ?mat=uuid)
+        const urlParams = new URLSearchParams(window.location.search);
+        const matId = urlParams.get("mat");
+        if (matId) {
+          try {
+            const m = await getMaterial(matId);
+            if (m) openMaterial(m.id, m.fileUrl, m.title, m.chapter);
+          } catch (e) {}
+        }
+      }
+
+      // ── Load materials từ content-service ──
+      async function loadMaterials() {
+        const loadingEl = document.getElementById("matLoadingEl");
+        const gridEl = document.getElementById("matGridEl");
+        const emptyEl = document.getElementById("matEmptyEl");
+
+        try {
+          const data = await listMaterials();
+          if (loadingEl) loadingEl.style.display = "none";
+
+          if (!data || data.length === 0) {
+            // Mục 1.2 (2026-08-17) — Học viên không còn tự upload PDF được nữa, chỉ hiện thông
+            // báo chưa có tài liệu (xem KHÔNG còn nhánh self-upload nào ở đây).
+            if (emptyEl) emptyEl.style.display = "block";
+            return;
+          }
+
+          if (gridEl) {
+            gridEl.style.display = "block";
+            gridEl.innerHTML =
+              '<div class="mat-grid">' +
+              data
+                .map((m) => {
+                  const size =
+                    m.fileSize > 1024 * 1024
+                      ? (m.fileSize / 1024 / 1024).toFixed(1) + " MB"
+                      : (m.fileSize / 1024).toFixed(0) + " KB";
+                  return `<div class="mat-card" onclick="openMaterial('${m.id}','${m.fileUrl}','${m.title.replace(/'/g, "\'")}','${(m.chapter || "").replace(/'/g, "\'")}')">
+          <div class="mat-card-icon">📄</div>
+          <div class="mat-card-info">
+            <div class="mat-card-title">${m.title}</div>
+            <div class="mat-card-meta">
+              <span class="mat-card-badge">${m.chapter || "Chung"}</span>
+              <span>${size}</span>
+              <span>👁 ${m.viewCount || 0} lượt xem</span>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right mat-card-arrow"></i>
+        </div>`;
+                })
+                .join("") +
+              "</div>";
+          }
+        } catch (e) {
+          if (loadingEl) loadingEl.style.display = "none";
+          if (emptyEl) emptyEl.style.display = "block";
+        }
+      }
+
+      // ── Open a teacher-uploaded material ──
+      async function openMaterial(id, fileUrl, title, chapter) {
+        incrementMaterialView(id).catch(() => {});
+
+        // Show processing state
+        document.getElementById("uploadSection").style.display = "none";
+        document.getElementById("processingInfo").style.display = "block";
+        document.getElementById("processingMsg").textContent =
+          "Đang tải tài liệu: " + title;
+
+        try {
+          // Fetch PDF as ArrayBuffer
+          const resp = await fetch(fileUrl);
+          const buffer = await resp.arrayBuffer();
+          // Create a fake File object to reuse processFile
+          const blob = new Blob([buffer], { type: "application/pdf" });
+          const file = new File([blob], title + ".pdf", {
+            type: "application/pdf",
+          });
+          processFile(file, chapter, title, id);
+        } catch (e) {
+          document.getElementById("processingInfo").style.display = "none";
+          document.getElementById("uploadSection").style.display = "block";
+          alert("Không thể tải tài liệu. Vui lòng thử lại!");
+        }
+      }
+
+      function loadVoices() {
+        voices = window.speechSynthesis.getVoices();
+        const sel = document.getElementById("voiceSelect");
+        sel.innerHTML = "";
+        // Prioritize Vietnamese voices
+        const viVoices = voices.filter((v) => v.lang.includes("vi"));
+        const otherVoices = voices.filter((v) => !v.lang.includes("vi"));
+        const allVoices = [...viVoices, ...otherVoices];
+        if (allVoices.length === 0) {
+          sel.innerHTML = "<option>Giọng mặc định hệ thống</option>";
+          return;
+        }
+        allVoices.forEach((v, i) => {
+          const opt = document.createElement("option");
+          opt.value = i;
+          opt.textContent = `${v.name} (${v.lang})`;
+          if (v.lang.includes("vi")) opt.textContent = "🇻🇳 " + opt.textContent;
+          sel.appendChild(opt);
+        });
+        selectedVoice = viVoices[0] || allVoices[0];
+        sel.addEventListener("change", () => {
+          selectedVoice = allVoices[parseInt(sel.value)];
+        });
+      }
+
+      // ===================== FILE HANDLING =====================
+      async function processFile(file, chapterLabel, materialTitle, materialId) {
+        showProcessing(true, "Đang đọc file PDF...");
+
+        try {
+          const text = await extractPDFText(file);
+          const label = materialTitle || file.name.replace(".pdf", "");
+          // Giữ lại cho "Kiểm tra nhanh kiến thức" (mục 3) — dùng ngay, không trích lại PDF.
+          currentMaterialText = text;
+          currentMaterialId = materialId || null;
+          currentMaterialLabel = chapterLabel || label;
+          showProcessing(true, "AI đang soạn bài giảng...");
+          await buildChapters(text, label, chapterLabel);
+          showProcessing(false);
+          showPlayer();
+          goToChapter(0);
+          saveProgress();
+        } catch (err) {
+          showProcessing(false);
+          alert("Lỗi: " + err.message);
+          console.error(err);
+        }
+      }
+
+      async function extractPDFText(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        pdfDocObj = pdf; // lưu lại để render slide
+        document.getElementById("slideTotalPages").textContent = pdf.numPages;
+        let fullText = "";
+        const totalPages = pdf.numPages;
+
+        for (let i = 1; i <= totalPages; i++) {
+          showProcessing(true, `Đang đọc trang ${i}/${totalPages}...`);
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items.map((item) => item.str).join(" ");
+          fullText += pageText + "\n\n";
+        }
+        return fullText;
+      }
+
+      // Mỗi tài liệu (material) đã có sẵn 1 chapter/tên riêng do giáo viên đặt khi upload —
+      // ai-service tạo 1 bài giảng cho đúng tài liệu đó (không còn để AI tự "đoán" ranh giới
+      // nhiều chương trong 1 PDF như bản cũ), rồi client tự chia đoạn để đọc bằng TTS.
+      //
+      // Audit 2026-08-18 — tài liệu dài giờ được CHIA NHỎ (chunk) và gọi AI tuần tự nhiều lượt
+      // thay vì 1 lượt duy nhất (xem giải thích LECTURE_CHUNK_* ở đầu file) để tránh trần token/
+      // phút của Groq, đồng thời vẫn giữ được TOÀN BỘ nội dung (thay vì cắt bớt tài liệu như cách
+      // xử lý cũ chỉ lấy 20.000 ký tự đầu).
+      async function buildChapters(text, title, chapterLabel) {
+        const label = chapterLabel || title;
+
+        const cap = LECTURE_CHUNK_CHARS * LECTURE_MAX_CHUNKS;
+        const cappedText = text.slice(0, cap);
+        const wasTruncated = cappedText.length < text.length;
+
+        const chunks = [];
+        for (let i = 0; i < cappedText.length; i += LECTURE_CHUNK_CHARS) {
+          chunks.push(cappedText.slice(i, i + LECTURE_CHUNK_CHARS));
+        }
+        if (chunks.length === 0) chunks.push("");
+
+        let lectureText = "";
+        let lastCallStartedAt = 0;
+        for (let i = 0; i < chunks.length; i++) {
+          if (i > 0) {
+            const elapsed = Date.now() - lastCallStartedAt;
+            const waitMs = LECTURE_CHUNK_PACE_MS - elapsed;
+            if (waitMs > 0) {
+              await waitWithCountdown(waitMs, i + 1, chunks.length, false);
+            }
+          }
+          const previousTail = lectureText.slice(-700);
+          lastCallStartedAt = Date.now();
+          const chunkContent = await generateLectureChunkWithRetry(
+            label, title, chunks[i], i, chunks.length, previousTail
+          );
+          // Lưới an toàn ĐƠN ĐỊNH cho phần "không lặp" — chỉ dặn AI qua prompt là chưa đủ chắc
+          // chắn (test thật 2026-08-18 vẫn bắt được model lặp lại nguyên 1 gạch đầu dòng đã có ở
+          // cuối chunk trước). Cắt bỏ các dòng ĐẦU của chunk mới nếu trùng khớp (gần) với đoạn cuối
+          // đã ghép, trước khi nối vào — không phụ thuộc hoàn toàn vào việc model tuân lệnh.
+          const deduped = stripLeadingDuplicateLines(chunkContent, lectureText.slice(-800));
+          lectureText += (lectureText ? "\n\n" : "") + deduped;
+        }
+
+        const segments = splitIntoSegments(lectureText);
+
+        let questions = [];
+        try {
+          showProcessing(true, "AI đang soạn câu hỏi kiểm tra...");
+          // Chỉ dùng chunk đầu tiên (không phải toàn bộ tài liệu) — 3 câu hỏi kiểm tra không cần
+          // toàn văn, và lượt gọi này diễn ra ngay sau các chunk bài giảng trong cùng cửa sổ 1
+          // phút nên cần nhỏ gọn để không cộng dồn vượt trần token/phút.
+          const comp = await generateComprehensionQuestions(label, chunks[0]);
+          questions = (comp.questions || []).map((q) => ({ q, hint: "" }));
+        } catch (e) {
+          // Câu hỏi kiểm tra là phụ — bài giảng vẫn dùng được nếu bước này lỗi.
+          questions = [];
+        }
+
+        chapters = [{ title, segments, questions }];
+        // Việc E — chia đều số trang PDF cho số phần vừa có, để slide tự đồng bộ theo phần đang đọc.
+        partPageRanges = computePartPageRanges(segments.length, pdfDocObj ? pdfDocObj.numPages : 0);
+
+        if (wasTruncated && pdfDocObj) {
+          const approxPages = Math.max(1, Math.round((cappedText.length / text.length) * pdfDocObj.numPages));
+          lectureTruncatedNotice = `Tài liệu có ${pdfDocObj.numPages} trang — do giới hạn hệ thống AI, bài giảng được tạo từ khoảng ${approxPages} trang đầu.`;
+        } else if (wasTruncated) {
+          lectureTruncatedNotice = "Tài liệu quá dài — bài giảng được tạo từ phần đầu tài liệu do giới hạn hệ thống AI.";
+        } else {
+          lectureTruncatedNotice = null;
+        }
+      }
+
+      // Cắt bỏ các dòng ĐẦU của 1 chunk mới nếu trùng khớp gần như nguyên văn với đoạn cuối đã ghép
+      // — bắt các trường hợp AI lặp lại câu/gạch đầu dòng cuối của chunk trước dù đã được dặn trong
+      // prompt (xem BuildLecturePrompt ở LectureService.cs). So khớp bỏ qua khoảng trắng thừa/dấu
+      // câu cuối dòng để không bỏ sót do khác biệt định dạng nhỏ.
+      function stripLeadingDuplicateLines(chunkText, previousTailText) {
+        const normalize = (s) => s.trim().replace(/\s+/g, " ").replace(/[.,;:!?…-]+$/, "");
+        const previousNormalized = normalize(previousTailText);
+        const lines = chunkText.split("\n");
+        let startIdx = 0;
+        while (startIdx < lines.length) {
+          const normalizedLine = normalize(lines[startIdx]);
+          if (normalizedLine.length >= 15 && previousNormalized.includes(normalizedLine)) {
+            startIdx++;
+          } else {
+            break;
+          }
+        }
+        return lines.slice(startIdx).join("\n").replace(/^\s+/, "");
+      }
+
+      // Gọi AI cho 1 chunk, có retry khi bị Groq giới hạn tốc độ (429) — chờ đúng số giây Groq yêu
+      // cầu (ApiError.retryAfterSeconds, xem HttpGroqClient.cs) + 2s đệm rồi thử lại CHÍNH chunk đó.
+      async function generateLectureChunkWithRetry(label, title, sourceChunk, partIndex, partTotal, previousTail) {
+        const MAX_ATTEMPTS = 3;
+        for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+          showProcessing(true, `AI đang soạn bài giảng... phần ${partIndex + 1}/${partTotal}`);
+          try {
+            const res = await generateLecture(label, title, sourceChunk, partIndex, partTotal, previousTail);
+            return res.content;
+          } catch (e) {
+            const isRateLimited = e.status === 429 || e.code === "RATE_LIMITED";
+            if (isRateLimited && attempt < MAX_ATTEMPTS) {
+              const waitMs = ((e.retryAfterSeconds || 10) + 2) * 1000;
+              await waitWithCountdown(waitMs, partIndex + 1, partTotal, true);
+              continue;
+            }
+            throw new Error(
+              isRateLimited
+                ? "Hệ thống AI đang bị giới hạn tốc độ (quá nhiều yêu cầu/phút), vui lòng thử lại sau ít phút."
+                : "Không tạo được bài giảng: " + e.message
+            );
+          }
+        }
+      }
+
+      // Đếm ngược hiển thị cho người dùng trong lúc client chủ động nghỉ giữa các lượt gọi AI
+      // (tránh vượt trần token/phút) hoặc chờ theo yêu cầu retry-after thực tế của Groq.
+      function waitWithCountdown(ms, partNum, partTotal, isRetry) {
+        return new Promise((resolve) => {
+          const endAt = Date.now() + ms;
+          const tick = () => {
+            const remainMs = endAt - Date.now();
+            if (remainMs <= 0) {
+              showProcessing(true, `AI đang soạn bài giảng... phần ${partNum}/${partTotal}`);
+              resolve();
+              return;
+            }
+            const remainSec = Math.ceil(remainMs / 1000);
+            const reason = isRetry ? "hệ thống AI vừa báo giới hạn tốc độ" : "tránh vượt giới hạn tốc độ AI";
+            showProcessing(true, `Đang chờ ${remainSec}s trước khi tạo phần ${partNum}/${partTotal} (${reason})...`);
+            setTimeout(tick, 1000);
+          };
+          tick();
+        });
+      }
+
+      // Chia văn bản bài giảng thành các đoạn ~100-150 từ để đọc TTS từng đoạn một.
+      // Việc 3.0 (2026-08-18) — nối bằng "\n\n" (trước là 1 khoảng trắng) để GIỮ LẠI ranh giới
+      // đoạn văn của AI bên trong mỗi segment TTS — renderCaption() dựa vào đó để hiển thị từng
+      // đoạn tách biệt, dễ đọc, thay vì dồn hết câu trong 1 khối. Đếm từ (\s+) không đổi hành vi
+      // vì \n cũng khớp \s+, số lượng segment/ranh giới TTS không đổi.
+      function splitIntoSegments(text) {
+        const paragraphs = text
+          .split(/\n{2,}/)
+          .map((p) => p.trim())
+          .filter(Boolean);
+        const segments = [];
+        let buffer = "";
+        for (const p of paragraphs) {
+          buffer = buffer ? buffer + "\n\n" + p : p;
+          if (buffer.split(/\s+/).length >= 100) {
+            segments.push(buffer);
+            buffer = "";
+          }
+        }
+        if (buffer) segments.push(buffer);
+        return segments.length ? segments : [text];
+      }
+
+      // ===================== PLAYER =====================
+      function showPlayer() {
+        document.getElementById("uploadSection").style.display = "none";
+        document.getElementById("playerWrap").classList.add("active");
+        renderSegDots();
+
+        const noticeEl = document.getElementById("lectureTruncatedNotice");
+        if (lectureTruncatedNotice) {
+          noticeEl.textContent = "⚠ " + lectureTruncatedNotice;
+          noticeEl.style.display = "block";
+        } else {
+          noticeEl.style.display = "none";
+        }
+      }
+
+      function goToChapter(idx) {
+        stopSpeech();
+        currentChapter = idx;
+        currentSegment = 0;
+        isPlaying = false;
+        isPaused = false;
+        awaitingContinue = false;
+
+        const ch = chapters[idx];
+        document.getElementById("chTitle").textContent = ch.title;
+        document.getElementById("chSub").textContent =
+          `Phần 1 / ${ch.segments.length} · ${ch.questions.length} câu hỏi`;
+        document.getElementById("playIcon").className = "fas fa-play";
+        renderSegDots();
+        renderCaption(null);
+        document.getElementById("ctrlTime").textContent =
+          `0 / ${ch.segments.length} phần`;
+        closeQA();
+        setStatus("paused", "Sẵn sàng");
+        jumpSlideToPart(0); // slide luôn theo đúng phần đang chọn/đọc
+      }
+
+      // Tinh chỉnh 2026-08-17 — dãy pill số thứ tự gọn, vẫn bấm nhảy phần được (jumpToPart) + hiện
+      // tiến trình đọc. Việc 3.0 (2026-08-18) — chữ đầy đủ "Phần N" (trước chỉ có số) vì cột 3 giờ
+      // là 1 list dọc riêng, đủ chỗ hiển thị rõ ràng hơn số thứ tự đơn thuần.
+      function renderSegDots() {
+        const ch = chapters[currentChapter];
+        document.getElementById("segDots").innerHTML = ch.segments
+          .map(
+            (_, i) =>
+              `<button type="button" class="media-dot" id="dot${i}" title="Phần ${i + 1}" onclick="jumpToPart(${i})">Phần ${i + 1}</button>`,
+          )
+          .join("");
+      }
+
+      function updateDots() {
+        const ch = chapters[currentChapter];
+        ch.segments.forEach((_, i) => {
+          const dot = document.getElementById(`dot${i}`);
+          if (!dot) return;
+          dot.className =
+            "media-dot" +
+            (i < currentSegment
+              ? " done"
+              : i === currentSegment
+                ? " current"
+                : "");
+        });
+      }
+
+      // ===================== PHỤ ĐỀ THÔNG MINH (tinh chỉnh 2026-08-17) =====================
+      // Tách văn bản 1 phần thành câu, hiển thị TOÀN BỘ (không cắt còn 1-2 dòng như phụ đề phim),
+      // câu ĐANG ĐƯỢC ĐỌC highlight nổi bật kiểu lyrics đồng bộ (Spotify/Apple Music). Vị trí đang
+      // đọc lấy từ SpeechSynthesisUtterance.onboundary (đã audit: Web Speech API hỗ trợ, xem
+      // speakSegment) — NẾU giọng đọc/trình duyệt không phát sự kiện này trong ~1.2s đầu (một số
+      // giọng/engine không hỗ trợ boundary, đặc biệt vi-VN), tự động chuyển sang phương án dự
+      // phòng đã duyệt: tô sáng CẢ đoạn văn của phần đang đọc như 1 khối, không chi tiết từng câu.
+      let captionSentenceRanges = []; // [{start,end}] theo charIndex trong text gốc của phần
+      let currentCaptionIdx = -1;
+      let captionBoundaryFired = false;
+      let captionFallbackTimer = null;
+
+      function splitIntoSentences(text) {
+        const raw = text
+          .split(/(?<=[.!?…])\s+/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        return raw.length ? raw : [text];
+      }
+
+      /** segIdx=null → hiện trạng thái rỗng ban đầu (chưa bấm Phát lần nào). */
+      function renderCaption(segIdx) {
+        clearCaptionFallbackTimer();
+        currentCaptionIdx = -1;
+        captionBoundaryFired = false;
+        const area = document.getElementById("transcriptArea");
+        area.classList.remove("cap-fallback-whole");
+
+        if (segIdx === null || segIdx === undefined) {
+          captionSentenceRanges = [];
+          area.innerHTML = `<div class="lecture-empty"><i class="fas fa-volume-up"></i><div style="font-size:0.85rem;color:var(--gray-500);">Nhấn <strong>Phát</strong> để bắt đầu giảng bài</div></div>`;
+          return;
+        }
+
+        const text = chapters[currentChapter].segments[segIdx];
+        // Việc 3.0 — render theo TỪNG ĐOẠN văn (ranh giới \n\n do AI trả về, giữ nguyên qua
+        // splitIntoSegments — xem remarks ở đó) thành 1 khối <p> riêng, cách nhau rõ ràng, thay vì
+        // dồn hết câu của cả segment vào 1 khối liền mạch. captionSentenceRanges vẫn là 1 mảng
+        // PHẲNG xuyên suốt mọi đoạn (id capSent0, capSent1...) — highlightCaptionAtCharIndex không
+        // cần biết gì về đoạn văn, chỉ tra theo charIndex như trước.
+        const paragraphs = text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+        const paragraphList = paragraphs.length ? paragraphs : [text];
+
+        captionSentenceRanges = [];
+        let cursor = 0;
+        let sentIdx = 0;
+        const paraBlocks = [];
+        for (const para of paragraphList) {
+          const sentences = splitIntoSentences(para);
+          const spans = [];
+          for (const s of sentences) {
+            const found = text.indexOf(s, cursor);
+            const start = found >= 0 ? found : cursor;
+            const end = start + s.length;
+            captionSentenceRanges.push({ start, end });
+            cursor = end;
+            spans.push(`<span class="cap-sentence" id="capSent${sentIdx}">${escapeHtmlQc(s)}</span>`);
+            sentIdx++;
+          }
+          paraBlocks.push(`<p class="cap-para">${spans.join(" ")}</p>`);
+        }
+        area.innerHTML = paraBlocks.join("");
+        area.scrollTop = 0;
+      }
+
+      /** Gọi từ ttsUtterance.onboundary — idx = charIndex trong text gốc của phần đang đọc. */
+      function highlightCaptionAtCharIndex(idx) {
+        const sentIdx = captionSentenceRanges.findIndex((r) => idx >= r.start && idx < r.end);
+        if (sentIdx < 0 || sentIdx === currentCaptionIdx) return;
+        for (let i = 0; i < captionSentenceRanges.length; i++) {
+          const el = document.getElementById(`capSent${i}`);
+          if (!el) continue;
+          el.classList.toggle("current", i === sentIdx);
+          el.classList.toggle("done", i < sentIdx);
+        }
+        currentCaptionIdx = sentIdx;
+        document.getElementById(`capSent${sentIdx}`)?.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+
+      /** Phương án dự phòng — giọng đọc không phát onboundary: tô sáng cả đoạn như 1 khối. */
+      function applyCaptionFallbackWhole() {
+        document.getElementById("transcriptArea")?.classList.add("cap-fallback-whole");
+        document.querySelectorAll(".cap-sentence").forEach((el) => el.classList.add("current"));
+      }
+
+      function clearCaptionFallbackTimer() {
+        if (captionFallbackTimer) {
+          clearTimeout(captionFallbackTimer);
+          captionFallbackTimer = null;
+        }
+      }
+
+      // ===================== SPEECH =====================
+      // Việc E (2026-08-16) — đọc xong 1 phần thì DỪNG, không tự nhảy sang phần kế (xác nhận qua
+      // audit: trước đây ttsUtterance.onend tự gọi speakSegment(segIdx+1), đây là bug đã sửa).
+      // awaitingContinue=true nghĩa là đã đọc xong phần hiện tại, đang chờ người dùng bấm Phát để
+      // chủ động đọc tiếp phần kế — currentSegment CHƯA đổi cho tới lúc đó.
+      function togglePlay() {
+        if (isPlaying) {
+          pauseSpeech();
+        } else if (awaitingContinue) {
+          awaitingContinue = false;
+          speakSegment(currentSegment + 1);
+        } else if (isPaused) {
+          resumeSpeech();
+        } else {
+          startSpeech();
+        }
+      }
+
+      function startSpeech() {
+        if (currentSegment >= chapters[currentChapter].segments.length) {
+          currentSegment = 0;
+        }
+        speakSegment(currentSegment);
+      }
+
+      function speakSegment(segIdx) {
+        const ch = chapters[currentChapter];
+        if (segIdx >= ch.segments.length) {
+          onChapterEnd();
+          return;
+        }
+        currentSegment = segIdx;
+        const text = ch.segments[segIdx];
+        renderCaption(segIdx);
+        updateDots();
+        jumpSlideToPart(segIdx); // slide tự nhảy tới đầu trang của phần này
+
+        document.getElementById("ctrlTime").textContent =
+          `${segIdx + 1} / ${ch.segments.length} phần`;
+        document.getElementById("chSub").textContent =
+          `Phần ${segIdx + 1} / ${ch.segments.length}`;
+
+        stopSpeech();
+        ttsUtterance = new SpeechSynthesisUtterance(text);
+        ttsUtterance.lang = "vi-VN";
+        ttsUtterance.rate = speechSpeed;
+        if (selectedVoice) ttsUtterance.voice = selectedVoice;
+
+        ttsUtterance.onstart = () => {
+          isPlaying = true;
+          isPaused = false;
+          document.getElementById("playIcon").className = "fas fa-pause";
+          setStatus("speaking", "Đang giảng bài");
+          // Phụ đề thông minh — nếu giọng đọc không phát onboundary trong ~1.2s đầu, coi như
+          // không hỗ trợ theo dõi vị trí đọc, tự chuyển sang phương án dự phòng (tô sáng cả
+          // đoạn). Chốt currentSegment lúc lên lịch để không áp dụng nhầm nếu người dùng đã
+          // chuyển phần/dừng trước khi hết 1.2s.
+          const capturedSegIdx = segIdx;
+          clearCaptionFallbackTimer();
+          captionFallbackTimer = setTimeout(() => {
+            if (!captionBoundaryFired && currentSegment === capturedSegIdx && isPlaying) {
+              applyCaptionFallbackWhole();
+            }
+          }, 1200);
+        };
+
+        ttsUtterance.onboundary = (event) => {
+          if (!captionBoundaryFired) {
+            captionBoundaryFired = true;
+            clearCaptionFallbackTimer();
+          }
+          highlightCaptionAtCharIndex(typeof event.charIndex === "number" ? event.charIndex : 0);
+        };
+
+        ttsUtterance.onend = () => {
+          isPlaying = false;
+          clearCaptionFallbackTimer();
+          // Vẫn giữ nguyên mốc kiểm tra hiểu bài giữa giờ (không đổi so với trước) — chỉ khác ở
+          // chỗ SAU khi qua mốc này (có hoặc không câu hỏi) cũng phải chờ người dùng bấm Phát,
+          // xem triggerQA()/goNextQuestion() bên dưới — cùng nguyên tắc "dừng, không tự đọc tiếp".
+          const midPoint = Math.floor(ch.segments.length / 2);
+          if (segIdx === midPoint - 1 || segIdx === ch.segments.length - 1) {
+            triggerQA(ch.questions, segIdx === ch.segments.length - 1);
+          } else {
+            awaitingContinue = true;
+            document.getElementById("playIcon").className = "fas fa-play";
+            setStatus("paused", "Đã xong phần này — bấm Phát để đọc tiếp");
+          }
+        };
+
+        ttsUtterance.onerror = (e) => {
+          console.error("TTS error:", e);
+          isPlaying = false;
+          clearCaptionFallbackTimer();
+          awaitingContinue = true;
+          document.getElementById("playIcon").className = "fas fa-play";
+          setStatus("paused", "Lỗi đọc — bấm Phát để thử phần tiếp theo");
+        };
+
+        window.speechSynthesis.speak(ttsUtterance);
+      }
+
+      function pauseSpeech() {
+        window.speechSynthesis.pause();
+        isPlaying = false;
+        isPaused = true;
+        document.getElementById("playIcon").className = "fas fa-play";
+        setStatus("paused", "Tạm dừng");
+      }
+
+      function resumeSpeech() {
+        window.speechSynthesis.resume();
+        isPlaying = true;
+        isPaused = false;
+        document.getElementById("playIcon").className = "fas fa-pause";
+        setStatus("speaking", "Đang giảng bài");
+      }
+
+      function stopSpeech() {
+        window.speechSynthesis.cancel();
+        isPlaying = false;
+        isPaused = false;
+        awaitingContinue = false;
+        clearCaptionFallbackTimer();
+        document.getElementById("playIcon").className = "fas fa-play";
+      }
+
+      function replaySegment() {
+        stopSpeech();
+        speakSegment(currentSegment);
+      }
+
+      /** Bấm 1 pill số thứ tự: nhảy slide + hiện phụ đề phần đó NGAY, nhưng KHÔNG tự đọc — đúng
+       * nguyên tắc "chỉ đọc khi bấm Phát" áp dụng luôn cho điều hướng thủ công giữa các phần,
+       * không riêng gì chuyển trang PDF trong 1 phần. */
+      function jumpToPart(segIdx) {
+        const ch = chapters[currentChapter];
+        if (segIdx < 0 || segIdx >= ch.segments.length) return;
+        stopSpeech();
+        closeQA();
+        currentSegment = segIdx;
+        renderCaption(segIdx);
+        updateDots();
+        jumpSlideToPart(segIdx);
+        document.getElementById("ctrlTime").textContent =
+          `${segIdx + 1} / ${ch.segments.length} phần`;
+        document.getElementById("chSub").textContent =
+          `Phần ${segIdx + 1} / ${ch.segments.length}`;
+        setStatus("paused", "Sẵn sàng đọc phần " + (segIdx + 1));
+      }
+
+      function setSpeed(s) {
+        speechSpeed = s;
+        document
+          .querySelectorAll(".speed-btn")
+          .forEach((b) => b.classList.remove("active"));
+        event.target.classList.add("active");
+        if (isPlaying) {
+          stopSpeech();
+          speakSegment(currentSegment);
+        }
+      }
+
+      function onChapterEnd() {
+        isPlaying = false;
+        document.getElementById("playIcon").className = "fas fa-play";
+        setStatus("paused", "Hoàn thành chương");
+
+        // Auto go to next chapter
+        if (currentChapter < chapters.length - 1) {
+          setTimeout(() => {
+            if (
+              confirm(
+                `Hoàn thành "${chapters[currentChapter].title}"! Tiếp tục chương tiếp theo?`,
+              )
+            ) {
+              goToChapter(currentChapter + 1);
+            }
+          }, 500);
+        } else {
+          setTimeout(
+            () => alert("🎉 Chúc mừng! Bạn đã hoàn thành toàn bộ bài giảng!"),
+            500,
+          );
+        }
+        logStudyTime(
+          Math.ceil(chapters[currentChapter].segments.length * 2),
+        ).catch(() => {});
+      }
+
+      // ===================== Q&A =====================
+      function triggerQA(questions, isEndOfChapter) {
+        stopSpeech();
+        setStatus("question", "Giảng viên đang hỏi");
+
+        activeQuestions = questions || [];
+        currentQIndex = 0;
+        qaAnswers = [];
+
+        if (activeQuestions.length === 0) {
+          if (!isEndOfChapter) {
+            // Việc E — cùng nguyên tắc "dừng, chờ bấm Phát" dù đi qua nhánh kiểm tra hiểu bài.
+            awaitingContinue = true;
+            document.getElementById("playIcon").className = "fas fa-play";
+            setStatus("paused", "Đã xong phần này — bấm Phát để đọc tiếp");
+          } else {
+            onChapterEnd();
+          }
+          return;
+        }
+        showQuestion(0, isEndOfChapter);
+      }
+
+      function showQuestion(idx, isEndOfChapter) {
+        const panel = document.getElementById("qaPanel");
+        const q = activeQuestions[idx];
+        panel.classList.add("show");
+        document.getElementById("qaQuestion").textContent = q.q;
+        document.getElementById("qaCounter").textContent =
+          `Câu hỏi ${idx + 1}/${activeQuestions.length}`;
+        document.getElementById("qaAnswer").value = "";
+        document.getElementById("aiFeedback").className = "ai-feedback";
+        document.getElementById("qaSubmitBtn").disabled = false;
+        document.getElementById("qaSubmitBtn").innerHTML =
+          '<i class="fas fa-paper-plane"></i> Gửi câu trả lời';
+
+        // Timer
+        clearInterval(qaTimerInterval);
+        qaTimeLeft = 120;
+        updateQaTimer();
+        qaTimerInterval = setInterval(() => {
+          qaTimeLeft--;
+          updateQaTimer();
+          if (qaTimeLeft <= 0) {
+            clearInterval(qaTimerInterval);
+            submitAnswer(true);
+          }
+        }, 1000);
+
+        // Store isEndOfChapter flag
+        panel.dataset.endOfChapter = isEndOfChapter;
+        document.getElementById("qaAnswer").focus();
+      }
+
+      function updateQaTimer() {
+        const m = Math.floor(qaTimeLeft / 60);
+        const s = qaTimeLeft % 60;
+        document.getElementById("qaTimer").textContent =
+          `⏱ ${m}:${String(s).padStart(2, "0")}`;
+        if (qaTimeLeft <= 30)
+          document.getElementById("qaTimer").style.color = "#ef5350";
+        else document.getElementById("qaTimer").style.color = "";
+      }
+
+      async function submitAnswer(timeout = false) {
+        clearInterval(qaTimerInterval);
+        const answer = document.getElementById("qaAnswer").value.trim();
+        const q = activeQuestions[currentQIndex];
+
+        if (!answer && !timeout) return;
+
+        document.getElementById("qaSubmitBtn").disabled = true;
+        document.getElementById("qaSubmitBtn").innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Đang đánh giá...';
+        document.getElementById("qaLoading").style.display = "flex";
+
+        qaAnswers.push({
+          q: q.q,
+          a: answer || "(Không trả lời)",
+          hint: q.hint,
+        });
+
+        // AI evaluate
+        const feedback = await evaluateAnswer(q.q, q.hint, answer || "");
+        document.getElementById("qaLoading").style.display = "none";
+
+        const fbEl = document.getElementById("aiFeedback");
+        fbEl.innerHTML = feedback.text;
+        fbEl.className = `ai-feedback ${feedback.good ? "good" : "bad"} show`;
+
+        // Speak feedback
+        speakFeedback(feedback.text);
+
+        document.getElementById("qaSubmitBtn").innerHTML = "Tiếp tục →";
+        document.getElementById("qaSubmitBtn").disabled = false;
+        document.getElementById("qaSubmitBtn").onclick = goNextQuestion;
+      }
+
+      function goNextQuestion() {
+        const isEndOfChapter =
+          document.getElementById("qaPanel").dataset.endOfChapter === "true";
+        currentQIndex++;
+        if (currentQIndex < activeQuestions.length) {
+          showQuestion(currentQIndex, isEndOfChapter);
+        } else {
+          closeQA();
+          document.getElementById("qaSubmitBtn").onclick = submitAnswer;
+          if (isEndOfChapter) {
+            onChapterEnd();
+          } else {
+            // Việc E — cùng nguyên tắc "dừng, chờ bấm Phát" sau khi qua xong Q&A giữa giờ.
+            awaitingContinue = true;
+            document.getElementById("playIcon").className = "fas fa-play";
+            setStatus("paused", "Đã xong phần này — bấm Phát để đọc tiếp");
+          }
+        }
+      }
+
+      // Đây là câu hỏi kiểm tra hiểu bài nhẹ trong lúc nghe giảng (không phải bài thi có
+      // điểm) nên dùng lại endpoint chatbot chung (/api/v1/ai/chat) thay vì cần một endpoint
+      // chấm điểm riêng — khác với vấn đáp thi thử (thi-thu.html), nơi điểm số thật sự được
+      // lưu vào kết quả học tập và bắt buộc phải qua /grade-oral có rubric rõ ràng.
+      async function evaluateAnswer(question, hint, answer) {
+        try {
+          const prompt = `Học viên vừa trả lời câu hỏi kiểm tra hiểu bài sau:
+Câu hỏi: ${question}
+Gợi ý đúng: ${hint}
+Câu trả lời của học viên: ${answer || "(Không trả lời)"}
+
+Hãy đánh giá ngắn gọn (2-3 câu), chỉ ra điểm đúng và thiếu sót. Bắt đầu bằng ✅ nếu tốt hoặc 💬 nếu cần bổ sung.`;
+          const text = await askAI(prompt);
+          const isGood = text.includes("✅") || text.toLowerCase().includes("tốt");
+          return { good: isGood, text: text || `💡 Gợi ý: ${hint}` };
+        } catch {
+          return { good: true, text: `💡 <strong>Gợi ý:</strong> ${hint}` };
+        }
+      }
+
+      function speakFeedback(text) {
+        const clean = text.replace(/<[^>]*>/g, "").replace(/[✅💬💡]/g, "");
+        const utt = new SpeechSynthesisUtterance(clean);
+        utt.lang = "vi-VN";
+        utt.rate = speechSpeed;
+        if (selectedVoice) utt.voice = selectedVoice;
+        window.speechSynthesis.speak(utt);
+      }
+
+      function skipQuestion() {
+        clearInterval(qaTimerInterval);
+        window.speechSynthesis.cancel();
+        goNextQuestion();
+      }
+
+      function closeQA() {
+        clearInterval(qaTimerInterval);
+        document.getElementById("qaPanel").classList.remove("show");
+        document.getElementById("qaSubmitBtn").onclick = submitAnswer;
+      }
+
+      // ===================== KIỂM TRA NHANH KIẾN THỨC (audit 2026-08-16 mục 3) =====================
+      // Tính năng thứ 3, khác hẳn Q&A tự động ở trên: bấm thủ công (không tự chèn giữa lúc phát),
+      // trắc nghiệm có đáp án cố định (không phải câu hỏi mở), chấm điểm NGAY trên trình duyệt
+      // (không gọi AI để chấm) — KHÔNG lưu DB, KHÔNG qua duyệt giáo viên, chỉ để tự học cá nhân.
+      let qcQuestions = [];
+      let qcSourceTextSnapshot = null;
+      let qcSubmitted = false;
+
+      function openQuickCheck() {
+        if (!currentMaterialText || currentMaterialText.trim().length < 100) {
+          alert("Chưa có đủ nội dung tài liệu để tạo câu hỏi kiểm tra.");
+          return;
+        }
+        document.getElementById("quickCheckPanel").classList.add("show");
+
+        const sameSource = qcQuestions.length && qcSourceTextSnapshot === currentMaterialText;
+        if (sameSource) {
+          // Cùng tài liệu, đã có sẵn câu hỏi (đang làm dở hoặc đã nộp) — hiện lại, không gọi AI lần nữa.
+          renderQcQuestions();
+          document.getElementById("qcQuestions").style.display = "block";
+          if (qcSubmitted) showQcResultSummary();
+          return;
+        }
+        qcSubmitted = false;
+        loadQuickCheckQuestions();
+      }
+
+      function closeQuickCheck() {
+        document.getElementById("quickCheckPanel").classList.remove("show");
+      }
+
+      async function loadQuickCheckQuestions() {
+        document.getElementById("qcLoading").style.display = "block";
+        document.getElementById("qcQuestions").style.display = "none";
+        document.getElementById("qcResultSummary").style.display = "none";
+        document.getElementById("qcSubmitBtn").style.display = "none";
+        document.getElementById("qcRetryBtn").style.display = "none";
+
+        try {
+          const result = await quickCheck(currentMaterialId, currentMaterialLabel, currentMaterialText);
+          qcQuestions = (result.questions || []).map((q) => ({ ...q, selected: null }));
+          qcSourceTextSnapshot = currentMaterialText;
+          document.getElementById("qcLoading").style.display = "none";
+
+          if (!qcQuestions.length) {
+            document.getElementById("qcQuestions").innerHTML =
+              '<div style="text-align:center;color:var(--gray-500);font-size:0.85rem;">Không tạo được câu hỏi từ tài liệu này.</div>';
+            document.getElementById("qcQuestions").style.display = "block";
+            return;
+          }
+          renderQcQuestions();
+          document.getElementById("qcQuestions").style.display = "block";
+          document.getElementById("qcSubmitBtn").style.display = "block";
+        } catch (e) {
+          document.getElementById("qcLoading").style.display = "none";
+          document.getElementById("qcQuestions").innerHTML =
+            `<div style="text-align:center;color:#c62828;font-size:0.85rem;">Lỗi: ${escapeHtmlQc(e.message)}</div>`;
+          document.getElementById("qcQuestions").style.display = "block";
+        }
+      }
+
+      function renderQcQuestions() {
+        const container = document.getElementById("qcQuestions");
+        const letters = ["A", "B", "C", "D"];
+        container.innerHTML = qcQuestions
+          .map((q, qi) => {
+            const opts = [q.optionA, q.optionB, q.optionC, q.optionD];
+            const optsHtml = opts
+              .map((opt, oi) => {
+                let cls = "qc-option";
+                if (qcSubmitted) {
+                  if (oi === q.correctAnswer) cls += " correct";
+                  else if (oi === q.selected) cls += " wrong";
+                } else if (oi === q.selected) {
+                  cls += " selected";
+                }
+                return `<div class="${cls}" onclick="selectQcOption(${qi}, ${oi})">
+              <strong>${letters[oi]}.</strong> ${escapeHtmlQc(opt)}
+            </div>`;
+              })
+              .join("");
+            const explanationHtml =
+              qcSubmitted && q.explanation ? `<div class="qc-explanation show">${escapeHtmlQc(q.explanation)}</div>` : "";
+            return `<div class="qc-question-card">
+          <div class="qc-question-text">Câu ${qi + 1}. ${escapeHtmlQc(q.questionText)}</div>
+          ${optsHtml}
+          ${explanationHtml}
+        </div>`;
+          })
+          .join("");
+      }
+
+      function selectQcOption(qi, oi) {
+        if (qcSubmitted) return;
+        qcQuestions[qi].selected = oi;
+        renderQcQuestions();
+      }
+
+      function submitQuickCheck() {
+        if (qcQuestions.some((q) => q.selected === null)) {
+          alert("Vui lòng chọn đáp án cho tất cả các câu.");
+          return;
+        }
+        qcSubmitted = true;
+        renderQcQuestions();
+        showQcResultSummary();
+      }
+
+      function showQcResultSummary() {
+        const correct = qcQuestions.filter((q) => q.selected === q.correctAnswer).length;
+        const summary = document.getElementById("qcResultSummary");
+        summary.style.display = "block";
+        summary.style.color = correct === qcQuestions.length ? "#2e7d32" : "#e65100";
+        summary.textContent = `Đúng ${correct}/${qcQuestions.length} câu`;
+        document.getElementById("qcSubmitBtn").style.display = "none";
+        document.getElementById("qcRetryBtn").style.display = "block";
+      }
+
+      function retryQuickCheck() {
+        // Làm lại TRÊN CÙNG bộ câu hỏi đã có — không gọi lại AI, tiết kiệm quota (đúng thiết kế đã duyệt).
+        qcSubmitted = false;
+        qcQuestions.forEach((q) => (q.selected = null));
+        renderQcQuestions();
+        document.getElementById("qcResultSummary").style.display = "none";
+        document.getElementById("qcSubmitBtn").style.display = "block";
+        document.getElementById("qcRetryBtn").style.display = "none";
+      }
+
+      function escapeHtmlQc(str) {
+        return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      }
+
+      // ===================== HELPERS =====================
+      function setStatus(type, label) {
+        const el = document.getElementById("statusBadge");
+        el.className = `status-badge ${type}`;
+        el.innerHTML = `<span class="pulse"></span> ${label}`;
+      }
+
+      function showProcessing(show, msg = "") {
+        const info = document.getElementById("processingInfo");
+        info.style.display = show ? "block" : "none";
+        if (msg) document.getElementById("processingMsg").textContent = msg;
+      }
+
+      function uploadNew() {
+        stopSpeech();
+        closeQA();
+        chapters = [];
+        document.getElementById("playerWrap").classList.remove("active");
+        document.getElementById("uploadSection").style.display = "block";
+        setStatus("paused", "Chờ tải lên");
+      }
+
+      async function saveProgress() {
+        await logStudyTime(1).catch(() => {});
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

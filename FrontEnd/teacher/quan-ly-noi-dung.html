@@ -1,0 +1,2661 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Quản lý nội dung</title>
+    <link rel="stylesheet" href="../css/base/variables.css" />
+    <link rel="stylesheet" href="../css/base/reset.css" />
+    <link rel="stylesheet" href="../css/layout/layout.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/button.css" />
+    <link rel="stylesheet" href="../css/components/modal.css" />
+    <link rel="stylesheet" href="../css/components/form.css" />
+    <link rel="stylesheet" href="../css/components/table-grid.css" />
+    <link rel="stylesheet" href="../css/components/badge.css" />
+    <link rel="stylesheet" href="../css/components/chat.css" />
+    <link rel="stylesheet" href="../css/components/quiz.css" />
+    <link rel="stylesheet" href="../css/components/progress-list.css" />
+    <link rel="stylesheet" href="../css/components/settings-row.css" />
+    <link rel="stylesheet" href="../css/components/misc.css" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="../api-client.js?v=20260822b"></script>
+    <!-- mammoth + pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- SheetJS for Excel import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Chart.js — Việc 7 (2026-08-16): histogram điểm học viên + radar hiệu suất lớp ở Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        background: #f5f5f5;
+        padding-top: 70px;
+        padding-bottom: 24px;
+      }
+      .admin-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      /* Sidebar tabs */
+      .admin-layout {
+        display: flex;
+        gap: 16px;
+      }
+      .admin-sidebar {
+        width: 200px;
+        flex-shrink: 0;
+      }
+      .admin-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .sidebar-nav {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 16px;
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--gray-600);
+        transition: all 0.15s;
+        border-left: 3px solid transparent;
+      }
+      .sidebar-item:hover {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .sidebar-item.active {
+        background: var(--red-bg);
+        color: var(--red);
+        border-left-color: var(--red);
+      }
+      .sidebar-item i {
+        width: 16px;
+        text-align: center;
+      }
+      .sidebar-section {
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--gray-400);
+        padding: 12px 16px 4px;
+        text-transform: uppercase;
+      }
+
+      /* Panels */
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+
+      /* Stats overview */
+      .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .ov-card {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+      .ov-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin: 0 auto 8px;
+      }
+      .ov-value {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+      .ov-label {
+        font-size: 0.7rem;
+        color: var(--gray-500);
+      }
+
+      /* Lớp tôi phụ trách (Gap 2) */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+      }
+      .data-table th {
+        background: #f8f8f8;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 700;
+        color: var(--gray-600);
+        border-bottom: 2px solid #eee;
+        white-space: nowrap;
+      }
+      .data-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+      }
+      .data-table tr:hover td {
+        background: #fafafa;
+      }
+      .data-table-wrap {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      }
+      .chucvu-badge {
+        display: inline-block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 9px;
+        border-radius: 100px;
+        white-space: nowrap;
+      }
+      .chucvu-badge.cv-hocvien {
+        background: #f0f0f0;
+        color: var(--gray-600);
+      }
+      .chucvu-badge.cv-loptruong {
+        background: #fff8e1;
+        color: #f57f17;
+      }
+      .chucvu-badge.cv-loppho {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+
+      /* Import zone */
+      .import-area {
+        border: 2px dashed #ddd;
+        border-radius: 12px;
+        padding: 28px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+        position: relative;
+        margin-bottom: 14px;
+      }
+      .import-area:hover {
+        border-color: var(--red);
+        background: var(--red-bg);
+      }
+      .import-area input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Search */
+      .search-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+      .search-input {
+        flex: 1;
+        min-width: 200px;
+        border: 1.5px solid #ddd;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 0.82rem;
+        font-family: "Be Vietnam Pro", sans-serif;
+        outline: none;
+      }
+      .search-input:focus {
+        border-color: var(--red);
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #323232;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        z-index: 9999;
+        transform: translateY(100px);
+        transition: transform 0.3s;
+      }
+      .toast.show {
+        transform: translateY(0);
+      }
+      .toast.success {
+        background: #2e7d32;
+      }
+      .toast.error {
+        background: #c62828;
+      }
+
+      /* Progress bar */
+      .import-prog {
+        background: #f0f0f0;
+        border-radius: 6px;
+        height: 8px;
+        margin-top: 10px;
+        overflow: hidden;
+        display: none;
+      }
+
+      /* ── BATCH IMPORT ── */
+      .batch-drop {
+        border: 2px dashed #90caf9;
+        border-radius: 16px;
+        padding: 36px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #f0f7ff;
+        position: relative;
+        margin-bottom: 16px;
+      }
+      .batch-drop:hover,
+      .batch-drop.drag-over {
+        border-color: #1565c0;
+        background: #e3f2fd;
+      }
+      .batch-drop input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .batch-drop-icon {
+        font-size: 2.5rem;
+        color: #1565c0;
+        margin-bottom: 10px;
+      }
+      .batch-drop-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+      }
+      .batch-drop-sub {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+      }
+
+      .batch-file-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .batch-file-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+      .batch-file-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .batch-file-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .batch-file-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .batch-file-meta {
+        font-size: 0.68rem;
+        color: var(--gray-500);
+      }
+      .batch-file-status {
+        font-size: 0.72rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .bfs-pending {
+        color: var(--gray-400);
+      }
+      .bfs-loading {
+        color: #1565c0;
+      }
+      .bfs-done {
+        color: #2e7d32;
+      }
+      .bfs-warning {
+        color: #e65100;
+      }
+      .bfs-error {
+        color: var(--red);
+      }
+
+      .batch-overall {
+        background: var(--gray-100);
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 12px;
+        display: none;
+      }
+      .batch-overall-bar {
+        height: 6px;
+        background: var(--gray-200);
+        border-radius: 4px;
+        margin: 8px 0 4px;
+        overflow: hidden;
+      }
+      .batch-overall-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #1565c0, #42a5f5);
+        border-radius: 4px;
+        transition: width 0.4s;
+      }
+      .batch-overall-text {
+        font-size: 0.72rem;
+        color: var(--gray-600);
+        font-weight: 600;
+      }
+      .batch-summary {
+        font-size: 0.72rem;
+        color: var(--gray-500);
+        margin-top: 4px;
+      }
+      .import-prog-fill {
+        height: 100%;
+        background: var(--red);
+        border-radius: 6px;
+        transition: width 0.3s;
+      }
+
+      /* Question card */
+      .q-card {
+        background: white;
+        border-radius: 10px;
+        padding: 14px;
+        margin-bottom: 8px;
+        border: 1px solid #eee;
+      }
+      .q-card:hover {
+        border-color: #ffcdd2;
+      }
+      @media (min-width: 768px) {
+        #questionsList,
+        #oralList {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+          gap: 8px;
+        }
+        #questionsList .q-card,
+        #oralList .q-card {
+          margin-bottom: 0;
+        }
+        #questionsList .empty,
+        #oralList .empty {
+          grid-column: 1 / -1;
+        }
+      }
+      .q-chapter {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--red);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .q-text {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 6px;
+      }
+      .q-opts {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .q-opt {
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: var(--gray-100);
+        color: var(--gray-600);
+      }
+      .q-opt.correct {
+        background: #e8f5e9;
+        color: #2e7d32;
+        font-weight: 700;
+      }
+
+      /* Việc 4 (2026-08-16) — nhóm câu hỏi theo Chương, card thu gọn bấm mở rộng */
+      .q-group-card {
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        border: 1px solid #eee;
+        overflow: hidden;
+      }
+      .q-group-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px;
+        cursor: pointer;
+      }
+      .q-group-header:hover {
+        background: var(--gray-50);
+      }
+      .q-group-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--gray-800);
+      }
+      .q-group-meta {
+        font-size: 0.72rem;
+        color: var(--gray-500);
+        margin-top: 2px;
+      }
+      .q-group-body {
+        padding: 0 14px 14px;
+        border-top: 1px solid #f5f5f5;
+      }
+      @media (min-width: 768px) {
+        #questionsList .q-group-card,
+        #oralList .q-group-card {
+          grid-column: 1 / -1;
+          margin-bottom: 0;
+        }
+        #questionsList .q-group-body,
+        #oralList .q-group-body {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+          gap: 8px;
+          padding-top: 14px;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .admin-layout {
+          flex-direction: column;
+        }
+        .admin-sidebar {
+          width: 100%;
+        }
+        .overview-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Việc 4.3 (2026-08-20) — pagination dùng chung với admin/quan-tri-he-thong.html qua
+         paginateAndSort/renderPaginationControls (admin-common.js). CSS KHÔNG dùng chung (mỗi
+         HTML là bản sao vật lý riêng, không có build step include CSS) — copy y hệt từ đó. */
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px;
+      }
+      .pagination-info {
+        font-size: 0.78rem;
+        color: var(--gray-500);
+        font-weight: 600;
+      }
+
+      /* Rà soát Lần VI (2026-08-21) — thanh Tìm kiếm + Sắp xếp gộp hàng cho Bảng xếp hạng Lớp,
+      copy nguyên khuôn mẫu từ student/xep-hang.html (Rà soát Lần V) — trang đó không nạp CSS này
+      chung được (không có build step include), nên copy y hệt như .pagination ở trên. */
+      .member-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+      .member-search-input {
+        flex: 1 1 200px;
+        padding: 12px 18px;
+        font-size: 0.88rem;
+        border-radius: 12px;
+        border: 1.5px solid var(--gray-200);
+      }
+      .member-search-input:focus {
+        border-color: var(--red);
+        outline: none;
+      }
+      .sort-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .sort-btn {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--gray-200);
+        background: white;
+        font-size: 0.72rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--gray-600);
+      }
+      .sort-btn.active {
+        background: var(--red-bg);
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .lb-table-wrap {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
+      .lb-table-scroll {
+        overflow-x: auto;
+      }
+      .lb-row-grid {
+        display: grid;
+        grid-template-columns: 36px minmax(120px, 2fr) 100px 100px 120px 120px;
+        align-items: center;
+        gap: 8px;
+        min-width: 560px;
+      }
+      .lb-table-head {
+        padding: 10px 16px;
+        background: var(--gray-50);
+        font-size: 0.64rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .lb-row {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .lb-row:last-child {
+        border-bottom: none;
+      }
+      .lb-stt {
+        text-align: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--gray-400);
+      }
+      .lb-lop-name {
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+      .lb-score-exam {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--red);
+      }
+      .lb-score-practice {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #2e7d32;
+      }
+      .lb-cell-empty {
+        color: var(--gray-300);
+        font-size: 0.72rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <!-- Rà soát Lần VI (2026-08-21) — logo trước trỏ ../index.html (trang chủ HỌC VIÊN), Giảng
+        viên không nên rời sang giao diện học viên qua đây. Bỏ href, chỉ còn thương hiệu tĩnh; nút
+        "Về trang chủ" (cũng trỏ index.html) xóa hẳn — "Trang chủ" của GV giờ là mục sidebar riêng
+        (showPanel('overview')), xem sidebar bên dưới. -->
+        <div class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-chalkboard-teacher"></i>GV</div>
+          <div class="logo-info">
+            <div class="logo-title">Quản lý nội dung</div>
+            <div class="logo-sub" id="adminName">Giảng viên</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="admin-wrap">
+        <div class="admin-layout">
+          <!-- Sidebar -->
+          <div class="admin-sidebar">
+            <div class="sidebar-nav">
+              <div class="sidebar-section">Tổng quan</div>
+              <div class="sidebar-item active" onclick="showPanel('overview')">
+                <i class="fas fa-chart-pie"></i> Dashboard
+              </div>
+              <div class="sidebar-item" onclick="showPanel('results')">
+                <i class="fas fa-clipboard-list"></i> Kết quả thi
+              </div>
+
+              <div class="sidebar-section">Lớp của tôi</div>
+              <!-- Việc 4.2 (2026-08-19) — Teacher CRUD Lớp (trước Admin-only) + BXH chuyển vào đây
+                   (trước chỉ có link ra student/xep-hang.html). -->
+              <div class="sidebar-item" onclick="showPanel('lopcrud')">
+                <i class="fas fa-chalkboard"></i> Quản lý Lớp
+              </div>
+              <div class="sidebar-item" onclick="showPanel('leaderboard')">
+                <i class="fas fa-trophy"></i> Bảng xếp hạng
+              </div>
+              <div class="sidebar-item" onclick="showPanel('lopaudit')">
+                <i class="fas fa-history"></i> Nhật ký hoạt động lớp
+              </div>
+
+              <div class="sidebar-section">Nội dung</div>
+              <div class="sidebar-item" onclick="showPanel('questions')">
+                <i class="fas fa-question-circle"></i> Câu hỏi TN
+              </div>
+              <div class="sidebar-item" onclick="showPanel('oral')">
+                <i class="fas fa-comments"></i> Câu hỏi VĐ
+              </div>
+              <div class="sidebar-item" onclick="showPanel('import')">
+                <i class="fas fa-file-import"></i> Import dữ liệu
+              </div>
+              <div class="sidebar-item" onclick="showPanel('materials')">
+                <i class="fas fa-folder-open"></i> Tài liệu bài giảng
+              </div>
+
+              <div class="sidebar-section">Cá nhân</div>
+              <div class="sidebar-item" onclick="showPanel('profile')">
+                <i class="fas fa-user"></i> Hồ sơ cá nhân
+              </div>
+              <!-- Rà soát Lần VII (2026-08-21) — mục "Trang chủ" RIÊNG (không phải đổi tên
+              Dashboard), đặt SAU Hồ sơ cá nhân theo đúng yêu cầu — dẫn ra index.html của TOÀN HỆ
+              THỐNG (trang chủ chung, không phải trang riêng của GV). Link thường (<a>), không phải
+              showPanel(), vì đây là điều hướng RA KHỎI trang này. index.html không gate Teacher
+              (applyRoleGate chỉ đá Admin đi, xem api-client.js) nên GV xem được bình thường; quay
+              lại đây qua nút "Tài khoản" ở bottom-nav của index.html (đã tự trỏ đúng trang GV qua
+              applyRoleGate, không cần sửa gì thêm ở index.html). -->
+              <a href="../index.html" class="sidebar-item" style="text-decoration: none">
+                <i class="fas fa-home"></i> Trang chủ
+              </a>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="admin-content">
+            <!-- ======= DASHBOARD ======= -->
+            <!-- Gap 2: đã tách hẳn khỏi bản Admin (từ Vấn đề 2 Giai đoạn 1, admin/quan-tri-he-thong.html
+            có loadAdminDashboard() + panel-overview riêng, element id khác — comment "DÙNG CHUNG" cũ ở
+            đây không còn đúng, panel-questions/panel-oral/panel-import/panel-materials bên dưới vẫn
+            dùng chung thật). Nội dung: "Lớp tôi phụ trách" — roster + Chức vụ + điểm thi thử/luyện tập
+            từng học viên + điểm TB lớp, xem loadOverview()/renderTeacherLopCard() trong admin-common.js. -->
+            <div class="panel active" id="panel-overview">
+              <div class="page-title">📊 Lớp tôi phụ trách</div>
+              <div id="teacherLopContainer">
+                <div class="empty"><i class="fas fa-spinner fa-spin"></i></div>
+              </div>
+            </div>
+
+            <!-- ======= QUESTIONS ======= -->
+            <!-- Chỉ còn ở Teacher (panel Câu hỏi TN đã bị xóa khỏi admin/quan-tri-he-thong.html — VIỆC 3) -->
+            <div class="panel" id="panel-questions">
+              <div class="page-title">❓ Ngân hàng câu hỏi trắc nghiệm</div>
+              <!-- Rà soát Lần VI (2026-08-21) — Ngân hàng câu hỏi bên dưới là NGUỒN CHUNG (theo
+              Chương), tự nó không thuộc riêng Thi thử hay Luyện tập. 2 nút này làm rõ 2 ĐẦU RA
+              khác nhau lấy từ cùng nguồn đó: "Bộ đề Thi thử" chọn cố định 1 tập câu (snapshot,
+              chấm vào Thi thử) — "Đề Luyện tập" lấy SỐNG theo Chương (không snapshot, chấm vào
+              Luyện tập, câu mới xuất bản tự động có mặt). Cả 2 đều đã tồn tại (Việc 2/Việc 4.4B),
+              chỉ gộp lối vào ngay đây cho rõ thay vì phải sang panel Import mới thấy. -->
+              <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap">
+                <button class="btn btn-outline btn-sm" style="border-color: var(--red); color: var(--red)" onclick="openBankExamSetModal('mcq')">
+                  <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Thi thử
+                </button>
+                <button class="btn btn-outline btn-sm" style="border-color: #e65100; color: #e65100" onclick="openCreatePracticeSetModal()">
+                  <i class="fas fa-clipboard-list"></i> 📝 Tạo Đề Luyện tập
+                </button>
+              </div>
+              <div class="search-row">
+                <input
+                  class="search-input"
+                  id="qSearch"
+                  placeholder="🔍 Tìm câu hỏi..."
+                  oninput="filterQuestions()"
+                />
+                <select
+                  class="search-input"
+                  id="qChapter"
+                  style="flex: 0 0 200px"
+                  onchange="filterQuestions()"
+                >
+                  <option value="">Tất cả chương</option>
+                </select>
+                <button
+                  class="btn btn-red btn-sm"
+                  onclick="showPanel('import')"
+                >
+                  <i class="fas fa-plus"></i> Thêm câu hỏi
+                </button>
+                <button
+                  class="btn btn-outline btn-sm"
+                  id="qExportWordBtn"
+                  onclick="exportSelectedQuestionsToWord()"
+                  disabled
+                >
+                  <i class="fas fa-file-word"></i> Xuất Word (<span id="qExportSelectedCount">0</span>)
+                </button>
+              </div>
+              <div
+                style="
+                  font-size: 0.78rem;
+                  color: var(--gray-500);
+                  margin-bottom: 12px;
+                "
+                id="qCount"
+              >
+                Đang tải...
+              </div>
+              <div id="questionsList"></div>
+            </div>
+
+            <!-- ======= ORAL QUESTIONS ======= -->
+            <!-- Chỉ còn ở Teacher (panel Câu hỏi VĐ đã bị xóa khỏi admin/quan-tri-he-thong.html — VIỆC 3) -->
+            <div class="panel" id="panel-oral">
+              <div class="page-title">🎤 Câu hỏi vấn đáp</div>
+              <!-- Rà soát Lần VI (2026-08-21) — Vấn đáp KHÔNG có chế độ Luyện tập (chỉ có Thi vấn
+              đáp) — khác Trắc nghiệm ở panel bên cạnh, nên chỉ 1 nút, gắn rõ nhãn "Thi thử" để
+              không hiểu nhầm là còn thiếu 1 nút Luyện tập. -->
+              <div style="margin-bottom: 12px">
+                <button class="btn btn-outline btn-sm" style="border-color: var(--red); color: var(--red)" onclick="openBankExamSetModal('oral')">
+                  <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Thi Vấn đáp
+                </button>
+              </div>
+              <div class="search-row">
+                <input
+                  class="search-input"
+                  id="oralSearch"
+                  placeholder="🔍 Tìm câu hỏi..."
+                  oninput="filterOralQuestions()"
+                />
+                <select
+                  class="search-input"
+                  id="oralChapterFilter"
+                  style="flex: 0 0 200px"
+                  onchange="filterOralQuestions()"
+                >
+                  <option value="">Tất cả chương</option>
+                </select>
+                <button class="btn btn-red btn-sm" onclick="openAddOralModal()">
+                  <i class="fas fa-plus"></i> Thêm câu hỏi mới
+                </button>
+              </div>
+              <div id="oralList">
+                <div class="empty"><i class="fas fa-spinner fa-spin"></i></div>
+              </div>
+            </div>
+
+            <!-- ======= IMPORT ======= -->
+            <!-- Chỉ còn ở Teacher (panel Import đã bị xóa khỏi admin/quan-tri-he-thong.html — VIỆC 3) -->
+            <div class="panel" id="panel-import">
+              <div class="page-title">📥 Import dữ liệu câu hỏi</div>
+
+              <!-- ── IMPORT TỪ FILE (hợp nhất — thay cho 3 khối PDF/Word/Excel/Text hàng loạt +
+              Excel đơn lẻ + Word đơn lẻ trước đây; audit 2026-08-16 phát hiện chúng trùng chức
+              năng và 2 khối Excel dùng 2 bộ cột KHÁC NHAU, khiến file template thật chỉ chạy đúng
+              qua 1 trong 2 khối — hợp nhất còn 1 đường duy nhất, 1 bộ mapping duy nhất ── -->
+              <div class="card" style="border: 2px solid #bbdefb">
+                <div class="card-title" style="color: #0d47a1">
+                  <i class="fas fa-layer-group"></i> Import từ file — PDF,
+                  Word, Text
+                  <span
+                    style="
+                      font-size: 0.65rem;
+                      background: #e3f2fd;
+                      color: #1565c0;
+                      padding: 2px 8px;
+                      border-radius: 100px;
+                      margin-left: 8px;
+                      font-weight: 700;
+                    "
+                    >KHUYÊN DÙNG</span
+                  >
+                </div>
+                <p
+                  style="
+                    font-size: 0.78rem;
+                    color: var(--gray-500);
+                    margin-bottom: 10px;
+                  "
+                >
+                  Kéo thả 1 hay nhiều file vào đây — hệ thống tự nhận dạng
+                  loại file. PDF: AI tự động trích xuất câu hỏi nếu không tìm
+                  thấy định dạng "Câu X:" có sẵn. Word/Text: cần định dạng
+                  "Câu X: ..." → A./B./C./D. → ĐÁP ÁN: X, các lựa chọn phải
+                  <strong>gõ tay thành chữ</strong>, không dùng danh sách tự
+                  động (bullet/numbering) của Word.
+                </p>
+                <div id="batchImportScopeContainer" style="max-width: 360px; margin-bottom: 4px"></div>
+
+                <div class="batch-drop" id="batchDrop">
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.docx,.txt"
+                    onchange="addBatchFiles(this.files)"
+                    id="batchFileInput"
+                  />
+                  <div class="batch-drop-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                  </div>
+                  <div class="batch-drop-title">Kéo thả nhiều file vào đây</div>
+                  <div class="batch-drop-sub">
+                    Hỗ trợ: PDF bài giảng · Word câu hỏi · Text
+                  </div>
+                </div>
+
+                <div class="batch-file-list" id="batchFileList"></div>
+
+                <div class="batch-overall" id="batchOverall">
+                  <div class="batch-overall-text" id="batchOverallText">
+                    Đang xử lý...
+                  </div>
+                  <div class="batch-overall-bar">
+                    <div
+                      class="batch-overall-fill"
+                      id="batchOverallFill"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <div class="batch-summary" id="batchSummary"></div>
+                </div>
+
+                <div
+                  style="
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                    align-items: center;
+                  "
+                >
+                  <button
+                    class="btn btn-red"
+                    id="batchStartBtn"
+                    onclick="startBatchImport()"
+                    style="display: none"
+                  >
+                    <i class="fas fa-play"></i> Bắt đầu import
+                  </button>
+                  <button
+                    class="btn btn-outline btn-sm"
+                    onclick="clearBatchFiles()"
+                    id="batchClearBtn"
+                    style="display: none"
+                  >
+                    <i class="fas fa-times"></i> Xóa tất cả
+                  </button>
+                  <span
+                    id="batchHint"
+                    style="font-size: 0.72rem; color: var(--gray-400)"
+                    >Chọn file để bắt đầu</span
+                  >
+                </div>
+              </div>
+
+              <!-- ── C2: TRÍCH XUẤT BỘ ĐỀ LỚN (150→50 + sinh mã đề) ── -->
+              <div class="card" style="border: 2px solid #d1c4e9">
+                <div class="card-title" style="color: #5e35b1">
+                  <i class="fas fa-layer-group"></i> Trích xuất bộ đề lớn (150 câu → chọn 50, sinh nhiều mã đề)
+                </div>
+                <p style="font-size: 0.78rem; color: var(--gray-500); margin-bottom: 14px">
+                  Chọn file PDF nội dung lớn (nhiều chương/toàn bộ tài liệu) — AI sẽ trích xuất một
+                  pool câu hỏi lớn (có gán độ khó + chủ đề), sau đó chọn ra 1 tập con cân đối độ khó
+                  và sinh nhiều mã đề khác nhau từ tập con đó.
+                </p>
+
+                <div style="display: grid; gap: 10px; margin-bottom: 14px">
+                  <input class="form-input" id="poolChapter" placeholder="Chương/Phần cho pool câu hỏi" />
+                  <!-- Việc III (2026-08-20) — ẩn input file gốc (nút "Choose File" tiếng Anh của
+                  trình duyệt) bằng overlay trong suốt, cùng pattern .import-area đã dùng ở khối
+                  Import Vấn đáp — hiện tên file đã chọn bằng tiếng Việt thay thế. -->
+                  <div class="import-area" style="padding: 14px; margin-bottom: 0">
+                    <input type="file" id="poolFileInput" accept=".pdf" onchange="onPoolFileSelected(this)" />
+                    <div style="font-size: 0.85rem; color: var(--gray-600)">
+                      <i class="fas fa-file-pdf" style="color: var(--red)"></i>
+                      <span id="poolFileName">Chọn file PDF nội dung lớn...</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <input class="form-input" type="number" id="poolTotalCount" min="20" max="300" value="150" style="flex: 1" placeholder="Tổng số câu muốn trích" />
+                    <button class="btn btn-red" onclick="extractLargeQuestionPool()" id="poolExtractBtn">
+                      <i class="fas fa-magic"></i> Trích xuất pool
+                    </button>
+                  </div>
+                </div>
+                <div id="poolExtractStatus" style="font-size: 0.8rem; margin-bottom: 10px; min-height: 18px"></div>
+
+                <div id="poolGenerateForm" style="display: none; border-top: 1px solid #eee; padding-top: 12px; margin-top: 4px">
+                  <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 8px">Sinh mã đề từ pool</div>
+                  <div style="display: grid; gap: 10px; margin-bottom: 10px">
+                    <input class="form-input" id="examSetTen" placeholder="Tên bộ đề (vd: Kiểm tra giữa kỳ Chương 1-3)" />
+                    <div style="display: flex; gap: 8px">
+                      <input class="form-input" type="number" id="examSetTargetCount" min="1" value="50" style="flex: 1" placeholder="Số câu muốn lấy" />
+                      <select class="form-input" id="examSetVersionCount" style="flex: 1">
+                        <option value="2">2 mã đề</option>
+                        <option value="3" selected>3 mã đề</option>
+                        <option value="4">4 mã đề</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button class="btn btn-red btn-full" onclick="generateExamVersions()" id="examSetGenerateBtn">
+                    <i class="fas fa-random"></i> Sinh mã đề
+                  </button>
+                  <div id="examSetGenerateStatus" style="font-size: 0.8rem; margin-top: 8px; min-height: 18px"></div>
+                </div>
+
+                <div id="examVersionsResult" style="margin-top: 10px"></div>
+              </div>
+
+              <!-- ── Việc 2: BỘ ĐỀ ĐÃ TẠO — tồn tại qua reload trang, dùng lại GET /exam-sets có sẵn ── -->
+              <div class="card" style="border: 2px solid #c8e6c9">
+                <div class="card-title" style="color: #2e7d32">
+                  <i class="fas fa-folder-open"></i> Bộ đề đã tạo
+                  <button
+                    class="btn btn-outline btn-sm"
+                    style="margin-left: auto"
+                    onclick="loadExamSetsList()"
+                    aria-label="Làm mới danh sách bộ đề"
+                  >
+                    <i class="fas fa-sync"></i>
+                  </button>
+                </div>
+                <div id="examSetsListContainer">
+                  <div style="text-align: center; padding: 16px; color: var(--gray-400)">
+                    Đang tải...
+                  </div>
+                </div>
+              </div>
+
+              <!-- Việc 4.4 Phần B (2026-08-20) — Đề luyện tập: giáo viên gom câu hỏi CÓ SẴN theo
+              Chương thành 1 đề đặt tên, giao riêng cho Lớp — KHÁC "Bộ đề" ở trên (đó là bộ đề THI,
+              câu cố định + luồng chấm điểm Thi thử riêng). Đề luyện tập không snapshot câu — luôn
+              lấy "sống" theo đúng Chương tại thời điểm học viên vào làm, điểm ghi vào Luyện tập
+              (không phải Thi thử). -->
+              <div class="card" style="border: 2px solid #ffe0b2">
+                <div class="card-title" style="color: #e65100">
+                  <i class="fas fa-clipboard-list"></i> Đề luyện tập
+                  <button
+                    class="btn btn-outline btn-sm"
+                    style="margin-left: auto"
+                    onclick="loadMyPracticeSets()"
+                    aria-label="Làm mới danh sách đề luyện tập"
+                  >
+                    <i class="fas fa-sync"></i>
+                  </button>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--gray-500); margin-bottom: 10px">
+                  Gom câu hỏi đã có trong ngân hàng theo 1 Chương thành 1 đề đặt tên, giao riêng cho
+                  Lớp — học viên Lớp đó thấy đề này ở trang Luyện tập. Câu mới xuất bản thêm vào
+                  Chương sẽ TỰ ĐỘNG xuất hiện, không cần tạo lại.
+                </p>
+                <button class="btn btn-red btn-sm" onclick="openCreatePracticeSetModal()">
+                  <i class="fas fa-plus"></i> Tạo đề luyện tập
+                </button>
+                <div id="practiceSetsListContainer" style="margin-top: 10px">
+                  <div style="text-align: center; padding: 16px; color: var(--gray-400)">
+                    Đang tải...
+                  </div>
+                </div>
+              </div>
+
+              <!-- Text paste -->
+              <div class="card">
+                <div class="card-title">
+                  <i class="fas fa-paste"></i>Dán văn bản trực tiếp
+                </div>
+                <textarea
+                  class="form-input"
+                  id="pasteArea"
+                  rows="8"
+                  placeholder="Dán nội dung câu hỏi vào đây...&#10;&#10;Câu 1: Đây là câu hỏi mẫu?&#10;A. Lựa chọn A&#10;B. Lựa chọn B&#10;C. Lựa chọn C&#10;D. Lựa chọn D&#10;ĐÁP ÁN: A&#10;Giải thích: Giải thích ngắn gọn vì sao A đúng&#10;&#10;Câu 2: ..."
+                ></textarea>
+                <!-- Việc III (2026-08-20) — picker Lớp RIÊNG cho khối này, trước đây ngầm dùng
+                chung lựa chọn của khối "Import từ file" phía trên, không hiện gì cho GV biết đang
+                giao Lớp nào. -->
+                <div id="pasteScopeContainer" style="max-width: 360px; margin-top: 10px"></div>
+                <div style="display: flex; gap: 8px; margin-top: 10px">
+                  <input
+                    class="form-input"
+                    id="pasteChapter"
+                    placeholder="Tên chương"
+                    style="flex: 1"
+                  />
+                  <button class="btn btn-red" onclick="importPaste()">
+                    <i class="fas fa-magic"></i> Import
+                  </button>
+                </div>
+                <div
+                  id="pasteStatus"
+                  style="
+                    font-size: 0.78rem;
+                    color: var(--gray-500);
+                    margin-top: 6px;
+                  "
+                ></div>
+              </div>
+
+              <!-- Oral questions import -->
+              <div class="card">
+                <div class="card-title">
+                  <i class="fas fa-comments" style="color: #1565c0"></i>Import
+                  câu hỏi vấn đáp từ Excel
+                </div>
+                <!-- Việc III (2026-08-20) — chuyển nút tải template về đây (trước ở khối "Import từ
+                file" đã bỏ Excel cho TN, xem card phía trên) — file mẫu vẫn còn dùng vì có sheet
+                "VẤN ĐÁP" riêng cho luồng import này. -->
+                <div style="margin-bottom: 10px">
+                  <a
+                    href="../template_cau_hoi.xlsx"
+                    class="btn btn-outline btn-sm"
+                    id="dlTemplate"
+                  >
+                    <i class="fas fa-download"></i> Tải template Excel mẫu (Vấn đáp)
+                  </a>
+                </div>
+                <!-- Việc 4.4 Phần A (2026-08-20) -->
+                <div id="oralImportScopeContainer" style="max-width: 360px; margin-bottom: 10px"></div>
+                <div class="import-area">
+                  <input
+                    type="file"
+                    accept=".xlsx,.xls"
+                    onchange="importOralExcel(event)"
+                  />
+                  <div
+                    style="font-size: 2rem; color: #1565c0; margin-bottom: 8px"
+                  >
+                    <i class="fas fa-file-excel"></i>
+                  </div>
+                  <div style="font-weight: 700; margin-bottom: 4px">
+                    Kéo thả file Excel (Sheet "VẤN ĐÁP")
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--gray-500)">
+                    Dùng sheet VẤN ĐÁP trong template đã tải về
+                  </div>
+                </div>
+                <div
+                  id="oralImportStatus"
+                  style="
+                    font-size: 0.78rem;
+                    color: var(--gray-500);
+                    margin-top: 6px;
+                  "
+                ></div>
+              </div>
+            </div>
+
+            <!-- ======= MATERIALS ======= -->
+            <!-- DÙNG CHUNG với admin/quan-tri-he-thong.html — sửa ở đây thì nhớ sửa cả bên kia -->
+            <div class="panel" id="panel-materials">
+              <div class="page-title">📁 Tài liệu bài giảng</div>
+              <div
+                style="
+                  font-size: 0.78rem;
+                  color: var(--gray-500);
+                  margin-bottom: 16px;
+                "
+              >
+                Tải lên tài liệu PDF để học viên có thể xem trong trang Giảng
+                bài. Tài liệu sẽ hiển thị cho tất cả học viên.
+              </div>
+
+              <!-- Upload card -->
+              <div class="card" style="border: 2px solid #c8e6c9">
+                <div class="card-title" style="color: #2e7d32">
+                  <i class="fas fa-cloud-upload-alt"></i> Tải lên tài liệu mới
+                </div>
+
+                <div style="display: grid; gap: 10px; margin-bottom: 14px">
+                  <input
+                    class="form-input"
+                    id="matTitle"
+                    placeholder="Tên tài liệu VD: Chương 1 - Giới thiệu tổng quan"
+                  />
+                  <div style="display: flex; gap: 8px">
+                    <input
+                      class="form-input"
+                      id="matChapter"
+                      placeholder="Chương tương ứng VD: Chương 1"
+                      style="flex: 1"
+                    />
+                    <input
+                      class="form-input"
+                      id="matDesc"
+                      placeholder="Mô tả ngắn (không bắt buộc)"
+                      style="flex: 2"
+                    />
+                  </div>
+                </div>
+
+                <div class="import-area" id="matUploadZone">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    id="matFileInput"
+                    onchange="handleMaterialUpload(event)"
+                  />
+                  <div
+                    style="font-size: 2rem; color: #2e7d32; margin-bottom: 8px"
+                  >
+                    <i class="fas fa-file-pdf"></i>
+                  </div>
+                  <div style="font-weight: 700; margin-bottom: 4px">
+                    Kéo thả hoặc nhấn để chọn file PDF
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--gray-500)">
+                    Hỗ trợ file PDF · Tối đa 50MB
+                  </div>
+                </div>
+                <div class="import-prog" id="matProg">
+                  <div
+                    class="import-prog-fill"
+                    id="matProgFill"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <div
+                  id="matUploadStatus"
+                  style="font-size: 0.78rem; margin-top: 8px"
+                ></div>
+                <div
+                  id="matUploadAiPrompt"
+                  style="
+                    display: none;
+                    align-items: center;
+                    gap: 10px;
+                    margin-top: 10px;
+                    padding: 10px 12px;
+                    background: #ede7f6;
+                    border-radius: 10px;
+                  "
+                >
+                  <i class="fas fa-wand-magic-sparkles" style="color: #5e35b1; font-size: 1.1rem"></i>
+                  <div style="flex: 1; font-size: 0.78rem; color: #5e35b1">
+                    Tạo câu hỏi kiểm tra (TN/TL) từ tài liệu vừa tải?
+                  </div>
+                  <button class="btn btn-sm" style="background: #5e35b1; color: white; border: none" onclick="openGenerateExamModalForLastUpload()">
+                    <i class="fas fa-wand-magic-sparkles"></i> Tạo câu hỏi
+                  </button>
+                </div>
+              </div>
+
+              <!-- Materials list -->
+              <div class="card" style="margin-top: 14px">
+                <div class="card-title">
+                  <i class="fas fa-list"></i> Danh sách tài liệu đã upload
+                  <button
+                    class="btn btn-outline btn-sm"
+                    style="margin-left: auto"
+                    onclick="loadMaterials()"
+                    aria-label="Làm mới danh sách tài liệu"
+                  >
+                    <i class="fas fa-sync"></i>
+                  </button>
+                </div>
+                <div id="matList">
+                  <div
+                    style="
+                      text-align: center;
+                      padding: 24px;
+                      color: var(--gray-400);
+                    "
+                  >
+                    Đang tải...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ======= LỚP CỦA TÔI: Quản lý Lớp (Việc 4.2, 2026-08-19) — Tạo/Đổi tên/Xóa (lớp
+                 rỗng), trước đây hoàn toàn Admin-only. ======= -->
+            <div class="panel" id="panel-lopcrud">
+              <div class="page-title">🏫 Quản lý Lớp</div>
+              <div style="margin-bottom: 12px">
+                <button class="btn btn-red btn-sm" onclick="openCreateLopModal()">
+                  <i class="fas fa-plus"></i> Tạo lớp mới
+                </button>
+              </div>
+              <div id="lopCrudContent"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></div>
+            </div>
+
+            <!-- Rà soát Lần VI (2026-08-21) — đổi hẳn phạm vi xếp hạng: TRƯỚC xếp hạng từng HỌC
+            VIÊN trong 1 Lớp (trùng với student/xep-hang.html của chính học viên đó xem); GIỜ xếp
+            hạng CÁC LỚP GV đang phụ trách với nhau theo điểm TB — hữu ích hơn hẳn cho GV quản lý
+            nhiều lớp cùng lúc. Cùng khuôn mẫu bố cục CỘT + thanh Tìm kiếm/Sắp xếp gộp hàng đã làm ở
+            student/xep-hang.html (Rà soát Lần V). -->
+            <div class="panel" id="panel-leaderboard">
+              <div class="page-title">🏆 Bảng xếp hạng Lớp</div>
+              <div class="member-toolbar">
+                <input
+                  class="search-input member-search-input"
+                  id="leaderboardSearchInput"
+                  placeholder="🔍 Tìm theo tên lớp..."
+                  oninput="renderTeacherLeaderboard()"
+                />
+                <div class="sort-btn-row">
+                  <button class="sort-btn active" id="lbSortExamBtn" onclick="setTeacherLeaderboardSort('exam')">Thi thử</button>
+                  <button class="sort-btn" id="lbSortPracticeBtn" onclick="setTeacherLeaderboardSort('practice')">Luyện tập</button>
+                </div>
+              </div>
+              <div id="leaderboardContent"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></div>
+            </div>
+
+
+            <!-- ======= LỚP CỦA TÔI: Nhật ký hoạt động lớp (Gap 2 mục 3) ======= -->
+            <div class="panel" id="panel-lopaudit">
+              <div class="page-title">🕘 Nhật ký hoạt động lớp</div>
+              <div id="lopauditLopSelectWrap" style="margin-bottom: 12px; display: none">
+                <select class="search-input" id="lopauditLopSelect" onchange="onLopAuditLopChange()" style="max-width: 320px"></select>
+              </div>
+              <div id="lopauditContent"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></div>
+            </div>
+
+            <!-- ======= RESULTS ======= -->
+            <!-- DÙNG CHUNG với admin/quan-tri-he-thong.html — sửa ở đây thì nhớ sửa cả bên kia -->
+            <div class="panel" id="panel-results">
+              <div class="page-title">📋 Kết quả thi</div>
+              <div class="card" style="font-size: 0.82rem; color: var(--gray-600);">
+                <i class="fas fa-info-circle"></i>
+                Xem kết quả tổng hợp theo từng học viên chưa được hỗ trợ ở kiến trúc microservices
+                hiện tại (cần 1 endpoint tổng hợp riêng ở quiz-service/progress-service, chưa xây
+                dựng). Học viên có thể tự xem kết quả của mình ở trang
+                <a href="../student/tien-do.html">Tiến độ</a> và <a href="../student/xep-hang.html">Bảng xếp hạng</a>.
+              </div>
+            </div>
+
+            <!-- ======= HỒ SƠ CÁ NHÂN — form sửa hồ sơ ngay trong trang, không điều hướng đi đâu
+            khác nữa (thay cho card "Mở trang Cài đặt riêng" cũ; gộp luôn "Cài đặt" thành mục này vì
+            Teacher không có nội dung Cài đặt hệ thống nào khác, phần quản trị hệ thống thật nằm ở
+            admin/quan-tri-he-thong.html). DÙNG CHUNG với admin/quan-tri-he-thong.html — sửa ở đây
+            thì nhớ sửa cả bên kia. JS nằm trong admin-common.js (dùng chung thật). ======= -->
+            <div class="panel" id="panel-profile">
+              <div class="page-title">👤 Hồ sơ cá nhân</div>
+              <div class="card" style="text-align: center; padding: 24px 20px">
+                <div style="position: relative; width: 88px; height: 88px; margin: 0 auto 12px">
+                  <img
+                    id="profileAvatarImg"
+                    alt="Avatar"
+                    style="
+                      width: 88px;
+                      height: 88px;
+                      border-radius: 50%;
+                      object-fit: cover;
+                      display: none;
+                    "
+                  />
+                  <div
+                    id="profileAvatarPlaceholder"
+                    style="
+                      width: 88px;
+                      height: 88px;
+                      border-radius: 50%;
+                      background: linear-gradient(135deg, var(--red-dark), var(--red));
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 2.2rem;
+                      color: white;
+                    "
+                  >
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <button
+                    class="btn btn-outline btn-sm"
+                    onclick="document.getElementById('profileAvatarInput').click()"
+                    style="
+                      position: absolute;
+                      bottom: 0;
+                      right: 0;
+                      width: 30px;
+                      height: 30px;
+                      border-radius: 50%;
+                      padding: 0;
+                      background: white;
+                    "
+                    aria-label="Đổi avatar"
+                  >
+                    <i class="fas fa-camera" style="font-size: 0.75rem"></i>
+                  </button>
+                  <input
+                    type="file"
+                    id="profileAvatarInput"
+                    accept="image/png,image/jpeg,image/webp"
+                    style="display: none"
+                    onchange="onProfileAvatarSelected(this.files[0])"
+                  />
+                </div>
+                <div id="profileAvatarStatus" style="font-size: 0.72rem; min-height: 16px; margin-bottom: 8px"></div>
+
+                <div class="form-group" style="text-align: left">
+                  <label class="form-label">Họ tên</label>
+                  <input class="form-input" id="profileNameInput" />
+                </div>
+                <!-- Việc 3.1 (2026-08-19) — chỉ hiện cho Teacher (Admin không có gì thêm), xem
+                     renderProfilePanel() trong admin-common.js. -->
+                <div class="form-group" id="profilePhoneGroup" style="text-align: left; display: none">
+                  <label class="form-label">Số điện thoại</label>
+                  <input class="form-input" id="profilePhoneInput" type="tel" placeholder="09xxxxxxxx" />
+                </div>
+                <div class="form-group" id="profileBoMonKhoaGroup" style="text-align: left; display: none">
+                  <label class="form-label">Bộ môn / Khoa</label>
+                  <input class="form-input" id="profileBoMonKhoaInput" type="text" placeholder="VD: Khoa Công nghệ thông tin" />
+                </div>
+                <!-- Rà soát Lần VI (2026-08-21) — Cấp bậc + Chức vụ (chức danh học thuật GV, KHÁC
+                hẳn badge Lớp trưởng/phó của học viên) — cả 2 GV tự sửa được, cùng nhóm ẩn/hiện với
+                SĐT/Bộ môn-Khoa ở trên (isTeacher). -->
+                <div class="form-group" id="profileCapBacGroup" style="text-align: left; display: none">
+                  <label class="form-label">Cấp bậc</label>
+                  <select class="form-input" id="profileCapBacInput"></select>
+                </div>
+                <div class="form-group" id="profileChucVuGVGroup" style="text-align: left; display: none">
+                  <label class="form-label">Chức vụ</label>
+                  <select class="form-input" id="profileChucVuGVInput"></select>
+                </div>
+                <button class="btn btn-red btn-full" id="profileSaveNameBtn" onclick="saveProfileName()">
+                  Lưu thay đổi
+                </button>
+                <div id="profileSaveMsg" style="font-size: 0.78rem; margin-top: 8px; display: none"></div>
+
+                <div style="text-align: left; margin-top: 20px; border-top: 1px solid var(--gray-100); padding-top: 14px">
+                  <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                    <span style="font-size: 0.78rem; color: var(--gray-500)">Email</span>
+                    <span style="font-size: 0.82rem; font-weight: 600" id="profileEmailValue">—</span>
+                  </div>
+                  <!-- Rà soát Lần XVI (2026-08-21) — "Vai trò", chỉ đọc, hiện cho mọi role (dùng
+                  chung admin-common.js renderProfilePanel()). -->
+                  <div style="display: flex; justify-content: space-between; padding: 6px 0">
+                    <span style="font-size: 0.78rem; color: var(--gray-500)">Vai trò</span>
+                    <span style="font-size: 0.82rem; font-weight: 600" id="profileRoleValue">—</span>
+                  </div>
+                  <!-- Rà soát Lần VI — Môn học phụ trách + Lớp phụ trách: CHỈ XEM, do Admin chỉ định
+                  (Môn) / gán qua "Quản lý tài khoản" (Lớp — GiaoVienId), GV không tự sửa 2 mục này. -->
+                  <div style="display: none; justify-content: space-between; padding: 6px 0" id="profileMonHocRow">
+                    <span style="font-size: 0.78rem; color: var(--gray-500)">Môn học phụ trách</span>
+                    <span style="font-size: 0.82rem; font-weight: 600" id="profileMonHocValue">—</span>
+                  </div>
+                  <div style="display: none; justify-content: space-between; padding: 6px 0" id="profileLopPhuTrachRow">
+                    <span style="font-size: 0.78rem; color: var(--gray-500)">Lớp phụ trách</span>
+                    <span style="font-size: 0.82rem; font-weight: 600" id="profileLopPhuTrachValue">—</span>
+                  </div>
+                </div>
+                <div style="font-size: 0.7rem; color: var(--gray-400); margin-top: 12px">
+                  Email, Môn học phụ trách, Lớp phụ trách chỉ đọc — liên hệ Admin để thay đổi.
+                </div>
+
+                <div style="text-align: left; margin-top: 14px; border-top: 1px solid var(--gray-100); padding-top: 14px">
+                  <button class="btn btn-outline btn-full" onclick="openChangePasswordModal()">
+                    <i class="fas fa-key"></i> Đổi mật khẩu
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Rà soát Lần III (2026-08-20, mục A) — hợp nhất "Danh sách học viên" (panel riêng, Gap 2 mục
+         2) vào ĐÚNG 1 nơi: click 1 Lớp trong "Quản lý Lớp" mở modal roster này. Cùng khuôn mẫu
+         lopDetailModal của admin/quan-tri-he-thong.html (Việc V) — STT/Cấp bậc sửa được/Chức vụ sửa
+         được/Điểm view-only/search/sort, khác là scope theo đúng 1 Lớp GV đang xem (không có ô
+         "gộp tất cả lớp" như panel cũ vì mỗi lần chỉ mở đúng 1 Lớp cụ thể). -->
+    <div class="modal" id="lopRosterModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="lopRosterModalTitle" style="max-width: 820px">
+        <div class="modal-header">
+          <h3 id="lopRosterModalTitle"><i class="fas fa-user-friends"></i> Thành viên lớp</h3>
+          <button class="modal-close" onclick="closeModal('lopRosterModal')" aria-label="Đóng">×</button>
+        </div>
+        <div class="modal-body">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px">
+            <input
+              class="search-input"
+              id="lopRosterSearchInput"
+              placeholder="🔍 Tìm theo tên/email..."
+              style="flex: 1; max-width: 260px"
+              oninput="renderLopRoster()"
+            />
+            <button class="btn btn-red btn-sm" onclick="openAddMemberModal()">
+              <i class="fas fa-user-plus"></i> Thêm thành viên
+            </button>
+          </div>
+          <div class="data-table-wrap" style="max-height: 400px; overflow-y: auto">
+            <table class="data-table" style="font-size: 0.8rem">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th class="sortable" onclick="sortLopRosterBy('name')">Họ tên</th>
+                  <th>Email</th>
+                  <th>Cấp bậc</th>
+                  <th>Chức vụ</th>
+                  <th class="sortable" onclick="sortLopRosterBy('diemThiThu')">Thi thử</th>
+                  <th class="sortable" onclick="sortLopRosterBy('diemLuyenTap')">Luyện tập</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="lopRosterRows">
+                <tr><td colspan="8" class="empty"><i class="fas fa-spinner fa-spin"></i>Đang tải...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thêm thành viên vào lớp (Gap 2 mục 2) -->
+    <div class="modal" id="addMemberModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="addMemberModalTitle">
+        <div class="modal-header">
+          <h3 id="addMemberModalTitle">Thêm thành viên vào lớp</h3>
+          <button class="modal-close" onclick="closeModal('addMemberModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tìm học viên theo email (tối thiểu 3 ký tự)</label>
+            <input
+              class="form-input"
+              id="addMemberSearchInput"
+              placeholder="vd: student@example.com"
+              oninput="onAddMemberSearchInput()"
+            />
+          </div>
+          <div id="addMemberSearchResults" style="font-size: 0.82rem"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Việc 4.2 (2026-08-19) — Tạo Lớp mới. Chọn Khóa có sẵn (Teacher không tạo được Khóa mới,
+         vẫn Admin-only) + tên Lớp. Tạo xong tự động thành GV chủ nhiệm (xử lý ở backend). -->
+    <!-- Việc 4.4 Phần B (2026-08-20) — Tạo Đề luyện tập. -->
+    <div class="modal" id="createPracticeSetModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="createPracticeSetModalTitle">
+        <div class="modal-header">
+          <h3 id="createPracticeSetModalTitle">Tạo đề luyện tập</h3>
+          <button class="modal-close" onclick="closeModal('createPracticeSetModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tên đề *</label>
+            <input class="form-input" id="practiceSetTenInput" placeholder="VD: Ôn tập giữa kỳ Chương 1" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Chương *</label>
+            <select class="form-input" id="practiceSetChapterSelect">
+              <option value="">Đang tải danh sách chương...</option>
+            </select>
+          </div>
+          <div id="practiceSetScopeContainer"></div>
+          <div style="font-size: 0.72rem; color: var(--gray-500); margin-bottom: 10px">
+            * Bắt buộc chọn ít nhất 1 Lớp — đề luyện tập chỉ dùng để giao riêng theo lớp.
+          </div>
+          <div id="createPracticeSetMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <button class="btn btn-red btn-full" id="createPracticeSetSaveBtn" onclick="saveCreatePracticeSet()">
+            <i class="fas fa-save"></i> Tạo đề
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="createLopModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="createLopModalTitle">
+        <div class="modal-header">
+          <h3 id="createLopModalTitle">Tạo lớp mới</h3>
+          <button class="modal-close" onclick="closeModal('createLopModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Khóa</label>
+            <select class="form-input" id="createLopKhoaSelect"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tên lớp</label>
+            <input class="form-input" id="createLopTenInput" placeholder="VD: CNTT2" />
+          </div>
+          <div id="createLopMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <button class="btn btn-red btn-full" id="createLopSaveBtn" onclick="saveCreateLop()">
+            Tạo lớp
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Việc 4.2 — Đổi tên Lớp. -->
+    <!-- Rà soát Lần VI (2026-08-21) — nâng "Đổi tên lớp" (chỉ Tên) thành "Sửa lớp" đầy đủ (Tên +
+    Niên khóa), tránh có 2 nút Đổi-tên/Sửa làm cùng 1 việc gây rối. -->
+    <!-- Rà soát Lần VI (2026-08-21) — Đổi mật khẩu, JS dùng chung (admin-common.js:
+    openChangePasswordModal/submitChangePassword) — modal khai báo riêng ở mỗi trang vì không có
+    build-step include HTML, cùng quy ước với các modal dùng chung khác trong dự án. -->
+    <div class="modal" id="changePasswordModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="cpModalTitle">
+        <div class="modal-header">
+          <h3 id="cpModalTitle"><i class="fas fa-key"></i> Đổi mật khẩu</h3>
+          <button class="modal-close" onclick="closeModal('changePasswordModal')" aria-label="Đóng">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Mật khẩu hiện tại</label>
+            <input class="form-input" id="cpCurrentInput" type="password" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mật khẩu mới (tối thiểu 8 ký tự)</label>
+            <input class="form-input" id="cpNewInput" type="password" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Xác nhận mật khẩu mới</label>
+            <input class="form-input" id="cpConfirmInput" type="password" />
+          </div>
+          <div id="cpMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <button class="btn btn-red btn-full" id="cpSubmitBtn" onclick="submitChangePassword()">
+            Đổi mật khẩu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="renameLopModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="renameLopModalTitle">
+        <div class="modal-header">
+          <h3 id="renameLopModalTitle">Sửa lớp</h3>
+          <button class="modal-close" onclick="closeModal('renameLopModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tên lớp</label>
+            <input class="form-input" id="renameLopTenInput" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Khóa</label>
+            <select class="form-input" id="renameLopKhoaSelect"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Niên khóa</label>
+            <input class="form-input" id="renameLopNamHocInput" placeholder="VD: 2024-2025" />
+          </div>
+          <div id="renameLopMsg" style="font-size: 0.78rem; color: var(--red); margin-bottom: 8px; display: none"></div>
+          <button class="btn btn-red btn-full" id="renameLopSaveBtn" onclick="saveRenameLop()">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add oral question modal -->
+    <!-- DÙNG CHUNG với admin/quan-tri-he-thong.html — sửa ở đây thì nhớ sửa cả bên kia -->
+    <div class="modal" id="oralModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="oralModalTitle">
+        <div class="modal-header">
+          <h3 id="oralModalTitle">Thêm câu hỏi vấn đáp</h3>
+          <button class="modal-close" onclick="closeModal('oralModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Chương/Phần *</label
+            ><input
+              class="form-input"
+              id="oral-chapter"
+              placeholder="VD: Chương 1"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Câu hỏi *</label
+            ><textarea
+              class="form-input"
+              id="oral-q"
+              rows="3"
+              placeholder="Nhập câu hỏi vấn đáp..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Đáp án chuẩn *</label
+            ><textarea
+              class="form-input"
+              id="oral-a"
+              rows="4"
+              placeholder="Nhập đáp án chuẩn để AI tham khảo khi chấm..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Độ khó</label>
+            <select class="form-input" id="oral-diff">
+              <option value="1">1 - Dễ</option>
+              <option value="2" selected>2 - Trung bình</option>
+              <option value="3">3 - Khó</option>
+            </select>
+          </div>
+          <!-- Việc 4.4 Phần A (2026-08-20) -->
+          <div id="oralAddScopeContainer"></div>
+          <button class="btn btn-red btn-full" onclick="saveOralQuestion()">
+            <i class="fas fa-save"></i> Lưu câu hỏi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- File này dùng để làm gì? (audit 2026-08-16 mục 1) — hiện ngay sau khi thêm file
+    Word/PDF/Text vào panel Import, trước khi xử lý. Excel không hỏi (luôn là câu hỏi có sẵn theo
+    template, xem addBatchFiles()). -->
+    <div class="modal" id="importPurposeModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="importPurposeTitle" style="max-width: 560px">
+        <div class="modal-header">
+          <h3 id="importPurposeTitle">File này dùng để làm gì?</h3>
+          <button class="modal-close" onclick="cancelImportPurposeModal()" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="importPurposeFileList" style="font-size: 0.78rem; color: var(--gray-500); margin-bottom: 14px"></div>
+          <div style="display: grid; gap: 10px">
+            <div class="card" style="cursor: pointer; border: 2px solid #bbdefb; margin: 0" onclick="chooseImportPurposeLiteral()">
+              <div style="font-weight: 700; margin-bottom: 4px">
+                <i class="fas fa-list-check" style="color: #1565c0"></i> 📋 File đã có sẵn câu hỏi soạn theo mẫu
+              </div>
+              <div style="font-size: 0.76rem; color: var(--gray-500)">
+                Đọc trực tiếp câu hỏi có sẵn trong file (định dạng "Câu X:" → A./B./C./D. → ĐÁP ÁN: X) — giữ nguyên luồng import hiện tại.
+              </div>
+            </div>
+            <div class="card" style="cursor: pointer; border: 2px solid #d1c4e9; margin: 0" onclick="chooseImportPurposeAi()">
+              <div style="font-weight: 700; margin-bottom: 4px">
+                <i class="fas fa-wand-magic-sparkles" style="color: #5e35b1"></i> 🤖 Dùng AI đọc nội dung, tự sinh câu hỏi
+              </div>
+              <div style="font-size: 0.76rem; color: var(--gray-500)">
+                Dùng khi file là tài liệu/bài giảng (chưa có sẵn câu hỏi) — AI đọc và soạn câu hỏi để bạn duyệt/sửa trước khi lưu.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sinh đề bằng AI (audit C1) — gắn theo từng Material trong panel Tài liệu bài giảng -->
+    <div class="modal" id="examGenModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="examGenTitle" style="max-width: 720px">
+        <div class="modal-header">
+          <h3 id="examGenTitle">Sinh đề bằng AI</h3>
+          <button class="modal-close" onclick="closeModal('examGenModal'); aiSourceQueue = [];" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Chương/Phần *</label>
+            <input class="form-input" id="examGenChapter" placeholder="VD: Chương 1" />
+          </div>
+          <div style="display: flex; gap: 10px; margin-bottom: 12px">
+            <div class="form-group" style="flex: 1; margin-bottom: 0">
+              <label class="form-label">Số câu trắc nghiệm (0 hoặc 10-15)</label>
+              <input class="form-input" type="number" id="examGenMcqCount" min="0" max="15" value="12" />
+            </div>
+            <div class="form-group" style="flex: 1; margin-bottom: 0">
+              <label class="form-label">Số câu tự luận (0 hoặc 1-2)</label>
+              <input class="form-input" type="number" id="examGenEssayCount" min="0" max="2" value="1" />
+            </div>
+          </div>
+          <button class="btn btn-red btn-full" id="examGenRunBtn" onclick="runGenerateExamSet()">
+            <i class="fas fa-wand-magic-sparkles"></i> Sinh câu hỏi
+          </button>
+          <div id="examGenStatus" style="font-size: 0.8rem; margin-top: 8px; min-height: 18px"></div>
+          <div
+            style="
+              font-size: 0.72rem;
+              color: #e65100;
+              background: #fff3e0;
+              padding: 6px 10px;
+              border-radius: 8px;
+              margin-top: 6px;
+              display: none;
+            "
+            id="examGenPublishNote"
+          >
+            <i class="fas fa-info-circle"></i> Câu hỏi AI sinh sẽ được lưu ở trạng thái
+            <strong>"Chưa xuất bản"</strong> — học viên chưa thấy được cho tới khi bạn xuất bản
+            thủ công trong panel Câu hỏi TN.
+          </div>
+          <div id="examGenCandidates" style="margin-top: 8px; max-height: 50vh; overflow-y: auto"></div>
+          <div id="examGenScopeContainer" style="margin-top: 10px"></div>
+          <button
+            class="btn btn-red btn-full"
+            id="examGenSaveBtn"
+            style="display: none; margin-top: 10px"
+            onclick="saveSelectedExamQuestions()"
+          >
+            <i class="fas fa-save"></i> Lưu các câu đã chọn
+          </button>
+          <button
+            class="btn btn-outline btn-full"
+            id="examGenSaveExportBtn"
+            style="display: none; margin-top: 8px"
+            onclick="saveAndExportSelectedExamQuestions()"
+          >
+            <i class="fas fa-file-word"></i> Lưu & Xuất Word
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Việc 5 (2026-08-16) — "Bộ đề TN mới"/"Bộ đề VĐ mới" từ ngân hàng có sẵn (KHÔNG sinh AI
+    mới). 1 modal dùng chung cho cả 2 loại (openBankExamSetModal('mcq'|'oral')) — nguồn TN chỉ lấy
+    câu ĐÃ XUẤT BẢN (isPublishedForPractice=true, tránh lộ câu chưa duyệt qua đường vòng); nguồn VĐ
+    lấy toàn bộ ngân hàng (OralQuestion không có publish-gate, đã xác nhận từ trước). -->
+    <div class="modal" id="bankExamSetModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="bankExamSetTitle">
+        <div class="modal-header">
+          <h3 id="bankExamSetTitle">Bộ đề mới từ ngân hàng</h3>
+          <button class="modal-close" onclick="closeModal('bankExamSetModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="bankExamSetPoolInfo" style="font-size: 0.78rem; color: var(--gray-500); margin-bottom: 10px"></div>
+          <div class="form-group">
+            <label class="form-label">Tên bộ đề</label>
+            <input class="form-input" id="bankExamSetTen" placeholder="VD: Kiểm tra giữa kỳ Chương 1" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Chương</label>
+            <select class="form-input" id="bankExamSetChapter">
+              <option value="">Tất cả chương</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 10px; margin-bottom: 12px">
+            <div class="form-group" style="flex: 1; margin-bottom: 0">
+              <label class="form-label">Số câu (<span id="bankExamSetCountHint">25-50</span>)</label>
+              <input class="form-input" type="number" id="bankExamSetCount" min="25" max="50" value="25" />
+            </div>
+            <div class="form-group" style="flex: 1; margin-bottom: 0">
+              <label class="form-label">Số mã đề</label>
+              <select class="form-input" id="bankExamSetVersionCount">
+                <option value="2">2 mã đề</option>
+                <option value="3" selected>3 mã đề</option>
+                <option value="4">4 mã đề</option>
+              </select>
+            </div>
+          </div>
+          <div id="bankExamSetScopeContainer" style="margin-bottom: 10px"></div>
+          <button class="btn btn-red btn-full" id="bankExamSetSubmitBtn" onclick="submitBankExamSet()">
+            <i class="fas fa-layer-group"></i> Tạo bộ đề
+          </button>
+          <div id="bankExamSetStatus" style="font-size: 0.8rem; margin-top: 8px; min-height: 18px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Việc 8 (2026-08-16) — sửa lại Phạm vi hiển thị của 1 câu hỏi/mã đề ĐÃ CÓ. Dùng chung cho
+    cả câu hỏi TN (loại "question") và mã đề (loại "examVersion") — xem openEditLopVisibilityModal. -->
+    <div class="modal" id="editLopVisibilityModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="editLopVisibilityTitle">
+        <div class="modal-header">
+          <h3 id="editLopVisibilityTitle">Sửa phạm vi hiển thị</h3>
+          <button class="modal-close" onclick="closeModal('editLopVisibilityModal')" aria-label="Đóng">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="editLopVisibilityScopeContainer"></div>
+          <button class="btn btn-red btn-full" id="editLopVisibilitySaveBtn" onclick="saveLopVisibilityEdit()">
+            <i class="fas fa-save"></i> Lưu phạm vi
+          </button>
+          <div id="editLopVisibilityStatus" style="font-size: 0.8rem; margin-top: 8px; min-height: 18px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- ?v= bump mỗi lần sửa admin-common.js — file không qua build/bundler nên không có
+    content-hash tự động; không bump thì trình duyệt (và cả server tĩnh không gửi Cache-Control)
+    có thể tiếp tục phục vụ bản JS cũ trong lúc HTML đã đổi, gây lỗi kiểu "phần tử DOM không tồn
+    tại" (JS cũ tham chiếu id đã bị xóa khỏi HTML mới) — xem sự cố Gap 2 2026-08-14. -->
+    <script src="../js/shared/admin-common.js?v=20260821e"></script>
+    <script>
+      let me = null; // { id, email, name, role, ... } — session user
+
+      async function init() {
+        if (!requireAuth()) return;
+        const session = getSession();
+        me = session.user;
+
+        if (me.role !== "Teacher") {
+          if (me.role === "Admin") {
+            window.location = "../admin/quan-tri-he-thong.html";
+          } else {
+            alert("⚠️ Bạn không có quyền truy cập trang này!\nChỉ Giảng viên mới được vào đây.");
+            window.location = "../index.html";
+          }
+          return;
+        }
+        document.getElementById("adminName").textContent = `${me.name} · Giảng viên`;
+
+        loadOverview();
+        loadQuestions();
+        loadOralQuestions();
+      }
+
+      // ════════════════════════════════════════════
+      // VIỆC 4.2 (2026-08-19) — QUẢN LÝ LỚP (Tạo/Đổi tên/Xóa lớp rỗng), trước đây Admin-only.
+      // Teacher-only, không đặt trong admin-common.js — xem comment ở showPanel() dispatch.
+      // ════════════════════════════════════════════
+
+      let lopCrudList = [];
+
+      // Rà soát Lần III (2026-08-20, mục A) — bảng trước đây chỉ có Tên lớp, thiếu STT/Số lượng
+      // HV/Khóa/Niên khóa/Điểm TB theo yêu cầu gốc. Khóa lấy qua authGetKhoa(khoaId) (đã có sẵn từ
+      // LopResponse.KhoaId), Số lượng HV + Điểm TB qua adminStatsLop() — endpoint này CHO PHÉP
+      // Teacher gọi (RequireRole(Teacher, Admin) + ownership check ở service), cùng nguồn dữ liệu
+      // đã dùng cho panel "Lớp tôi phụ trách" (loadOverview/renderTeacherLopCard, admin-common.js).
+      async function loadLopCrud() {
+        const content = document.getElementById("lopCrudContent");
+        content.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
+        try {
+          lopCrudList = await authListMyLop();
+        } catch (err) {
+          content.innerHTML = `<div class="empty">Lỗi tải danh sách lớp: ${err.message}</div>`;
+          return;
+        }
+
+        if (!lopCrudList.length) {
+          content.innerHTML = `<div class="empty">Bạn chưa chủ nhiệm lớp nào — bấm "Tạo lớp mới" ở trên để bắt đầu.</div>`;
+          return;
+        }
+
+        content.innerHTML = `
+          <div class="data-table-wrap">
+            <div style="overflow-x: auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên lớp</th>
+                  <th>Số lượng HV</th>
+                  <th>Khóa</th>
+                  <th>Niên khóa</th>
+                  <th>Điểm TB Thi thử</th>
+                  <th>Điểm TB Luyện tập</th>
+                  <th style="text-align:right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="lopCrudRows">
+                ${lopCrudList
+                  .map(
+                    (l, i) => `
+                <tr>
+                  <td>${i + 1}</td>
+                  <td>${l.ten}</td>
+                  <td id="lopCrudSiSo-${l.id}">…</td>
+                  <td id="lopCrudKhoa-${l.id}">…</td>
+                  <td>${l.namHoc || '<span style="color: var(--gray-400)">—</span>'}</td>
+                  <td id="lopCrudThiThu-${l.id}" style="color: var(--red); font-weight: 600">…</td>
+                  <td id="lopCrudLuyenTap-${l.id}" style="color: #2e7d32; font-weight: 600">…</td>
+                  <td style="text-align:right; white-space: nowrap; min-width: 190px;">
+                    <!-- Rà soát Lần VI (2026-08-21) — trước 3 nút xếp 1 hàng, tràn khỏi cột (phải
+                    cuộn ngang mới bấm được). Xếp 2 dòng: "Thành viên" (thao tác chính) riêng 1 dòng
+                    trên cùng, "Sửa"/"Xóa" (thao tác phụ) 1 dòng dưới — không còn tràn. -->
+                    <div style="margin-bottom: 6px;">
+                      <button class="btn btn-outline btn-sm btn-full" onclick="openLopRoster('${l.id}')">
+                        <i class="fas fa-user-friends"></i> Thành viên
+                      </button>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                      <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openRenameLopModal('${l.id}', '${l.ten.replace(/'/g, "\\'")}', '${(l.namHoc || "").replace(/'/g, "\\'")}', '${l.khoaId}')">
+                        <i class="fas fa-pen"></i> Sửa
+                      </button>
+                      <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--red); border-color: var(--red)" onclick="deleteLopWithConfirm('${l.id}', '${l.ten.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-trash"></i> Xóa
+                      </button>
+                    </div>
+                  </td>
+                </tr>`,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+            </div>
+          </div>`;
+
+        // Khóa + sĩ số/điểm nạp riêng, không chặn hiển thị khung bảng chính — 1 lớp lỗi không kéo
+        // sập cả bảng (giống pattern Promise.allSettled dùng ở admin/quan-tri-he-thong.html).
+        lopCrudList.forEach(async (l) => {
+          try {
+            const khoa = await authGetKhoa(l.khoaId);
+            const khoaEl = document.getElementById(`lopCrudKhoa-${l.id}`);
+            if (khoaEl) khoaEl.textContent = khoa.ten || "—";
+          } catch {
+            const khoaEl = document.getElementById(`lopCrudKhoa-${l.id}`);
+            if (khoaEl) khoaEl.textContent = "—";
+          }
+          try {
+            const stats = await adminStatsLop(l.id);
+            const siSoEl = document.getElementById(`lopCrudSiSo-${l.id}`);
+            const thiThuEl = document.getElementById(`lopCrudThiThu-${l.id}`);
+            const luyenTapEl = document.getElementById(`lopCrudLuyenTap-${l.id}`);
+            if (siSoEl) siSoEl.textContent = stats.tongHocVien;
+            if (thiThuEl) thiThuEl.textContent = stats.diemTBThiThu != null ? stats.diemTBThiThu.toFixed(2) : "—";
+            if (luyenTapEl) luyenTapEl.textContent = stats.diemTBLuyenTap != null ? stats.diemTBLuyenTap.toFixed(2) : "—";
+          } catch {
+            ["lopCrudSiSo", "lopCrudThiThu", "lopCrudLuyenTap"].forEach((prefix) => {
+              const el = document.getElementById(`${prefix}-${l.id}`);
+              if (el) el.textContent = "—";
+            });
+          }
+        });
+      }
+
+      async function openCreateLopModal() {
+        document.getElementById("createLopMsg").style.display = "none";
+        document.getElementById("createLopTenInput").value = "";
+        const sel = document.getElementById("createLopKhoaSelect");
+        sel.innerHTML = `<option value="">Đang tải...</option>`;
+        openModal("createLopModal");
+        try {
+          const khoaList = await authListKhoa();
+          if (!khoaList.length) {
+            sel.innerHTML = `<option value="">-- Chưa có Khóa nào, liên hệ Admin --</option>`;
+            return;
+          }
+          sel.innerHTML = khoaList.map((k) => `<option value="${k.id}">${k.ten}</option>`).join("");
+        } catch (err) {
+          sel.innerHTML = `<option value="">Lỗi tải danh sách khóa</option>`;
+        }
+      }
+
+      async function saveCreateLop() {
+        const khoaId = document.getElementById("createLopKhoaSelect").value;
+        const ten = document.getElementById("createLopTenInput").value.trim();
+        const msg = document.getElementById("createLopMsg");
+        msg.style.display = "none";
+
+        if (!khoaId || !ten) {
+          msg.textContent = "Vui lòng chọn Khóa và nhập tên lớp.";
+          msg.style.display = "block";
+          return;
+        }
+
+        const btn = document.getElementById("createLopSaveBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+        try {
+          await authCreateLop(ten, khoaId);
+          closeModal("createLopModal");
+          await loadLopCrud();
+          showToast("✓ Đã tạo lớp — bạn là GV chủ nhiệm", "success");
+        } catch (err) {
+          msg.textContent = "Lỗi: " + err.message;
+          msg.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "Tạo lớp";
+        }
+      }
+
+      let renameLopTargetId = null;
+
+      // Rà soát Lần IX (2026-08-21) — thêm dropdown Khóa vào modal "Sửa lớp" (trước đây chỉ chọn
+      // được Khóa lúc tạo, không có đường sửa lại). Cùng pattern nạp danh sách Khóa với
+      // openCreateLopModal, chỉ khác là chọn sẵn currentKhoaId thay vì để trống.
+      async function openRenameLopModal(lopId, currentTen, currentNamHoc, currentKhoaId) {
+        renameLopTargetId = lopId;
+        document.getElementById("renameLopTenInput").value = currentTen;
+        document.getElementById("renameLopNamHocInput").value = currentNamHoc || "";
+        document.getElementById("renameLopMsg").style.display = "none";
+        const sel = document.getElementById("renameLopKhoaSelect");
+        sel.innerHTML = `<option value="">Đang tải...</option>`;
+        openModal("renameLopModal");
+        try {
+          const khoaList = await authListKhoa();
+          if (!khoaList.length) {
+            sel.innerHTML = `<option value="">-- Chưa có Khóa nào, liên hệ Admin --</option>`;
+            return;
+          }
+          sel.innerHTML = khoaList.map((k) => `<option value="${k.id}">${k.ten}</option>`).join("");
+          sel.value = currentKhoaId || "";
+        } catch (err) {
+          sel.innerHTML = `<option value="">Lỗi tải danh sách khóa</option>`;
+        }
+      }
+
+      async function saveRenameLop() {
+        const ten = document.getElementById("renameLopTenInput").value.trim();
+        const namHoc = document.getElementById("renameLopNamHocInput").value.trim();
+        const khoaId = document.getElementById("renameLopKhoaSelect").value;
+        const msg = document.getElementById("renameLopMsg");
+        msg.style.display = "none";
+        if (!ten) {
+          msg.textContent = "Tên lớp không được để trống.";
+          msg.style.display = "block";
+          return;
+        }
+        if (!khoaId) {
+          msg.textContent = "Vui lòng chọn Khóa.";
+          msg.style.display = "block";
+          return;
+        }
+
+        const btn = document.getElementById("renameLopSaveBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+        try {
+          await authUpdateLop(renameLopTargetId, ten, namHoc, khoaId);
+          closeModal("renameLopModal");
+          await loadLopCrud();
+          showToast("✓ Đã lưu thay đổi lớp", "success");
+        } catch (err) {
+          msg.textContent = "Lỗi: " + err.message;
+          msg.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "Lưu tên mới";
+        }
+      }
+
+      async function deleteLopWithConfirm(lopId, ten) {
+        if (!confirm(`Xóa lớp "${ten}"? Chỉ xóa được nếu lớp KHÔNG còn học viên nào.`)) return;
+        try {
+          await authDeleteLop(lopId);
+          await loadLopCrud();
+          showToast("✓ Đã xóa lớp", "success");
+        } catch (err) {
+          // 409 Conflict khi lớp còn học viên — thông báo rõ nguyên nhân thay vì lỗi chung chung.
+          showToast(
+            err.code === "CONFLICT"
+              ? `Không thể xóa "${ten}" — lớp còn học viên. Chuyển học viên sang lớp khác trước.`
+              : "Lỗi: " + err.message,
+            "error",
+          );
+        }
+      }
+
+      // ════════════════════════════════════════════
+      // VIỆC 4.4 PHẦN B (2026-08-20) — ĐỀ LUYỆN TẬP: giáo viên gom câu hỏi có sẵn theo Chương
+      // thành 1 đề đặt tên, giao riêng theo Lớp. Picker Lớp tái dùng scopePickerHtml/initScopePicker
+      // (admin-common.js, Việc 8) nhưng BẮT BUỘC chọn ≥1 Lớp (validate ở đây + backend) — khác mọi
+      // nơi khác dùng picker này (ở đó "Toàn hệ thống" là lựa chọn hợp lệ).
+      // ════════════════════════════════════════════
+
+      async function openCreatePracticeSetModal() {
+        document.getElementById("practiceSetTenInput").value = "";
+        document.getElementById("createPracticeSetMsg").style.display = "none";
+        const sel = document.getElementById("practiceSetChapterSelect");
+        sel.innerHTML = `<option value="">Đang tải danh sách chương...</option>`;
+
+        const scopeContainer = document.getElementById("practiceSetScopeContainer");
+        if (!scopeContainer.innerHTML) {
+          scopeContainer.innerHTML = scopePickerHtml("practiceSetScope", "Giao cho Lớp *");
+        }
+        // Đề luyện tập không có lựa chọn "Toàn hệ thống" — ẩn hẳn radio đó, chỉ còn 1 chế độ
+        // "Chỉ Lớp cụ thể" luôn hiện sẵn danh sách chọn (khác mọi nơi khác dùng picker này).
+        openModal("createPracticeSetModal");
+        await initScopePicker("practiceSetScope");
+        const allModeLabel = document.querySelector(`input[name="practiceSetScopeMode"][value="all"]`)?.closest("label");
+        if (allModeLabel) allModeLabel.style.display = "none";
+        const lopRadio = document.querySelector(`input[name="practiceSetScopeMode"][value="lop"]`);
+        if (lopRadio) {
+          lopRadio.checked = true;
+          toggleScopePickerMode("practiceSetScope");
+        }
+
+        try {
+          const chapters = await listPracticeSetChapters();
+          sel.innerHTML = chapters.length
+            ? chapters.map((c) => `<option value="${c.chapter}">${c.chapter} (${c.publishedQuestionCount} câu)</option>`).join("")
+            : `<option value="">Chưa có chương nào đã xuất bản câu hỏi</option>`;
+        } catch (err) {
+          sel.innerHTML = `<option value="">Lỗi tải danh sách chương</option>`;
+        }
+      }
+
+      async function saveCreatePracticeSet() {
+        const ten = document.getElementById("practiceSetTenInput").value.trim();
+        const chapter = document.getElementById("practiceSetChapterSelect").value;
+        const lopIds = getScopePickerLopIds("practiceSetScope");
+        const msg = document.getElementById("createPracticeSetMsg");
+        msg.style.display = "none";
+
+        if (!ten || !chapter) {
+          msg.textContent = "Vui lòng nhập Tên đề và chọn Chương.";
+          msg.style.display = "block";
+          return;
+        }
+        if (!lopIds.length) {
+          msg.textContent = "Vui lòng chọn ít nhất 1 Lớp để giao đề.";
+          msg.style.display = "block";
+          return;
+        }
+
+        const btn = document.getElementById("createPracticeSetSaveBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+        try {
+          await createPracticeSet(ten, chapter, lopIds);
+          closeModal("createPracticeSetModal");
+          showToast("✓ Đã tạo đề luyện tập", "success");
+          loadMyPracticeSets();
+        } catch (err) {
+          msg.textContent = "Lỗi: " + err.message;
+          msg.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-save"></i> Tạo đề';
+        }
+      }
+
+      async function loadMyPracticeSets() {
+        const container = document.getElementById("practiceSetsListContainer");
+        if (!container) return;
+        container.innerHTML = '<div style="text-align: center; padding: 16px; color: var(--gray-400)"><i class="fas fa-spinner fa-spin"></i></div>';
+        let sets;
+        try {
+          sets = await listMyPracticeSets();
+        } catch (err) {
+          container.innerHTML = `<div class="empty">Lỗi tải đề luyện tập: ${err.message}</div>`;
+          return;
+        }
+
+        if (!sets.length) {
+          container.innerHTML = `<div class="empty">Chưa có đề luyện tập nào — bấm "Tạo đề luyện tập" ở trên để bắt đầu.</div>`;
+          return;
+        }
+
+        container.innerHTML = `
+          <table class="data-table">
+            <thead><tr><th>Tên đề</th><th>Chương</th><th>Số câu</th><th>Số Lớp</th><th></th></tr></thead>
+            <tbody>
+              ${sets
+                .map(
+                  (s) => `
+                <tr>
+                  <td>${s.ten}</td>
+                  <td>${s.chapter}</td>
+                  <td>${s.questionCount}</td>
+                  <td>${s.lopIds.length}</td>
+                  <td style="text-align:right"><button class="btn btn-outline btn-sm" style="color: var(--red)" onclick="deletePracticeSetWithConfirm('${s.id}', '${s.ten.replace(/'/g, "\\'")}')">Xóa</button></td>
+                </tr>`,
+                )
+                .join("")}
+            </tbody>
+          </table>`;
+      }
+
+      async function deletePracticeSetWithConfirm(id, ten) {
+        if (!confirm(`Xóa đề luyện tập "${ten}"? Học viên sẽ không còn thấy đề này nữa.`)) return;
+        try {
+          await deletePracticeSet(id);
+          showToast("✓ Đã xóa đề luyện tập", "success");
+          loadMyPracticeSets();
+        } catch (err) {
+          showToast("Lỗi: " + err.message, "error");
+        }
+      }
+
+      // ════════════════════════════════════════════
+      // Rà soát Lần VI (2026-08-21) — BẢNG XẾP HẠNG LỚP: xếp hạng CÁC LỚP GV phụ trách theo điểm
+      // TB (Thi thử/Luyện tập), khác hẳn bản cũ (Việc 4.2, xếp HỌC VIÊN trong 1 Lớp — trùng lặp
+      // với chính student/xep-hang.html của học viên đó xem). Tái dùng adminStatsLop()/
+      // authGetKhoa() — đúng nguồn dữ liệu đã dùng ở bảng "Quản lý Lớp" (loadLopCrud), RBAC đã có
+      // sẵn cho Teacher (ownership check ở service).
+      // ════════════════════════════════════════════
+
+      let teacherLbRows = [];
+      let teacherLbSort = "exam";
+
+      async function loadTeacherLeaderboard() {
+        const content = document.getElementById("leaderboardContent");
+        content.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
+        document.getElementById("leaderboardSearchInput").value = "";
+        teacherLbSort = "exam";
+        updateTeacherLbSortButtons();
+
+        let myLop;
+        try {
+          myLop = await authListMyLop();
+        } catch (err) {
+          content.innerHTML = `<div class="empty">Lỗi tải danh sách lớp: ${err.message}</div>`;
+          return;
+        }
+
+        if (!myLop.length) {
+          content.innerHTML = `<div class="empty">Bạn chưa chủ nhiệm lớp nào — chưa có bảng xếp hạng để xem.</div>`;
+          return;
+        }
+
+        try {
+          teacherLbRows = await Promise.all(
+            myLop.map(async (l) => {
+              const [khoa, stats] = await Promise.all([
+                authGetKhoa(l.khoaId).catch(() => ({ ten: "?" })),
+                adminStatsLop(l.id).catch(() => null),
+              ]);
+              return {
+                id: l.id,
+                ten: l.ten,
+                khoaTen: khoa.ten || "?",
+                siSo: stats ? stats.tongHocVien : null,
+                diemTBThiThu: stats && stats.diemTBThiThu != null ? stats.diemTBThiThu : null,
+                diemTBLuyenTap: stats && stats.diemTBLuyenTap != null ? stats.diemTBLuyenTap : null,
+              };
+            }),
+          );
+        } catch (err) {
+          content.innerHTML = `<div class="empty">Lỗi tải bảng xếp hạng: ${err.message}</div>`;
+          return;
+        }
+        renderTeacherLeaderboard();
+      }
+
+      function setTeacherLeaderboardSort(mode) {
+        teacherLbSort = mode;
+        updateTeacherLbSortButtons();
+        renderTeacherLeaderboard();
+      }
+
+      function updateTeacherLbSortButtons() {
+        document.getElementById("lbSortExamBtn").classList.toggle("active", teacherLbSort === "exam");
+        document.getElementById("lbSortPracticeBtn").classList.toggle("active", teacherLbSort === "practice");
+      }
+
+      function renderTeacherLeaderboard() {
+        const content = document.getElementById("leaderboardContent");
+        const q = (document.getElementById("leaderboardSearchInput").value || "").trim().toLowerCase();
+        let list = q ? teacherLbRows.filter((r) => r.ten.toLowerCase().includes(q)) : teacherLbRows.slice();
+
+        // Luôn xếp CAO -> THẤP (cùng quy ước đã chốt ở student/xep-hang.html) — null (chưa có
+        // lượt nào) xếp cuối, không tính là 0 điểm.
+        list.sort((a, b) => {
+          const key = teacherLbSort === "practice" ? "diemTBLuyenTap" : "diemTBThiThu";
+          const av = a[key] == null ? -1 : a[key];
+          const bv = b[key] == null ? -1 : b[key];
+          return bv - av;
+        });
+
+        if (!teacherLbRows.length) {
+          content.innerHTML = `<div class="empty">Bạn chưa chủ nhiệm lớp nào.</div>`;
+          return;
+        }
+        if (!list.length) {
+          content.innerHTML = `<div class="empty">Không tìm thấy lớp nào khớp từ khóa.</div>`;
+          return;
+        }
+
+        const fmt = (v) => (v == null ? '<span class="lb-cell-empty">—</span>' : v.toFixed(2));
+        content.innerHTML = `
+          <div class="lb-table-wrap">
+            <div class="lb-table-scroll">
+              <div class="lb-row-grid lb-table-head">
+                <div>STT</div>
+                <div>Lớp</div>
+                <div>Khóa</div>
+                <div>Số lượng HV</div>
+                <div>Điểm TB Thi thử</div>
+                <div>Điểm TB Luyện tập</div>
+              </div>
+              ${list
+                .map(
+                  (r, i) => `
+              <div class="lb-row lb-row-grid">
+                <div class="lb-stt">${i + 1}</div>
+                <div class="lb-lop-name">${r.ten}</div>
+                <div>${r.khoaTen}</div>
+                <div>${r.siSo != null ? r.siSo : "—"}</div>
+                <div class="lb-score-exam">${fmt(r.diemTBThiThu)}</div>
+                <div class="lb-score-practice">${fmt(r.diemTBLuyenTap)}</div>
+              </div>`,
+                )
+                .join("")}
+            </div>
+          </div>`;
+      }
+
+      // ════════════════════════════════════════════
+      // Rà soát Lần III (2026-08-20, mục A) — THÀNH VIÊN LỚP, hợp nhất vào "Quản lý Lớp" (trước là
+      // panel "Danh sách học viên" riêng, Gap 2 mục 2 — audit phát hiện 2 panel làm gần như cùng 1
+      // việc, đã quyết định hợp nhất còn 1 nơi). Click "Thành viên" ở 1 dòng Lớp trong bảng
+      // "Quản lý Lớp" (loadLopCrud ở trên) mở modal này, LUÔN scope theo đúng 1 lopId — không còn
+      // chế độ "gộp tất cả lớp" (panel cũ có, vì giờ vào đúng từ 1 Lớp cụ thể, không có lối vào
+      // "xem gộp" nữa). Teacher-only, không đặt trong admin-common.js — xem comment ở showPanel().
+      // ════════════════════════════════════════════
+
+      let lopRosterCurrentLopId = null;
+      let lopRosterList = []; // roster đầy đủ đã gộp Cấp bậc/Chức vụ (authListHocVien) + Điểm (adminStatsLop)
+      let lopRosterState = { sortKey: null, sortDir: "asc" };
+
+      async function openLopRoster(lopId) {
+        lopRosterCurrentLopId = lopId;
+        const l = lopCrudList.find((x) => x.id === lopId);
+        document.getElementById("lopRosterModalTitle").innerHTML =
+          `<i class="fas fa-user-friends"></i> Thành viên lớp ${l ? l.ten : ""}`;
+        document.getElementById("lopRosterSearchInput").value = "";
+        document.getElementById("lopRosterRows").innerHTML =
+          '<tr><td colspan="8" class="empty"><i class="fas fa-spinner fa-spin"></i>Đang tải...</td></tr>';
+        openModal("lopRosterModal");
+
+        try {
+          const [roster, stats] = await Promise.all([authListHocVien(lopId), adminStatsLop(lopId).catch(() => ({ hocVien: [] }))]);
+          const diemByUserId = Object.fromEntries((stats.hocVien || []).map((h) => [h.userId, h]));
+          lopRosterList = roster.map((s) => {
+            const d = diemByUserId[s.id];
+            return {
+              ...s,
+              diemThiThu: d ? d.diemThiThu : null,
+              soLuotThiThu: d ? d.soLuotThiThu : 0,
+              diemLuyenTap: d ? d.diemLuyenTap : null,
+              soLuotLuyenTap: d ? d.soLuotLuyenTap : 0,
+            };
+          });
+        } catch (err) {
+          document.getElementById("lopRosterRows").innerHTML = `<tr><td colspan="8" class="empty">Lỗi tải danh sách thành viên: ${err.message}</td></tr>`;
+          return;
+        }
+        lopRosterState = { sortKey: null, sortDir: "asc" };
+        renderLopRoster();
+      }
+
+      function sortLopRosterBy(key) {
+        if (lopRosterState.sortKey === key) {
+          lopRosterState.sortDir = lopRosterState.sortDir === "asc" ? "desc" : "asc";
+        } else {
+          lopRosterState.sortKey = key;
+          lopRosterState.sortDir = "asc";
+        }
+        renderLopRoster();
+      }
+
+      function renderLopRoster() {
+        const tbody = document.getElementById("lopRosterRows");
+        const q = (document.getElementById("lopRosterSearchInput").value || "").trim().toLowerCase();
+        let list = q
+          ? lopRosterList.filter((s) => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q))
+          : lopRosterList.slice();
+
+        if (lopRosterState.sortKey) {
+          const key = lopRosterState.sortKey;
+          const dir = lopRosterState.sortDir === "asc" ? 1 : -1;
+          list.sort((a, b) => {
+            const av = key === "name" ? a.name : a[key];
+            const bv = key === "name" ? b.name : b[key];
+            if (av == null && bv == null) return 0;
+            if (av == null) return 1;
+            if (bv == null) return -1;
+            return typeof av === "string" ? av.localeCompare(bv) * dir : (av - bv) * dir;
+          });
+        }
+
+        if (!lopRosterList.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="empty">Lớp chưa có học viên</td></tr>';
+          return;
+        }
+        if (!list.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="empty">Không tìm thấy học viên khớp từ khóa</td></tr>';
+          return;
+        }
+        const fmtScore = (v) => (v == null ? "—" : Number(v).toFixed(2));
+        tbody.innerHTML = list
+          .map(
+            (s, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${s.name}</td>
+            <td style="font-size: 0.75rem; color: var(--gray-500)">${s.email}</td>
+            <td>
+              <select class="form-input" style="font-size: 0.72rem; padding: 3px 6px" onchange="rosterChangeCapBac('${s.id}', this.value)">
+                ${CAP_BAC_OPTIONS.map((cb) => `<option value="${cb}" ${s.capBac === cb || (!s.capBac && cb === "Chưa cập nhật") ? "selected" : ""}>${cb}</option>`).join("")}
+              </select>
+            </td>
+            <td>
+              <select class="form-input" style="font-size: 0.72rem; padding: 3px 6px" onchange="rosterChangeChucVu('${s.id}', this.value)">
+                <option value="Học viên" ${s.chucVu === "Học viên" ? "selected" : ""}>Học viên</option>
+                <option value="Lớp trưởng" ${s.chucVu === "Lớp trưởng" ? "selected" : ""}>Lớp trưởng</option>
+                <option value="Lớp phó" ${s.chucVu === "Lớp phó" ? "selected" : ""}>Lớp phó</option>
+              </select>
+            </td>
+            <td>${fmtScore(s.diemThiThu)} <span style="color: var(--gray-400); font-size: 0.68rem">(${s.soLuotThiThu} lượt)</span></td>
+            <td>${fmtScore(s.diemLuyenTap)} <span style="color: var(--gray-400); font-size: 0.68rem">(${s.soLuotLuyenTap} lượt)</span></td>
+            <td><button class="btn btn-outline btn-sm" style="color: var(--red)" onclick="removeMemberFromLop('${s.id}')">Gỡ</button></td>
+          </tr>`,
+          )
+          .join("");
+      }
+
+      async function rosterChangeChucVu(userId, chucVu) {
+        try {
+          await authChangeChucVu(userId, chucVu);
+          showToast("Đã cập nhật chức vụ!", "success");
+          const s = lopRosterList.find((x) => x.id === userId);
+          if (s) s.chucVu = chucVu;
+        } catch (err) {
+          showToast("Lỗi: " + err.message, "error");
+          openLopRoster(lopRosterCurrentLopId);
+        }
+      }
+
+      async function rosterChangeCapBac(userId, capBac) {
+        try {
+          await authChangeCapBac(userId, capBac);
+          showToast("Đã cập nhật cấp bậc!", "success");
+          const s = lopRosterList.find((x) => x.id === userId);
+          if (s) s.capBac = capBac;
+        } catch (err) {
+          showToast("Lỗi: " + err.message, "error");
+          openLopRoster(lopRosterCurrentLopId);
+        }
+      }
+
+      async function removeMemberFromLop(userId) {
+        if (!confirm("Gỡ học viên này khỏi lớp? (Không xóa tài khoản, chỉ gỡ khỏi lớp)")) return;
+        try {
+          await authAssignLop(userId, null);
+          showToast("Đã gỡ khỏi lớp!", "success");
+          openLopRoster(lopRosterCurrentLopId);
+          loadLopCrud();
+        } catch (err) {
+          showToast("Lỗi: " + err.message, "error");
+        }
+      }
+
+      let addMemberSearchTimer = null;
+      function onAddMemberSearchInput() {
+        clearTimeout(addMemberSearchTimer);
+        addMemberSearchTimer = setTimeout(runAddMemberSearch, 350);
+      }
+
+      function openAddMemberModal() {
+        document.getElementById("addMemberSearchInput").value = "";
+        document.getElementById("addMemberSearchResults").innerHTML = "";
+        openModal("addMemberModal");
+      }
+
+      async function runAddMemberSearch() {
+        const email = document.getElementById("addMemberSearchInput").value.trim();
+        const resultsEl = document.getElementById("addMemberSearchResults");
+        if (email.length < 3) {
+          resultsEl.innerHTML = '<div style="color: var(--gray-500)">Nhập tối thiểu 3 ký tự...</div>';
+          return;
+        }
+        resultsEl.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
+        try {
+          const results = await authSearchStudentsByEmail(email);
+          if (!results.length) {
+            resultsEl.innerHTML = '<div style="color: var(--gray-500)">Không tìm thấy học viên nào.</div>';
+            return;
+          }
+          const inLopIds = new Set(lopRosterList.map((s) => s.id));
+          resultsEl.innerHTML = results
+            .map((s) => {
+              const already = inLopIds.has(s.id);
+              const otherLop = s.lopId && !already ? ` <span style="color: var(--gray-400)">(đang ở lớp khác)</span>` : "";
+              return `
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0f0f0;">
+                <div>${s.name} — ${s.email}${otherLop}</div>
+                ${
+                  already
+                    ? '<span style="color: var(--gray-400); font-size: 0.75rem;">Đã trong lớp</span>'
+                    : `<button class="btn btn-red btn-sm" onclick="addMemberToLop('${s.id}')">Thêm</button>`
+                }
+              </div>`;
+            })
+            .join("");
+        } catch (err) {
+          resultsEl.innerHTML = `<div style="color: var(--red)">Lỗi: ${err.message}</div>`;
+        }
+      }
+
+      async function addMemberToLop(userId) {
+        try {
+          await authAssignLop(userId, lopRosterCurrentLopId);
+          showToast("Đã thêm vào lớp!", "success");
+          closeModal("addMemberModal");
+          openLopRoster(lopRosterCurrentLopId);
+          loadLopCrud();
+        } catch (err) {
+          showToast("Lỗi: " + err.message, "error");
+        }
+      }
+
+      // ════════════════════════════════════════════
+      // GAP 2 MỤC 3 — NHẬT KÝ HOẠT ĐỘNG LỚP
+      // ════════════════════════════════════════════
+
+      const LOP_ACTIVITY_LABELS = {
+        ChucVuChanged: "Đổi Chức vụ",
+        StudentAdded: "Thêm vào lớp",
+        StudentRemoved: "Gỡ khỏi lớp",
+      };
+
+      async function loadLopAudit() {
+        const wrap = document.getElementById("lopauditLopSelectWrap");
+        const content = document.getElementById("lopauditContent");
+        content.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
+
+        let myLop;
+        try {
+          myLop = await authListMyLop();
+        } catch (err) {
+          content.innerHTML = `<div class="empty">Lỗi tải danh sách lớp: ${err.message}</div>`;
+          return;
+        }
+
+        if (!myLop.length) {
+          wrap.style.display = "none";
+          content.innerHTML = `<div class="empty">Bạn hiện chưa được phân công chủ nhiệm lớp nào — không có nhật ký để xem.</div>`;
+          return;
+        }
+
+        if (myLop.length > 1) {
+          wrap.style.display = "block";
+          const sel = document.getElementById("lopauditLopSelect");
+          sel.innerHTML = myLop.map((l) => `<option value="${l.id}">${l.ten}</option>`).join("");
+        } else {
+          wrap.style.display = "none";
+        }
+
+        await loadLopAuditEntries(myLop[0].id);
+      }
+
+      function onLopAuditLopChange() {
+        loadLopAuditEntries(document.getElementById("lopauditLopSelect").value);
+      }
+
+      async function loadLopAuditEntries(lopId) {
+        const content = document.getElementById("lopauditContent");
+        content.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
+        try {
+          const log = await authListLopActivityLog(lopId, 100);
+          renderLopAuditTable(log);
+        } catch (err) {
+          content.innerHTML = `<div class="empty">Lỗi tải nhật ký: ${err.message}</div>`;
+        }
+      }
+
+      function renderLopAuditTable(log) {
+        const content = document.getElementById("lopauditContent");
+        if (!log.length) {
+          content.innerHTML = '<div class="empty">Chưa có hoạt động nào được ghi nhận cho lớp này.</div>';
+          return;
+        }
+        const rows = log
+          .map((l) => {
+            const label = LOP_ACTIVITY_LABELS[l.actionType] || l.actionType;
+            let detail = "";
+            if (l.actionType === "ChucVuChanged") {
+              detail = `${l.oldValue || "—"} → ${l.newValue || "—"}`;
+            }
+            const when = new Date(l.createdAtUtc).toLocaleString("vi-VN");
+            return `
+            <tr>
+              <td>${when}</td>
+              <td>${label}</td>
+              <td>${l.targetName}</td>
+              <td>${detail}</td>
+              <td>${l.actorName}</td>
+            </tr>`;
+          })
+          .join("");
+        content.innerHTML = `
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Thời gian</th><th>Hành động</th><th>Học viên</th><th>Chi tiết</th><th>Người thực hiện</th></tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>`;
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+
+    <!-- Rà soát Lần VI (2026-08-21) — xóa hẳn bottom-nav (trước lộ nguyên 7 tab học viên: Trang
+    chủ/Chat AI/Luyện tập/Thi thử/Tiến độ/Bảng XH/Giảng bài — Giảng viên không cần và không nên bị
+    dẫn sang giao diện học viên qua đây). Sidebar bên trên đã là điều hướng DUY NHẤT và đầy đủ. -->
+  </body>
+</html>

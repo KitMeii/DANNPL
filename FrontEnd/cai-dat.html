@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-title-suffix>Cài đặt</title>
+    <link rel="stylesheet" href="css/base/variables.css" />
+    <link rel="stylesheet" href="css/base/reset.css" />
+    <link rel="stylesheet" href="css/layout/layout.css" />
+    <link rel="stylesheet" href="css/components/header.css" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css" />
+    <link rel="stylesheet" href="css/components/card.css" />
+    <link rel="stylesheet" href="css/components/button.css" />
+    <link rel="stylesheet" href="css/components/modal.css" />
+    <link rel="stylesheet" href="css/components/form.css" />
+    <link rel="stylesheet" href="css/components/table-grid.css" />
+    <link rel="stylesheet" href="css/components/badge.css" />
+    <link rel="stylesheet" href="css/components/chat.css" />
+    <link rel="stylesheet" href="css/components/quiz.css" />
+    <link rel="stylesheet" href="css/components/progress-list.css" />
+    <link rel="stylesheet" href="css/components/settings-row.css" />
+    <link rel="stylesheet" href="css/components/misc.css" />
+    <link rel="stylesheet" href="css/base/dark-mode.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="api-client.js?v=20260822b"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="index.html" class="logo-wrap">
+          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-info">
+            <div class="logo-title">Cài đặt</div>
+            <div class="logo-sub">Tùy chỉnh ứng dụng</div>
+          </div>
+        </a>
+        <!-- Việc II (2026-08-20) — chuẩn hóa vị trí Đăng xuất về header, đồng nhất mọi trang. -->
+        <div class="header-actions">
+          <button class="hdr-btn" id="logoutBtn" onclick="confirmSignOut()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="container">
+        <!-- Profile card -->
+        <div class="card" style="text-align: center; padding: 24px 20px">
+          <div style="position: relative; width: 72px; height: 72px; margin: 0 auto 12px">
+            <img
+              id="profileAvatarImg"
+              alt="Avatar"
+              style="
+                width: 72px;
+                height: 72px;
+                border-radius: 50%;
+                object-fit: cover;
+                display: none;
+              "
+            />
+            <div
+              id="profileAvatarPlaceholder"
+              style="
+                width: 72px;
+                height: 72px;
+                background: linear-gradient(135deg, var(--red-dark), var(--red));
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                color: white;
+              "
+            >
+              <i class="fas fa-user-soldier"></i>
+            </div>
+            <button
+              class="btn btn-outline btn-sm"
+              onclick="document.getElementById('profileAvatarInput').click()"
+              style="
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                padding: 0;
+                background: white;
+              "
+              aria-label="Đổi avatar"
+            >
+              <i class="fas fa-camera" style="font-size: 0.68rem"></i>
+            </button>
+            <input
+              type="file"
+              id="profileAvatarInput"
+              accept="image/png,image/jpeg,image/webp"
+              style="display: none"
+              onchange="onProfileAvatarSelected(this.files[0])"
+            />
+          </div>
+          <div id="profileAvatarStatus" style="font-size: 0.7rem; min-height: 14px; margin-bottom: 6px"></div>
+          <div style="font-weight: 700; font-size: 1.1rem" id="profileName">
+            —
+          </div>
+          <div
+            style="font-size: 0.78rem; color: var(--gray-500); margin-top: 3px"
+            id="profileSub"
+          >
+            —
+          </div>
+          <div
+            style="font-size: 0.72rem; color: var(--gray-400); margin-top: 2px"
+            id="profileEmail"
+          >
+            —
+          </div>
+          <button
+            class="btn btn-outline btn-sm"
+            style="margin-top: 12px"
+            onclick="openEdit()"
+          >
+            <i class="fas fa-pen"></i> Chỉnh sửa hồ sơ
+          </button>
+        </div>
+
+        <div class="card">
+          <div
+            style="
+              font-size: 0.7rem;
+              font-weight: 700;
+              letter-spacing: 0.8px;
+              color: var(--gray-400);
+              text-transform: uppercase;
+              margin-bottom: 12px;
+            "
+          >
+            Hiển thị
+          </div>
+          <div class="setting-row" onclick="toggleDark()">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--gray-100);
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: var(--gray-600);
+                "
+              >
+                <i class="fas fa-moon" id="darkIcon"></i>
+              </div>
+              <div>
+                <div class="setting-label">Chế độ tối</div>
+                <div style="font-size: 0.7rem; color: var(--gray-400)">
+                  Dark mode
+                </div>
+              </div>
+            </div>
+            <label class="toggle" onclick="event.stopPropagation()"
+              ><input
+                type="checkbox"
+                id="darkToggle"
+                onchange="toggleDark()" /><span class="toggle-slider"></span
+            ></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div
+            style="
+              font-size: 0.7rem;
+              font-weight: 700;
+              letter-spacing: 0.8px;
+              color: var(--gray-400);
+              text-transform: uppercase;
+              margin-bottom: 12px;
+            "
+          >
+            Học tập
+          </div>
+          <div class="setting-row">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--red-bg);
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: var(--red);
+                "
+              >
+                <i class="fas fa-bell"></i>
+              </div>
+              <div>
+                <div class="setting-label">Thông báo nhắc học</div>
+                <div style="font-size: 0.7rem; color: var(--gray-400)">
+                  Nhắc nhở hàng ngày
+                </div>
+              </div>
+            </div>
+            <label class="toggle"
+              ><input type="checkbox" checked /><span
+                class="toggle-slider"
+              ></span
+            ></label>
+          </div>
+          <div class="setting-row">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: #e8f5e9;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #2e7d32;
+                "
+              >
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div>
+                <div class="setting-label">Hiển thị giải thích</div>
+                <div style="font-size: 0.7rem; color: var(--gray-400)">
+                  Sau mỗi câu trả lời
+                </div>
+              </div>
+            </div>
+            <label class="toggle"
+              ><input type="checkbox" checked /><span
+                class="toggle-slider"
+              ></span
+            ></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div
+            style="
+              font-size: 0.7rem;
+              font-weight: 700;
+              letter-spacing: 0.8px;
+              color: var(--gray-400);
+              text-transform: uppercase;
+              margin-bottom: 12px;
+            "
+          >
+            Tài khoản
+          </div>
+          <div class="setting-row" onclick="changePassword()">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: #e3f2fd;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #1565c0;
+                "
+              >
+                <i class="fas fa-key"></i>
+              </div>
+              <div class="setting-label">Đổi mật khẩu</div>
+            </div>
+            <i
+              class="fas fa-chevron-right"
+              style="color: var(--gray-400); font-size: 0.8rem"
+            ></i>
+          </div>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 16px">
+          <div style="font-size: 0.75rem; color: var(--gray-400)">
+            Phiên bản 2.0.0 · Kiến trúc Microservices
+          </div>
+          <div
+            style="font-size: 0.72rem; color: var(--gray-400); margin-top: 4px"
+          >
+            © 2026 · Hệ thống <span data-app-name>Giảng viên Ảo</span> · <span data-school-name>Học viện</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-header">
+          <h3 id="editModalTitle"><i class="fas fa-pen"></i> Chỉnh sửa hồ sơ</h3>
+          <button class="modal-close" onclick="closeModal('editModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Rà soát Lần IV (2026-08-21) — Email và Lớp trước đây chỉ hiện ở thẻ hồ sơ (view mode,
+               profileEmail/profileSub), KHÔNG có trong modal Chỉnh sửa — người dùng mở form sửa
+               không thấy lại 2 thông tin này để đối chiếu. Cả 2 đều CHỈ XEM (Email cố định không
+               đổi được; Lớp do Admin/GV chủ nhiệm gán, Student không tự đổi) — input disabled,
+               không nằm trong payload gửi lên saveProfile(). Lớp chỉ hiện với Student (Admin/Teacher
+               không có LopId). -->
+          <div class="form-group">
+            <label class="form-label">Email <span style="font-weight:400;color:var(--gray-400);">(cố định)</span></label>
+            <input class="form-input" id="editEmailReadonly" disabled style="background:var(--gray-50);color:var(--gray-500);" />
+          </div>
+          <div class="form-group" id="editLopGroup" style="display: none">
+            <label class="form-label">Lớp</label>
+            <input class="form-input" id="editLopReadonly" disabled style="background:var(--gray-50);color:var(--gray-500);" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Họ tên</label
+            ><input
+              class="form-input"
+              id="editName"
+              style="text-transform: uppercase"
+            />
+          </div>
+
+          <!-- Việc 3.1 (2026-08-19) — Cấp bậc/Năm học chỉ hiện cho Student, Bộ môn/Khoa chỉ hiện
+               cho Teacher, SĐT hiện cho cả 2 — ẩn/hiện theo profile.role, xem renderEditFieldsByRole(). -->
+          <div class="form-group" id="editCapBacGroup" style="display: none">
+            <label class="form-label">Cấp bậc</label>
+            <select class="form-input" id="editCapBac"></select>
+          </div>
+          <div class="form-group" id="editPhoneGroup" style="display: none">
+            <label class="form-label">Số điện thoại</label>
+            <input class="form-input" id="editPhone" type="tel" placeholder="09xxxxxxxx" />
+          </div>
+          <div class="form-group" id="editNamHocGroup" style="display: none">
+            <label class="form-label">Năm học</label>
+            <select class="form-input" id="editNamHoc"></select>
+          </div>
+          <div class="form-group" id="editBoMonKhoaGroup" style="display: none">
+            <label class="form-label">Bộ môn / Khoa</label>
+            <input class="form-input" id="editBoMonKhoa" type="text" placeholder="VD: Khoa Công nghệ thông tin" />
+          </div>
+
+          <div
+            id="editMsg"
+            style="
+              font-size: 0.78rem;
+              color: #2e7d32;
+              margin-bottom: 8px;
+              display: none;
+            "
+          ></div>
+          <button
+            class="btn btn-red btn-full"
+            id="saveBtn"
+            onclick="saveProfile()"
+          >
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="pwdModal" aria-hidden="true">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="pwdModalTitle">
+        <div class="modal-header">
+          <h3 id="pwdModalTitle"><i class="fas fa-key"></i> Đổi mật khẩu</h3>
+          <button class="modal-close" onclick="closeModal('pwdModal')" aria-label="Đóng">
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <p
+            style="
+              font-size: 0.82rem;
+              color: var(--gray-600);
+              margin-bottom: 16px;
+            "
+          >
+            Nhập email của bạn để nhận link đặt lại mật khẩu.
+          </p>
+          <div
+            style="
+              font-size: 0.875rem;
+              font-weight: 600;
+              text-align: center;
+              padding: 12px;
+              background: var(--red-bg);
+              border-radius: var(--radius);
+              color: var(--red);
+              margin-bottom: 16px;
+            "
+            id="emailDisplay"
+          >
+            —
+          </div>
+          <div
+            id="pwdMsg"
+            style="
+              font-size: 0.78rem;
+              color: #2e7d32;
+              margin-bottom: 8px;
+              display: none;
+            "
+          ></div>
+          <button class="btn btn-red btn-full" onclick="sendPasswordReset()">
+            <i class="fas fa-paper-plane"></i> Gửi link đặt lại
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item"
+        ><i class="fas fa-home"></i><span>Trang chủ</span></a
+      >
+      <a href="student/chat.html" class="nav-item"
+        ><i class="fas fa-robot"></i><span>Chat AI</span></a
+      >
+      <a href="student/luyen-tap.html" class="nav-item"
+        ><i class="fas fa-book"></i><span>Luyện tập</span></a
+      >
+      <a href="student/thi-thu.html" class="nav-item"
+        ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+      >
+      <a href="student/tien-do.html" class="nav-item"
+        ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
+      >
+      <a href="student/xep-hang.html" class="nav-item"
+        ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
+      >
+      <a href="student/giang-bai.html" class="nav-item"
+        ><i class="fas fa-chalkboard-teacher"></i><span>Giảng bài</span></a
+      >
+      <a href="cai-dat.html" class="nav-item active" id="navSettings"
+        ><i class="fas fa-cog"></i><span>Tài khoản</span></a
+      >
+      <a href="#" class="nav-item" id="navAdmin"
+        ><i class="fas fa-shield-alt"></i><span>Tài khoản</span></a
+      >
+    </nav>
+
+    <script>
+      // Việc 4.5 (2026-08-20) — trang Cài đặt riêng này trùng với panel "Hồ sơ cá nhân" đã có sẵn
+      // ngay trong admin/quan-tri-he-thong.html và teacher/quan-ly-noi-dung.html (dùng chung code
+      // qua admin-common.js) — Admin/Teacher không cần vào trang riêng này để sửa hồ sơ, nhưng Rà
+      // soát Lần XIII (2026-08-21) không còn ép redirect nữa (applyRoleGate() dùng chung, xem
+      // remarks ở api-client.js) — chỉ định tuyến lại nav "Tài khoản", trang vẫn xem/dùng được bình
+      // thường nếu Admin/Teacher lỡ ghé qua đây.
+      applyRoleGate("admin/quan-tri-he-thong.html", "teacher/quan-ly-noi-dung.html");
+    </script>
+
+    <script>
+      if (localStorage.getItem("darkMode") === "1") {
+        document.body.classList.add("dark");
+        document.getElementById("darkToggle").checked = true;
+        document.getElementById("darkIcon").className = "fas fa-sun";
+      }
+      let profile = null;
+
+      async function init() {
+        if (!requireAuth()) return;
+        profile = await getProfile();
+        await renderUI();
+      }
+
+      async function renderUI() {
+        document.getElementById("profileName").textContent =
+          profile.name || "—";
+        document.getElementById("profileSub").textContent =
+          await resolveLopKhoaLabel(profile.lopId);
+        document.getElementById("profileEmail").textContent = profile.email;
+
+        const img = document.getElementById("profileAvatarImg");
+        const placeholder = document.getElementById("profileAvatarPlaceholder");
+        if (profile.avatarUrl) {
+          img.src = profile.avatarUrl;
+          img.style.display = "block";
+          placeholder.style.display = "none";
+        } else {
+          img.removeAttribute("src");
+          img.style.display = "none";
+          placeholder.style.display = "flex";
+        }
+      }
+
+      // Cùng giới hạn với Hồ sơ cá nhân Admin/Teacher (admin-common.js) — trang này không load
+      // file đó nên khai báo riêng, endpoint POST /me/avatar dùng chung cho mọi role.
+      const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
+      const AVATAR_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+      async function onProfileAvatarSelected(file) {
+        if (!file) return;
+        const statusEl = document.getElementById("profileAvatarStatus");
+        const inputEl = document.getElementById("profileAvatarInput");
+
+        if (!AVATAR_ALLOWED_TYPES.includes(file.type)) {
+          statusEl.textContent = "Chỉ chấp nhận ảnh JPG, PNG hoặc WebP.";
+          statusEl.style.color = "#c62828";
+          inputEl.value = "";
+          return;
+        }
+        if (file.size > AVATAR_MAX_BYTES) {
+          statusEl.textContent = "Ảnh vượt quá 5MB.";
+          statusEl.style.color = "#c62828";
+          inputEl.value = "";
+          return;
+        }
+
+        statusEl.textContent = "Đang tải lên...";
+        statusEl.style.color = "var(--gray-500)";
+        try {
+          profile = await uploadAvatar(file);
+          await renderUI();
+          statusEl.textContent = "✓ Đã cập nhật avatar!";
+          statusEl.style.color = "#2e7d32";
+          setTimeout(() => {
+            statusEl.textContent = "";
+          }, 2000);
+        } catch (err) {
+          statusEl.textContent = "Lỗi: " + err.message;
+          statusEl.style.color = "#c62828";
+        } finally {
+          inputEl.value = "";
+        }
+      }
+
+      // Việc 3.1 (2026-08-19) — Cấp bậc/Năm học chỉ có ý nghĩa cho Student, Bộ môn/Khoa chỉ có ý
+      // nghĩa cho Teacher (backend cũng tự bỏ qua field sai role — đây chỉ là UX, không phải biên
+      // bảo mật). Admin không có field nào thêm.
+      function renderEditFieldsByRole() {
+        const isStudent = profile.role === "Student";
+        const isTeacher = profile.role === "Teacher";
+
+        document.getElementById("editCapBacGroup").style.display = isStudent ? "block" : "none";
+        document.getElementById("editNamHocGroup").style.display = isStudent ? "block" : "none";
+        document.getElementById("editPhoneGroup").style.display = isStudent || isTeacher ? "block" : "none";
+        document.getElementById("editBoMonKhoaGroup").style.display = isTeacher ? "block" : "none";
+
+        if (isStudent) {
+          const capBacSel = document.getElementById("editCapBac");
+          capBacSel.innerHTML = CAP_BAC_OPTIONS.map((cb) => `<option value="${cb}">${cb}</option>`).join("");
+          capBacSel.value = profile.capBac || CAP_BAC_OPTIONS[0];
+
+          const namHocSel = document.getElementById("editNamHoc");
+          const currentYear = new Date().getFullYear();
+          const years = [];
+          for (let y = currentYear - 2; y <= currentYear + 2; y++) years.push(`${y}-${y + 1}`);
+          if (profile.namHoc && !years.includes(profile.namHoc)) years.unshift(profile.namHoc);
+          namHocSel.innerHTML =
+            `<option value="">-- Không chọn --</option>` +
+            years.map((nh) => `<option value="${nh}">${nh}</option>`).join("");
+          namHocSel.value = profile.namHoc || "";
+        }
+        if (isStudent || isTeacher) {
+          document.getElementById("editPhone").value = profile.soDienThoai || "";
+        }
+        if (isTeacher) {
+          document.getElementById("editBoMonKhoa").value = profile.boMonKhoa || "";
+        }
+      }
+
+      async function openEdit() {
+        document.getElementById("editName").value = profile.name || "";
+        document.getElementById("editEmailReadonly").value = profile.email || "";
+        document.getElementById("editMsg").style.display = "none";
+        renderEditFieldsByRole();
+
+        const isStudent = profile.role === "Student";
+        const lopGroup = document.getElementById("editLopGroup");
+        lopGroup.style.display = isStudent ? "block" : "none";
+        if (isStudent) {
+          const lopEl = document.getElementById("editLopReadonly");
+          lopEl.value = "Đang tải...";
+          lopEl.value = await resolveLopKhoaLabel(profile.lopId);
+        }
+
+        openModal("editModal");
+      }
+
+      async function saveProfile() {
+        const btn = document.getElementById("saveBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+        const name = document
+          .getElementById("editName")
+          .value.trim()
+          .toUpperCase();
+
+        const isStudent = profile.role === "Student";
+        const isTeacher = profile.role === "Teacher";
+        const phone = isStudent || isTeacher ? document.getElementById("editPhone").value.trim() : "";
+        if (phone && !/^0\d{9}$/.test(phone)) {
+          alert("Số điện thoại phải gồm đúng 10 số, bắt đầu bằng 0.");
+          btn.disabled = false;
+          btn.innerHTML = "Lưu thay đổi";
+          return;
+        }
+
+        try {
+          profile = await updateProfile({
+            name,
+            capBac: isStudent ? document.getElementById("editCapBac").value : undefined,
+            namHoc: isStudent ? document.getElementById("editNamHoc").value : undefined,
+            soDienThoai: phone,
+            boMonKhoa: isTeacher ? document.getElementById("editBoMonKhoa").value.trim() : undefined,
+          });
+          await renderUI();
+          const msg = document.getElementById("editMsg");
+          msg.textContent = "✓ Đã lưu thành công!";
+          msg.style.display = "block";
+          setTimeout(() => closeModal("editModal"), 1000);
+        } catch (err) {
+          alert(err.message || "Lưu thất bại.");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "Lưu thay đổi";
+        }
+      }
+
+      function changePassword() {
+        document.getElementById("emailDisplay").textContent = profile.email;
+        document.getElementById("pwdMsg").style.display = "none";
+        openModal("pwdModal");
+      }
+
+      function sendPasswordReset() {
+        // Chưa có hạ tầng gửi email ở backend hiện tại — báo rõ thay vì giả vờ đã gửi.
+        const msg = document.getElementById("pwdMsg");
+        msg.style.display = "block";
+        msg.style.color = "#c62828";
+        msg.textContent =
+          "Tính năng đặt lại mật khẩu qua email chưa khả dụng. Vui lòng liên hệ quản trị viên.";
+      }
+
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+        const on = document.body.classList.contains("dark");
+        localStorage.setItem("darkMode", on ? "1" : "0");
+        document.getElementById("darkToggle").checked = on;
+        document.getElementById("darkIcon").className = on
+          ? "fas fa-sun"
+          : "fas fa-moon";
+      }
+
+      function openModal(id) {
+        const el = document.getElementById(id);
+        el.classList.add("show");
+        el.setAttribute("aria-hidden", "false");
+      }
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        el.classList.remove("show");
+        el.setAttribute("aria-hidden", "true");
+      }
+      document.querySelectorAll(".modal").forEach((m) =>
+        m.addEventListener("click", (e) => {
+          if (e.target === m) m.classList.remove("show");
+        }),
+      );
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
