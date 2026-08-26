@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826h" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826h" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826h" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826h" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826h" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826i" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826i" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826i" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826i" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826i" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826h"></script>
+    <script src="api-client.js?v=20260826i"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -84,6 +84,47 @@
         .dash-side {
           position: sticky;
           top: calc(var(--header-height) + var(--nav-row-height) + 16px);
+        }
+        /* Cột phụ chỉ có 1 cột dọc (thay vì 2 cột như màn hẹp) — mỗi ô full-width nên phóng to
+           theo, tạo cảm giác cân xứng với trục chính bên trái thay vì nhìn nhỏ/lọt thỏm. */
+        .dash-side .stats-grid,
+        .dash-side .quick-grid {
+          grid-template-columns: 1fr;
+        }
+        .dash-side .stat-card {
+          padding: 20px 22px;
+        }
+        .dash-side .stat-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 1.05rem;
+        }
+        .dash-side .stat-value {
+          font-size: 2.2rem;
+        }
+        .dash-side .stat-label {
+          font-size: 0.74rem;
+        }
+        .dash-side .stat-unit {
+          font-size: 0.78rem;
+        }
+        .dash-side .quick-card {
+          padding: 20px 22px;
+        }
+        .dash-side .quick-icon {
+          width: 48px;
+          height: 48px;
+          font-size: 1.3rem;
+          border-radius: 12px;
+        }
+        .dash-side .quick-title {
+          font-size: 0.95rem;
+        }
+        .dash-side .quick-sub {
+          font-size: 0.78rem;
+        }
+        .dash-side .quick-arrow {
+          font-size: 0.95rem;
         }
       }
 
@@ -346,9 +387,7 @@
             </div>
           </div>
         </div>
-        </div>
 
-        <div class="dash-side">
         <!-- Thành tích -->
         <div class="card">
           <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
@@ -382,6 +421,9 @@
             Xem tất cả thành tích →
           </button>
         </div>
+        </div>
+
+        <div class="dash-side">
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
