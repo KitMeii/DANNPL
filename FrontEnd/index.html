@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826d" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826d" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826d" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826d" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826d" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826e" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826e" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826e" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826e" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826e" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826d"></script>
+    <script src="api-client.js?v=20260826e"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -74,30 +74,36 @@
         margin-bottom: 14px;
       }
       .quick-card {
-        background: white;
-        border-radius: 14px;
+        background: var(--surface);
+        border-radius: var(--radius-lg);
         padding: 14px;
         display: flex;
         align-items: center;
         gap: 12px;
         cursor: pointer;
+        border: 1px solid var(--border-subtle);
         transition:
           transform 0.2s var(--ease-bounce),
-          box-shadow 0.2s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+          box-shadow 0.2s ease,
+          border-color 0.2s ease;
+        box-shadow: var(--shadow-sm);
         text-decoration: none;
       }
       .quick-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+        border-color: rgba(20, 90, 58, 0.2);
       }
       .quick-card:hover .quick-icon {
-        transform: scale(1.12) rotate(-6deg);
+        transform: scale(1.08);
+      }
+      .quick-card:hover .quick-arrow {
+        opacity: 1;
+        transform: translateX(0);
       }
       .quick-card:active {
-        transform: translateY(0) scale(0.97);
+        transform: translateY(0) scale(0.98);
         transition-duration: 0.08s;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
       }
       .quick-icon {
         width: 40px;
@@ -113,12 +119,21 @@
       .quick-title {
         font-size: 0.8rem;
         font-weight: 700;
-        color: var(--gray-800);
+        color: var(--text-primary);
       }
       .quick-sub {
         font-size: 0.68rem;
-        color: var(--gray-500);
+        color: var(--text-secondary);
         margin-top: 2px;
+      }
+      .quick-arrow {
+        margin-left: auto;
+        color: var(--primary);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+        opacity: 0;
+        transform: translateX(-4px);
+        transition: opacity 0.2s ease, transform 0.2s var(--ease-bounce);
       }
     </style>
   </head>
@@ -142,20 +157,20 @@
         style="
           width: 56px;
           height: 56px;
-          background: linear-gradient(135deg, #0a3d12, #1b5e20);
+          background: linear-gradient(135deg, #0b3d2e, #145a3a);
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
         "
       >
-        <i class="fas fa-star" style="color: #f57c00; font-size: 1.6rem"></i>
+        <i class="fas fa-star" style="color: #f59e0b; font-size: 1.6rem"></i>
       </div>
       <div
         style="
           font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
           font-weight: 700;
-          color: #1b5e20;
+          color: #145a3a;
         "
       >
         Đang tải...
@@ -172,7 +187,7 @@
         <div
           style="
             height: 100%;
-            background: #1b5e20;
+            background: #145a3a;
             animation: loadbar 1.2s infinite;
             border-radius: 3px;
           "
@@ -234,12 +249,15 @@
       <div class="container">
         <!-- Welcome Card -->
         <div class="welcome-card fade-in">
-          <i class="fas fa-star star-icon"></i>
-          <div class="welcome-label">Chào mừng học viên</div>
+          <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
           <div class="welcome-name" id="welcomeName">—</div>
-          <div class="welcome-sub" id="welcomeSub">—</div>
+          <div class="welcome-sub">
+            Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
+          </div>
+          <div class="welcome-meta" id="welcomeSub">—</div>
           <div class="welcome-streak">
-            Streak học tập: <span id="streakNum">0</span> ngày liên tiếp 🔥
+            <i class="fas fa-fire" style="color: var(--accent-light)"></i>
+            Chuỗi học tập <span id="streakNum">0</span> ngày
           </div>
           <button
             class="btn-start"
@@ -252,22 +270,42 @@
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-label">Lượt Kiểm tra</div>
+            <div class="stat-card-head">
+              <div class="stat-icon" style="background: var(--primary-bg); color: var(--primary)">
+                <i class="fas fa-clipboard-check"></i>
+              </div>
+              <div class="stat-label">Lượt Kiểm tra</div>
+            </div>
             <div class="stat-value" id="statLearned">—</div>
             <div class="stat-unit">lượt</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Streak</div>
+            <div class="stat-card-head">
+              <div class="stat-icon" style="background: #fef3e0; color: var(--accent-dark)">
+                <i class="fas fa-fire"></i>
+              </div>
+              <div class="stat-label">Streak</div>
+            </div>
             <div class="stat-value" id="statStreak">—</div>
-            <div class="stat-unit">ngày 🔥</div>
+            <div class="stat-unit">ngày liên tiếp</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Điểm TB</div>
+            <div class="stat-card-head">
+              <div class="stat-icon" style="background: #e3f2fd; color: #1565c0">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="stat-label">Điểm TB</div>
+            </div>
             <div class="stat-value" id="statAvg">—</div>
             <div class="stat-unit">Kiểm tra</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Thời gian học</div>
+            <div class="stat-card-head">
+              <div class="stat-icon" style="background: var(--surface-2); color: var(--text-secondary)">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-label">Thời gian học</div>
+            </div>
             <div class="stat-value" id="statProgress">—</div>
             <div class="stat-unit">phút</div>
           </div>
@@ -283,40 +321,44 @@
         </div>
         <div class="quick-grid">
           <a href="student/chat.html" class="quick-card">
-            <div class="quick-icon" style="background: #fff3e0">
-              <i class="fas fa-robot" style="color: #e65100"></i>
+            <div class="quick-icon" style="background: var(--surface-2); color: var(--accent-dark)">
+              <i class="fas fa-robot"></i>
             </div>
             <div>
               <div class="quick-title">Chat AI</div>
               <div class="quick-sub">Hỏi đáp <span data-subject-name>Môn học</span></div>
             </div>
+            <i class="fas fa-arrow-right quick-arrow"></i>
           </a>
           <a href="student/thi-thu.html" class="quick-card">
-            <div class="quick-icon" style="background: #e3f2fd">
-              <i class="fas fa-pencil-alt" style="color: #1565c0"></i>
+            <div class="quick-icon" style="background: var(--surface-2); color: #1565c0">
+              <i class="fas fa-pencil-alt"></i>
             </div>
             <div>
               <div class="quick-title">Kiểm tra</div>
               <div class="quick-sub">TN + Tự luận AI</div>
             </div>
+            <i class="fas fa-arrow-right quick-arrow"></i>
           </a>
           <a href="student/giang-bai.html" class="quick-card">
-            <div class="quick-icon" style="background: #e8f5e9">
-              <i class="fas fa-chalkboard-teacher" style="color: #2e7d32"></i>
+            <div class="quick-icon" style="background: var(--primary-bg); color: var(--primary)">
+              <i class="fas fa-chalkboard-teacher"></i>
             </div>
             <div>
               <div class="quick-title">AI Giảng bài</div>
               <div class="quick-sub">Upload PDF + TTS</div>
             </div>
+            <i class="fas fa-arrow-right quick-arrow"></i>
           </a>
           <a href="student/xep-hang.html" class="quick-card">
-            <div class="quick-icon" style="background: #fff8e1">
-              <i class="fas fa-trophy" style="color: #f57c00"></i>
+            <div class="quick-icon" style="background: #fef3e0; color: var(--accent-dark)">
+              <i class="fas fa-trophy"></i>
             </div>
             <div>
               <div class="quick-title">Bảng XH</div>
               <div class="quick-sub">Top học viên lớp</div>
             </div>
+            <i class="fas fa-arrow-right quick-arrow"></i>
           </a>
         </div>
 
@@ -547,7 +589,7 @@
                 color: var(--gray-700);
               "
             >
-              <i class="fas fa-robot" style="color: #e65100; width: 16px"></i
+              <i class="fas fa-robot" style="color: #b45309; width: 16px"></i
               ><span style="font-size: 0.82rem; font-weight: 600"
                 >Chat với Giảng viên AI</span
               >
@@ -568,12 +610,12 @@
         <div
           class="modal-header"
           style="
-            background: linear-gradient(135deg, #0a3d12, #1b5e20);
+            background: linear-gradient(135deg, #0b3d2e, #145a3a);
             border-radius: 14px 14px 0 0;
           "
         >
           <h3 id="onboardingModalTitle" style="color: white">
-            <i class="fas fa-star" style="color: #f57c00"></i> Chào mừng đến với
+            <i class="fas fa-star" style="color: #f59e0b"></i> Chào mừng đến với
             <span data-app-name>Học viện Kỹ thuật Quân sự</span>!
           </h3>
         </div>
@@ -709,6 +751,10 @@
           setTimeout(() => openModal("onboardingModal"), 800);
         }
         const sub = await resolveLopKhoaLabel(p.lopId);
+        const hour = new Date().getHours();
+        const greeting =
+          hour < 11 ? "Chào buổi sáng" : hour < 13 ? "Chào buổi trưa" : hour < 18 ? "Chào buổi chiều" : "Chào buổi tối";
+        document.getElementById("welcomeGreeting").textContent = `${greeting} 👋`;
         document.getElementById("welcomeName").textContent =
           p.name || "Học viên";
         document.getElementById("welcomeSub").textContent = sub;
@@ -757,23 +803,33 @@
             datasets: [
               {
                 data: weekData,
-                borderColor: "#1b5e20",
-                backgroundColor: "rgba(27,94,32,0.08)",
+                borderColor: "#145a3a",
+                backgroundColor: "rgba(20,90,58,0.08)",
                 tension: 0.4,
                 fill: true,
-                pointBackgroundColor: "#1b5e20",
+                pointBackgroundColor: "#145a3a",
                 pointRadius: 4,
+                pointHoverRadius: 6,
               },
             ],
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#17211b",
+                padding: 8,
+                cornerRadius: 8,
+                displayColors: false,
+                callbacks: { label: (ctx) => `${ctx.parsed.y} phút` },
+              },
+            },
             scales: {
               x: { grid: { display: false }, ticks: { font: { size: 10 } } },
               y: {
-                grid: { color: "#f5f5f5" },
+                grid: { color: "#f1f5f3" },
                 ticks: { font: { size: 10 } },
                 beginAtZero: true,
               },

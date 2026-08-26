@@ -526,8 +526,8 @@ function drawLopCharts(lopId, stats) {
             // Quy điểm (thang 0-10) về cùng trục 0-100 với tỷ lệ tham gia (%) để radar cân đối —
             // tooltip bên dưới hiện lại giá trị thật, không phải giá trị đã quy đổi.
             data: [Number(stats.diemTBThiThu || 0) * 10, participationRate],
-            backgroundColor: "rgba(27, 94, 32, 0.2)",
-            borderColor: "#1b5e20",
+            backgroundColor: "rgba(20, 90, 58, 0.2)",
+            borderColor: "#145a3a",
           },
         ],
       },
@@ -623,7 +623,7 @@ function questionCardsHtml(list) {
       const opts = [q.optionA, q.optionB, q.optionC, q.optionD].filter(Boolean);
       const publishBadge = q.isPublished
         ? `<span class="q-opt" style="background:#e8f5e9;color:#2e7d32;">✓ Đã xuất bản</span>`
-        : `<span class="q-opt" style="background:#fff3e0;color:#e65100;">Chưa xuất bản</span>`;
+        : `<span class="q-opt" style="background:#fff3e0;color:#b45309;">Chưa xuất bản</span>`;
       // Việc 8 — badge phạm vi hiển thị: rỗng = toàn hệ thống (mặc định/cũ), có phần tử = giới hạn.
       const lopIds = q.lopIds || [];
       const scopeBadge = lopIds.length
@@ -639,7 +639,7 @@ function questionCardsHtml(list) {
           ${q.explanation ? `<div style="font-size:0.72rem;color:var(--gray-500);margin-top:4px;">💡 ${escapeHtml(q.explanation)}</div>` : ""}
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-          <button onclick="toggleQuestionPublish('${q.id}')" style="background:none;border:none;cursor:pointer;color:${q.isPublished ? "#e65100" : "#2e7d32"};padding:4px;" title="${q.isPublished ? "Gỡ xuất bản" : "Xuất bản câu hỏi"}" aria-label="${q.isPublished ? "Gỡ xuất bản câu hỏi" : "Xuất bản câu hỏi"} ${i + 1}"><i class="fas fa-${q.isPublished ? "eye-slash" : "eye"}"></i></button>
+          <button onclick="toggleQuestionPublish('${q.id}')" style="background:none;border:none;cursor:pointer;color:${q.isPublished ? "#b45309" : "#2e7d32"};padding:4px;" title="${q.isPublished ? "Gỡ xuất bản" : "Xuất bản câu hỏi"}" aria-label="${q.isPublished ? "Gỡ xuất bản câu hỏi" : "Xuất bản câu hỏi"} ${i + 1}"><i class="fas fa-${q.isPublished ? "eye-slash" : "eye"}"></i></button>
           <button onclick='openEditLopVisibilityModal("question", "${q.id}", ${JSON.stringify(lopIds)})' style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" title="Sửa phạm vi hiển thị" aria-label="Sửa phạm vi hiển thị câu hỏi ${i + 1}"><i class="fas fa-users"></i></button>
           <button onclick="deleteQuestionRow('${q.id}')" style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" title="Xóa" aria-label="Xóa câu hỏi"><i class="fas fa-trash"></i></button>
         </div>
@@ -888,7 +888,7 @@ function versionCardHtml(v) {
   const isOral = v.kind === "Oral";
   const count = isOral ? v.oralQuestions.length : v.questions.length;
   const countLabel = isOral ? `${count} câu tự luận` : `${count} câu trắc nghiệm`;
-  const badgeStyle = v.isPublished ? "background:#e8f5e9;color:#2e7d32;" : "background:#fff3e0;color:#e65100;";
+  const badgeStyle = v.isPublished ? "background:#e8f5e9;color:#2e7d32;" : "background:#fff3e0;color:#b45309;";
   const badgeText = v.isPublished ? "✓ Đã xuất bản" : "Chưa xuất bản";
   const toggleLabel = v.isPublished ? "Hủy xuất bản" : "Xuất bản";
   const toggleIcon = v.isPublished ? "fa-rotate-left" : "fa-upload";
@@ -947,7 +947,7 @@ async function toggleVersionPublish(versionId, maDe) {
     const badge = document.getElementById(`examVersionBadge-${versionId}`);
     badge.textContent = entry.isPublished ? "✓ Đã xuất bản" : "Chưa xuất bản";
     badge.style.background = entry.isPublished ? "#e8f5e9" : "#fff3e0";
-    badge.style.color = entry.isPublished ? "#2e7d32" : "#e65100";
+    badge.style.color = entry.isPublished ? "#2e7d32" : "#b45309";
     btn.innerHTML = entry.isPublished
       ? '<i class="fas fa-rotate-left"></i> Hủy xuất bản'
       : '<i class="fas fa-upload"></i> Xuất bản';
@@ -1593,7 +1593,7 @@ function renderBatchList() {
   el.innerHTML = batchFiles
     .map((b, i) => {
       const icons = { pdf: "📄", docx: "📝", txt: "📃" };
-      const colors = { pdf: "#1b5e20", docx: "#1565c0", txt: "#555" };
+      const colors = { pdf: "#145a3a", docx: "#1565c0", txt: "#555" };
       const statusMap = {
         pending: { cls: "bfs-pending", text: "⏳ Chờ" },
         loading: { cls: "bfs-loading", text: "🔄 Đang xử lý..." },
@@ -1682,7 +1682,7 @@ async function startBatchImport() {
     (totalErrors ? ` · ❌ ${totalErrors} file lỗi` : "") +
     (totalImported > 0 ? " · câu import cần xuất bản trước khi học viên thấy được" : "");
   if (hasZeroFromTextParse) {
-    summaryHtml += `<br><span style="color:#e65100">⚠️ ${NO_QUESTIONS_FOUND_HINT}</span>`;
+    summaryHtml += `<br><span style="color:#b45309">⚠️ ${NO_QUESTIONS_FOUND_HINT}</span>`;
   }
   if (singleChapter) {
     summaryHtml += "<br>" + goToQuestionsButtonHtml(singleChapter);
@@ -1960,7 +1960,7 @@ async function loadMaterials() {
           onclick="openGenerateExamModal('${m.id}')" title="Sinh đề bằng AI" aria-label="Sinh đề bằng AI từ tài liệu ${m.title}">
           <i class="fas fa-wand-magic-sparkles"></i>
         </button>
-        <button class="btn btn-sm" style="background:${m.isActive ? "#e8f5e9" : "#fff3e0"};color:${m.isActive ? "#2e7d32" : "#e65100"};border:none;"
+        <button class="btn btn-sm" style="background:${m.isActive ? "#e8f5e9" : "#fff3e0"};color:${m.isActive ? "#2e7d32" : "#b45309"};border:none;"
           onclick="toggleMaterial('${m.id}')" title="${m.isActive ? "Ẩn" : "Hiện"} tài liệu" aria-label="${m.isActive ? "Ẩn" : "Hiện"} tài liệu ${m.title}">
           <i class="fas fa-${m.isActive ? "eye-slash" : "eye"}"></i>
         </button>

@@ -23,11 +23,11 @@
   justify-content: center;
   color: white;
   font-size: 1.4rem;
-  box-shadow: 0 4px 10px rgba(27, 94, 32, 0.3);
+  box-shadow: 0 4px 10px rgba(20, 90, 58, 0.3);
 }
 .badge-icon.gold {
   background: linear-gradient(135deg, var(--accent-dark), var(--accent));
-  box-shadow: 0 4px 10px rgba(245, 124, 0, 0.4);
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
 }
 .badge-icon.silver {
   background: linear-gradient(135deg, #607d8b, #90a4ae);

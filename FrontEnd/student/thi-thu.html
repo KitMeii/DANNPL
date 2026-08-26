@@ -5,28 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="../assets/logo.png" />
     <title data-title-suffix>Kiểm tra</title>
-    <link rel="stylesheet" href="../css/base/variables.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/base/reset.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/header.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/bottom-nav.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/card.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/button.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/modal.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/form.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/badge.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/chat.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/components/misc.css?v=20260826d" />
-    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826d" />
+    <link rel="stylesheet" href="../css/base/variables.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/base/reset.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/header.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/card.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/button.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/modal.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/form.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/badge.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/chat.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/components/misc.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826e" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <script src="../api-client.js?v=20260826d"></script>
+    <script src="../api-client.js?v=20260826e"></script>
     <style>
       .exam-tab {
         flex: 1;
@@ -124,7 +124,7 @@
         width: 40px;
         height: 40px;
         background: rgba(255, 255, 255, 0.15);
-        border: 2px solid #f57c00;
+        border: 2px solid #f59e0b;
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -257,11 +257,11 @@
       .ai-feedback.good {
         background: #e8f5e9;
         border-left: 3px solid #2e7d32;
-        color: #1b5e20;
+        color: #145a3a;
       }
       .ai-feedback.ok {
         background: #fff3e0;
-        border-left: 3px solid #e65100;
+        border-left: 3px solid #b45309;
         color: #5d4037;
       }
       .ai-feedback.bad {
@@ -1290,9 +1290,9 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
       <div style="font-size:0.78rem;font-weight:600;">Câu ${i + 1}: ${q.question.slice(0, 60)}...</div>
       <div style="width:100%;">
         <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--gray-500);margin-bottom:3px;">
-          <span>Điểm</span><span style="font-weight:700;color:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--danger)"};">${scores[i]}/10</span>
+          <span>Điểm</span><span style="font-weight:700;color:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#b45309" : "var(--danger)"};">${scores[i]}/10</span>
         </div>
-        <div class="score-bar"><div class="score-fill" style="width:${scores[i] * 10}%;background:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#e65100" : "var(--danger)"};"></div></div>
+        <div class="score-bar"><div class="score-fill" style="width:${scores[i] * 10}%;background:${scores[i] >= 7 ? "#2e7d32" : scores[i] >= 5 ? "#b45309" : "var(--danger)"};"></div></div>
       </div>
     </div>`,
           )

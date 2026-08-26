@@ -1,17 +1,19 @@
 /* ===== CARDS ===== */
 .card {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-lg);
   padding: 18px;
-  box-shadow: var(--shadow);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 14px;
+  transition: transform 0.2s var(--ease-bounce), border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .card-title {
   font-family: "Oswald", sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.8px;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -23,41 +25,47 @@
   font-size: 1rem;
 }
 
-/* ===== WELCOME CARD (card dạng chào mừng ở dashboard) ===== */
+/* ===== STUDENT LEARNING HERO (card chào mừng ở dashboard) — premium EdTech, không còn ngôi sao
+   to + 2 vòng tròn decoration vô nghĩa; thay bằng lưới điểm sáng mảnh (gợi mạng lưới AI) + glow. */
 .welcome-card {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, var(--primary-mid) 100%);
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 22px 24px;
   color: white;
   position: relative;
   overflow: hidden;
   margin-bottom: 14px;
-  box-shadow: 0 8px 24px rgba(27, 94, 32, 0.35);
+  box-shadow: 0 12px 32px rgba(11, 61, 46, 0.28);
 }
 .welcome-card::before {
+  /* Glow mềm phía trên-phải, thay 2 vòng tròn trắng cũ */
   content: "";
   position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 130px;
-  height: 130px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 50%;
+  top: -60%;
+  right: -20%;
+  width: 60%;
+  height: 220%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.16) 0%, transparent 70%);
+  pointer-events: none;
 }
 .welcome-card::after {
+  /* Lưới điểm mảnh — gợi "AI network pattern" cực nhẹ, không diễn giải quá tay */
   content: "";
   position: absolute;
-  bottom: -50px;
-  right: 30px;
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(135deg, black, transparent 60%);
+  -webkit-mask-image: linear-gradient(135deg, black, transparent 60%);
+  pointer-events: none;
+}
+.welcome-card > * {
+  position: relative;
 }
 .star-icon {
   font-size: 3.5rem;
   color: var(--accent);
-  filter: drop-shadow(0 2px 8px rgba(245, 124, 0, 0.5));
+  filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.5));
   float: right;
   margin-top: -4px;
 }
@@ -65,7 +73,7 @@
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 1px;
-  opacity: 0.8;
+  opacity: 0.75;
   text-transform: uppercase;
   margin-bottom: 4px;
 }
@@ -76,17 +84,32 @@
   letter-spacing: 0.5px;
 }
 .welcome-sub {
-  font-size: 0.75rem;
-  opacity: 0.8;
+  font-size: 0.8rem;
+  opacity: 0.75;
+  margin-top: 4px;
+  max-width: 34ch;
+  line-height: 1.5;
+}
+.welcome-meta {
+  font-size: 0.68rem;
+  opacity: 0.55;
   margin-top: 3px;
 }
 .welcome-streak {
-  font-size: 0.78rem;
-  margin-top: 8px;
-  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin-top: 12px;
+  padding: 5px 12px 5px 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
 }
 .welcome-streak span {
   font-weight: 700;
+  color: var(--accent-light);
 }
 .btn-start {
   display: inline-flex;

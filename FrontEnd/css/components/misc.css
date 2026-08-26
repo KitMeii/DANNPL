@@ -1,3 +1,50 @@
+/* ===== RUNNING LIGHT BORDER (utility) =====
+   Đường ánh sáng mảnh chạy quanh viền, dùng để thu hút chú ý trong ~1.6s rồi tự fade — cho các
+   khoảnh khắc: đang tìm kiếm/lọc, AI đang trả lời, dữ liệu vừa cập nhật, vừa hoàn thành bài Kiểm
+   tra. Toggle bằng JS: el.classList.add("running-border"); rồi remove sau khi animation kết thúc
+   (~1.8s) hoặc khi trạng thái đó qua đi. Phần tử cần position:relative (utility tự thêm) và có
+   border-radius riêng — ::before kế thừa qua border-radius:inherit. */
+.running-border {
+  position: relative;
+  isolation: isolate;
+}
+.running-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from 0deg, var(--primary), var(--primary-light), var(--accent), var(--primary));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+  animation:
+    runningBorderSpin 1.4s linear infinite,
+    runningBorderFade 1.8s ease forwards;
+}
+@keyframes runningBorderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes runningBorderFade {
+  0%,
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .running-border::before {
+    animation: none;
+    display: none;
+  }
+}
+
 /* ===== SUGGESTION LIST ===== */
 .suggest-list {
   list-style: none;

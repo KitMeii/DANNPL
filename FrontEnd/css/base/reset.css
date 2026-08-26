@@ -6,7 +6,7 @@
 
 body {
   font-family: "Be Vietnam Pro", sans-serif;
-  background: #f0f2f5;
+  background: var(--bg-app);
   min-height: 100vh;
   color: var(--gray-900);
   /* Top-nav gộp vào header: hàng nav nằm TRONG luồng trang trên desktop (cộng thêm chiều cao),

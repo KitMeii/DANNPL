@@ -1,16 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap");
 
 :root {
-  /* Thương hiệu — xanh lá đậm chủ đạo (Giai đoạn 4, thay bộ --red cũ) */
-  --primary: #1b5e20;
-  --primary-dark: #0a3d12;
-  --primary-mid: #2e7d32;
-  --primary-light: #81c784;
-  --primary-bg: #e8f5e9;
-  /* Nhấn — vàng cam (thay bộ --gold cũ) */
-  --accent: #f57c00;
-  --accent-light: #ffb74d;
-  --accent-dark: #e65100;
+  /* Thương hiệu — Premium EdTech redesign (2026-08-26): xanh quân đội sâu hơn, bớt "đậm đặc",
+     tạo hierarchy rõ ràng thay vì 1 khối xanh phẳng. */
+  --primary: #145a3a;
+  --primary-dark: #0b3d2e;
+  --primary-mid: #1a6b46;
+  --primary-light: #2e7d52;
+  --primary-bg: #eaf3ee;
+  /* Nhấn — vàng gold, CHỈ dùng cho thành tích/streak/CTA quan trọng/badge, không phủ toàn bộ
+     nav active nữa (xem bottom-nav.css). */
+  --accent: #f59e0b;
+  --accent-light: #fcd34d;
+  --accent-dark: #b45309;
   /* Ngữ nghĩa — tách khỏi thương hiệu, KHÔNG đổi theo theme (đáp án sai/nguy hiểm vẫn phải đỏ,
      đáp án đúng vẫn phải xanh, bất kể thương hiệu đang là màu gì). */
   --danger: #c62828;
@@ -19,28 +21,31 @@
   --success: #2e7d32;
   --success-bg: #e8f5e9;
   --white: #ffffff;
-  --gray-50: #fafafa;
-  --gray-100: #f5f5f5;
-  --gray-200: #eeeeee;
-  --gray-300: #e0e0e0;
-  --gray-400: #bdbdbd;
-  /* #9e9e9e was ~2.8:1 contrast on white — fails WCAG AA even for large text (needs 3:1; body
-     text needs 4.5:1). The lightest gray that clears 4.5:1 is ~#767676, a single shade off
-     --gray-600 (#757575, ~4.6:1) — there's no room left for a visibly distinct, AA-safe step
-     between them at this contrast floor. Set equal to --gray-600 rather than a shade darker, so
-     the scale doesn't invert (500 rendering darker than 600). Kept as a separate token rather
-     than deleting it, so call sites using --gray-500 don't need to change, and so it can regain
-     a distinct lighter value later if it's ever restricted to large-text/decorative use only
-     (3:1 floor instead of 4.5:1). */
-  --gray-500: #757575;
-  --gray-600: #757575;
-  --gray-700: #616161;
-  --gray-800: #424242;
-  --gray-900: #212121;
-  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
-  --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.15);
+  /* Nền ứng dụng / bề mặt — thang xám lạnh (thay xám ấm cũ), tạo cảm giác "sản phẩm" hơn giấy in.
+     --gray-* giữ lại làm alias để mọi chỗ dùng cũ (khắp site) tự động nhận diện mới, không cần
+     sửa từng file. Token đặt tên rõ nghĩa bên dưới dùng cho code mới. */
+  --bg-app: #f6f8f7;
+  --surface: #ffffff;
+  --surface-2: #f1f5f3;
+  --text-primary: #17211b;
+  --text-secondary: #667085;
+  --text-muted: #98a2b3;
+  --gray-50: #f6f8f7;
+  --gray-100: #f1f5f3;
+  --gray-200: #e4e7ec;
+  --gray-300: #d0d5dd;
+  --gray-400: #98a2b3;
+  --gray-500: #667085;
+  --gray-600: #667085;
+  --gray-700: #475467;
+  --gray-800: #17211b;
+  --gray-900: #17211b;
+  /* Shadow rất nhẹ (spec "premium EdTech" — không đổ bóng đen nặng) */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 16px 40px rgba(16, 24, 40, 0.12);
+  --border-subtle: rgba(16, 24, 40, 0.06);
   --radius-sm: 8px;
   --radius: 12px;
   --radius-lg: 16px;
