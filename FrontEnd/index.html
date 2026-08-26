@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826i" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826i" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826i" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826i" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826i" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826j" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826j" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826j" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826j" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826j" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826i"></script>
+    <script src="api-client.js?v=20260826j"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -66,65 +66,10 @@
         transition-duration: 0.08s;
       }
 
-      /* ===================== DASHBOARD GRID (2026-08-26) =====================
-         Thay bố cục xếp tràn 1 cột dọc cũ bằng 1 trục chính (hero + tiếp tục học + biểu đồ — luồng
-         "làm gì tiếp theo") có nhân, kèm 1 cột phụ bên cạnh (thống kê nhanh + truy cập nhanh +
-         thành tích — thông tin liếc nhanh). Dưới 992px gộp lại thành 1 cột dọc như cũ, thứ tự HTML
-         giữ nguyên (main trước, side sau) nên fallback tự nhiên không cần đảo DOM. */
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 16px;
-        align-items: start;
-      }
-      @media (min-width: 992px) {
-        .dashboard-grid {
-          grid-template-columns: 1.7fr 1fr;
-        }
-        .dash-side {
-          position: sticky;
-          top: calc(var(--header-height) + var(--nav-row-height) + 16px);
-        }
-        /* Cột phụ chỉ có 1 cột dọc (thay vì 2 cột như màn hẹp) — mỗi ô full-width nên phóng to
-           theo, tạo cảm giác cân xứng với trục chính bên trái thay vì nhìn nhỏ/lọt thỏm. */
-        .dash-side .stats-grid,
-        .dash-side .quick-grid {
-          grid-template-columns: 1fr;
-        }
-        .dash-side .stat-card {
-          padding: 20px 22px;
-        }
-        .dash-side .stat-icon {
-          width: 40px;
-          height: 40px;
-          font-size: 1.05rem;
-        }
-        .dash-side .stat-value {
-          font-size: 2.2rem;
-        }
-        .dash-side .stat-label {
-          font-size: 0.74rem;
-        }
-        .dash-side .stat-unit {
-          font-size: 0.78rem;
-        }
-        .dash-side .quick-card {
-          padding: 20px 22px;
-        }
-        .dash-side .quick-icon {
-          width: 48px;
-          height: 48px;
-          font-size: 1.3rem;
-          border-radius: 12px;
-        }
-        .dash-side .quick-title {
-          font-size: 0.95rem;
-        }
-        .dash-side .quick-sub {
-          font-size: 0.78rem;
-        }
-        .dash-side .quick-arrow {
-          font-size: 0.95rem;
+      /* Thống kê — 1 hàng ngang 4 ô trên màn đủ rộng (thay 2x2), giữ 2x2 trên mobile chật. */
+      @media (min-width: 640px) {
+        .stats-grid {
+          grid-template-columns: repeat(4, 1fr);
         }
       }
 
@@ -133,7 +78,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-        margin-bottom: 14px;
+        margin-bottom: 0;
       }
       .quick-card {
         background: var(--surface);
@@ -309,8 +254,6 @@
 
     <main class="main-content">
       <div class="container">
-        <div class="dashboard-grid">
-        <div class="dash-main">
         <!-- Welcome Card -->
         <div class="welcome-card fade-in">
           <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
@@ -388,42 +331,6 @@
           </div>
         </div>
 
-        <!-- Thành tích -->
-        <div class="card">
-          <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
-          <div class="badge-row">
-            <div class="badge">
-              <div class="badge-icon gold"><i class="fas fa-fire"></i></div>
-              <div class="badge-label" id="badgeStreak">—</div>
-            </div>
-            <div class="badge">
-              <div class="badge-icon"><i class="fas fa-bullseye"></i></div>
-              <div class="badge-label" id="badgeBest">—</div>
-            </div>
-            <div class="badge">
-              <div class="badge-icon silver">
-                <i class="fas fa-graduation-cap"></i>
-              </div>
-              <div class="badge-label" id="badgeProgress">—</div>
-            </div>
-            <div class="badge">
-              <div class="badge-icon" style="background: #e8f5e9">
-                <i class="fas fa-book" style="color: #2e7d32"></i>
-              </div>
-              <div class="badge-label" id="badgeLearned">—</div>
-            </div>
-          </div>
-          <button
-            class="btn btn-outline btn-sm btn-full"
-            style="margin-top: 14px"
-            onclick="window.location = 'student/xep-hang.html'"
-          >
-            Xem tất cả thành tích →
-          </button>
-        </div>
-        </div>
-
-        <div class="dash-side">
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -468,59 +375,89 @@
           </div>
         </div>
 
-        <!-- Quick access -->
-        <div class="card-title" style="margin-bottom: 10px">
-          <i
-            class="fas fa-th-large"
-            style="color: var(--primary); margin-right: 6px"
-          ></i
-          >Truy cập nhanh
-        </div>
-        <div class="quick-grid">
-          <a href="student/chat.html" class="quick-card">
-            <div class="quick-icon" style="background: var(--surface-2); color: var(--accent-dark)">
-              <i class="fas fa-robot"></i>
+        <!-- Truy cập nhanh + Thành tích — ghép cặp cùng hàng, chiều cao tự bằng nhau (grid mặc
+             định stretch theo hàng) nên 2 khối luôn kết thúc ngang nhau ở cuối trang. -->
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">
+              <i class="fas fa-th-large"></i>Truy cập nhanh
             </div>
-            <div>
-              <div class="quick-title">Chat AI</div>
-              <div class="quick-sub">Hỏi đáp <span data-subject-name>Môn học</span></div>
+            <div class="quick-grid">
+              <a href="student/chat.html" class="quick-card">
+                <div class="quick-icon" style="background: var(--surface-2); color: var(--accent-dark)">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                  <div class="quick-title">Chat AI</div>
+                  <div class="quick-sub">Hỏi đáp <span data-subject-name>Môn học</span></div>
+                </div>
+                <i class="fas fa-arrow-right quick-arrow"></i>
+              </a>
+              <a href="student/thi-thu.html" class="quick-card">
+                <div class="quick-icon" style="background: var(--surface-2); color: #1565c0">
+                  <i class="fas fa-pencil-alt"></i>
+                </div>
+                <div>
+                  <div class="quick-title">Kiểm tra</div>
+                  <div class="quick-sub">TN + Tự luận AI</div>
+                </div>
+                <i class="fas fa-arrow-right quick-arrow"></i>
+              </a>
+              <a href="student/giang-bai.html" class="quick-card">
+                <div class="quick-icon" style="background: var(--primary-bg); color: var(--primary)">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div>
+                  <div class="quick-title">AI Giảng bài</div>
+                  <div class="quick-sub">Upload PDF + TTS</div>
+                </div>
+                <i class="fas fa-arrow-right quick-arrow"></i>
+              </a>
+              <a href="student/xep-hang.html" class="quick-card">
+                <div class="quick-icon" style="background: #fef3e0; color: var(--accent-dark)">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div>
+                  <div class="quick-title">Bảng XH</div>
+                  <div class="quick-sub">Top học viên lớp</div>
+                </div>
+                <i class="fas fa-arrow-right quick-arrow"></i>
+              </a>
             </div>
-            <i class="fas fa-arrow-right quick-arrow"></i>
-          </a>
-          <a href="student/thi-thu.html" class="quick-card">
-            <div class="quick-icon" style="background: var(--surface-2); color: #1565c0">
-              <i class="fas fa-pencil-alt"></i>
-            </div>
-            <div>
-              <div class="quick-title">Kiểm tra</div>
-              <div class="quick-sub">TN + Tự luận AI</div>
-            </div>
-            <i class="fas fa-arrow-right quick-arrow"></i>
-          </a>
-          <a href="student/giang-bai.html" class="quick-card">
-            <div class="quick-icon" style="background: var(--primary-bg); color: var(--primary)">
-              <i class="fas fa-chalkboard-teacher"></i>
-            </div>
-            <div>
-              <div class="quick-title">AI Giảng bài</div>
-              <div class="quick-sub">Upload PDF + TTS</div>
-            </div>
-            <i class="fas fa-arrow-right quick-arrow"></i>
-          </a>
-          <a href="student/xep-hang.html" class="quick-card">
-            <div class="quick-icon" style="background: #fef3e0; color: var(--accent-dark)">
-              <i class="fas fa-trophy"></i>
-            </div>
-            <div>
-              <div class="quick-title">Bảng XH</div>
-              <div class="quick-sub">Top học viên lớp</div>
-            </div>
-            <i class="fas fa-arrow-right quick-arrow"></i>
-          </a>
-        </div>
+          </div>
 
-        </div>
-
+          <div class="card">
+            <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
+            <div class="badge-row">
+              <div class="badge">
+                <div class="badge-icon gold"><i class="fas fa-fire"></i></div>
+                <div class="badge-label" id="badgeStreak">—</div>
+              </div>
+              <div class="badge">
+                <div class="badge-icon"><i class="fas fa-bullseye"></i></div>
+                <div class="badge-label" id="badgeBest">—</div>
+              </div>
+              <div class="badge">
+                <div class="badge-icon silver">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="badge-label" id="badgeProgress">—</div>
+              </div>
+              <div class="badge">
+                <div class="badge-icon" style="background: #e8f5e9">
+                  <i class="fas fa-book" style="color: #2e7d32"></i>
+                </div>
+                <div class="badge-label" id="badgeLearned">—</div>
+              </div>
+            </div>
+            <button
+              class="btn btn-outline btn-sm btn-full"
+              style="margin-top: 14px"
+              onclick="window.location = 'student/xep-hang.html'"
+            >
+              Xem tất cả thành tích →
+            </button>
+          </div>
         </div>
       </div>
     </main>
