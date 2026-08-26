@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="../assets/logo.png" />
     <title data-title-suffix>Chat AI</title>
     <link rel="stylesheet" href="../css/base/variables.css" />
     <link rel="stylesheet" href="../css/base/reset.css" />
@@ -702,9 +703,9 @@
           <i class="fas fa-bars"></i>
         </button>
         <a href="../index.html" class="logo-wrap">
-          <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
+          <div class="logo-badge"><img src="../assets/logo.png" alt="Học viện Kỹ thuật Quân sự" /></div>
           <div class="logo-info">
-            <div class="logo-title">Chat AI - Giảng viên Ảo</div>
+            <div class="logo-title">Chat AI</div>
             <div class="logo-sub">Powered by Llama 3.3 70B · Groq</div>
           </div>
         </a>
@@ -786,7 +787,7 @@
           </button>
           <div class="chat-title-wrap">
             <div class="chat-name" id="chatSessionTitle" data-app-name>
-              Giảng viên Ảo
+              Học viện Kỹ thuật Quân sự
             </div>
             <div class="chat-status">
               <span class="chat-online"></span>
@@ -803,7 +804,7 @@
           <!-- Welcome state (shown when no history) -->
           <div class="chat-welcome" id="chatWelcome">
             <div class="welcome-icon"><i class="fas fa-robot"></i></div>
-            <div class="welcome-title" data-app-name>Giảng viên Ảo</div>
+            <div class="welcome-title" data-app-name>Học viện Kỹ thuật Quân sự</div>
             <div class="welcome-sub">
               Hỏi tôi về <span data-subject-name>Môn học</span> — từ khái niệm cơ bản đến phân
               tích chuyên sâu.
@@ -1149,7 +1150,7 @@
             "</div>";
         }
 
-        div.innerHTML = `<div class="msg-bubble">${formatted}${sourcesHtml}</div><div class="msg-time">${role === "user" ? "Bạn" : "Giảng viên Ảo"} · ${getTime()}</div>`;
+        div.innerHTML = `<div class="msg-bubble">${formatted}${sourcesHtml}</div><div class="msg-time">${role === "user" ? "Bạn" : "AI"} · ${getTime()}</div>`;
         body.appendChild(div);
         if (!silent) body.scrollTop = body.scrollHeight;
         return div;

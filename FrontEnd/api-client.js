@@ -30,9 +30,9 @@ const STORAGE_KEYS = {
  * và thẻ <title data-title-suffix>Tên trang</title> sẽ tự nối thành "Tên trang - {appName}".
  */
 const APP_CONFIG = window.APP_CONFIG || {
-  appName: "Giảng viên Ảo",
+  appName: "Học viện Kỹ thuật Quân sự",
   subjectName: "Môn học",
-  schoolName: "Học viện",
+  schoolName: "Hệ thống học tập trực tuyến",
 };
 window.APP_CONFIG = APP_CONFIG;
 

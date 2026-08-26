@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Đăng nhập</title>
     <link rel="stylesheet" href="css/base/variables.css" />
     <link rel="stylesheet" href="css/base/reset.css" />
@@ -60,25 +61,20 @@
         color: white;
       }
       .hero-badge {
-        width: 64px;
-        height: 64px;
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid #f57c00;
-        border-radius: 12px;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         margin: 0 auto 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
       }
-      .hero-badge i {
-        color: #f57c00;
-        font-size: 1.4rem;
-      }
-      .hero-badge span {
-        font-weight: 800;
-        font-size: 13px;
-        letter-spacing: 1px;
+      .hero-badge img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
       .auth-hero h2 {
         font-family: "Oswald", sans-serif;
@@ -144,10 +140,10 @@
         <!-- Hero -->
         <div class="auth-hero">
           <div class="hero-badge">
-            <i class="fas fa-star"></i><span>MTA</span>
+            <img src="assets/logo.png" alt="Học viện Kỹ thuật Quân sự" />
           </div>
-          <h2>HỆ THỐNG <span data-app-name style="text-transform: uppercase">GIẢNG VIÊN ẢO</span></h2>
-          <p><span data-school-name>Học viện</span> · Khoa Điện - Điện tử</p>
+          <h2 style="text-transform: uppercase"><span data-app-name>Học viện Kỹ thuật Quân sự</span></h2>
+          <p><span data-school-name>Hệ thống học tập trực tuyến</span> · Khoa Điện - Điện tử</p>
         </div>
 
         <!-- Tabs -->
