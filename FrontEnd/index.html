@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826k" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826k" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826k" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826k" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826k" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826l" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826l" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826l" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826l" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826l" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826k"></script>
+    <script src="api-client.js?v=20260826l"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -74,8 +74,8 @@
       }
 
       /* ===================== HOME SPLIT (2026-08-26) =====================
-         2 cột dưới hàng Thống kê: trái = Tiếp tục học tập + Biểu đồ tuần, phải = phần còn lại
-         (Hero chào mừng + Truy cập nhanh + Thành tích). Grid mặc định stretch 2 cột bằng chiều cao
+         2 cột dưới hàng Thống kê: trái = Hero chào mừng + Tiếp tục học tập + Biểu đồ tuần, phải =
+         Truy cập nhanh + Thành tích. Grid mặc định stretch 2 cột bằng chiều cao
          nhau (cùng 1 hàng grid); bên trong mỗi cột dùng flex column + justify-content:space-between
          nên khoảng dư (do 1 bên nhiều/ít khối hơn) chia đều vào GIỮA các khối thay vì dồn thành 1
          khoảng trắng chết ở cuối — nhờ vậy khối cuối cùng của 2 cột luôn kết thúc ngang nhau mà
@@ -326,8 +326,28 @@
         </div>
 
         <div class="home-split">
-          <!-- Cột trái: Tiếp tục học tập + Biểu đồ tuần -->
+          <!-- Cột trái: Hero chào mừng + Tiếp tục học tập + Biểu đồ tuần -->
           <div class="home-col">
+            <!-- Welcome Card -->
+            <div class="welcome-card fade-in">
+              <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
+              <div class="welcome-name" id="welcomeName">—</div>
+              <div class="welcome-sub">
+                Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
+              </div>
+              <div class="welcome-meta" id="welcomeSub">—</div>
+              <div class="welcome-streak">
+                <i class="fas fa-fire" style="color: var(--accent-light)"></i>
+                Chuỗi học tập <span id="streakNum">0</span> ngày
+              </div>
+              <button
+                class="btn-start"
+                onclick="window.location = 'student/chat.html'"
+              >
+                <i class="fas fa-play"></i> Bắt đầu học ngay →
+              </button>
+            </div>
+
             <div class="card">
               <div class="card-title">
                 <i class="fas fa-book-open"></i>Tiếp tục học tập
@@ -383,28 +403,8 @@
             </div>
           </div>
 
-          <!-- Cột phải: Hero chào mừng + Truy cập nhanh + Thành tích -->
+          <!-- Cột phải: Truy cập nhanh + Thành tích -->
           <div class="home-col">
-            <!-- Welcome Card -->
-            <div class="welcome-card fade-in">
-              <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
-              <div class="welcome-name" id="welcomeName">—</div>
-              <div class="welcome-sub">
-                Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
-              </div>
-              <div class="welcome-meta" id="welcomeSub">—</div>
-              <div class="welcome-streak">
-                <i class="fas fa-fire" style="color: var(--accent-light)"></i>
-                Chuỗi học tập <span id="streakNum">0</span> ngày
-              </div>
-              <button
-                class="btn-start"
-                onclick="window.location = 'student/chat.html'"
-              >
-                <i class="fas fa-play"></i> Bắt đầu học ngay →
-              </button>
-            </div>
-
             <div class="card">
               <div class="card-title">
                 <i class="fas fa-th-large"></i>Truy cập nhanh
