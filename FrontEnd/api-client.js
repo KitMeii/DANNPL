@@ -8,10 +8,11 @@
  * Cấu hình domain Gateway: đặt `window.TTHCM_API_BASE = "https://api.tenmien.vn"` trong 1 thẻ
  * <script> TRƯỚC khi load file này (ví dụ ở <head> mỗi trang, hoặc 1 file config riêng khi
  * deploy production). Nếu không đặt, mặc định trỏ về Gateway chạy local lúc dev
- * (http://localhost:8080).
+ * (http://localhost:8090 — cổng do docker-compose.yml của dự án này map ra, khác 8080 để tránh
+ * đụng cổng khi chạy song song với dự án gốc NCKH_TTHCMK51).
  */
 
-const API_BASE = window.TTHCM_API_BASE || "http://localhost:8080";
+const API_BASE = window.TTHCM_API_BASE || "http://localhost:8090";
 
 const STORAGE_KEYS = {
   token: "tthcm_access_token",
