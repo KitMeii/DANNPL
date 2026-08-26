@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826g" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826g" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826g" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826g" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826g" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826h" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826h" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826h" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826h" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826h" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826g"></script>
+    <script src="api-client.js?v=20260826h"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -349,6 +349,39 @@
         </div>
 
         <div class="dash-side">
+        <!-- Thành tích -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
+          <div class="badge-row">
+            <div class="badge">
+              <div class="badge-icon gold"><i class="fas fa-fire"></i></div>
+              <div class="badge-label" id="badgeStreak">—</div>
+            </div>
+            <div class="badge">
+              <div class="badge-icon"><i class="fas fa-bullseye"></i></div>
+              <div class="badge-label" id="badgeBest">—</div>
+            </div>
+            <div class="badge">
+              <div class="badge-icon silver">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="badge-label" id="badgeProgress">—</div>
+            </div>
+            <div class="badge">
+              <div class="badge-icon" style="background: #e8f5e9">
+                <i class="fas fa-book" style="color: #2e7d32"></i>
+              </div>
+              <div class="badge-label" id="badgeLearned">—</div>
+            </div>
+          </div>
+          <button
+            class="btn btn-outline btn-sm btn-full"
+            style="margin-top: 14px"
+            onclick="window.location = 'student/xep-hang.html'"
+          >
+            Xem tất cả thành tích →
+          </button>
+        </div>
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -444,40 +477,8 @@
           </a>
         </div>
 
-        <!-- Thành tích -->
-        <div class="card">
-          <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
-          <div class="badge-row">
-            <div class="badge">
-              <div class="badge-icon gold"><i class="fas fa-fire"></i></div>
-              <div class="badge-label" id="badgeStreak">—</div>
-            </div>
-            <div class="badge">
-              <div class="badge-icon"><i class="fas fa-bullseye"></i></div>
-              <div class="badge-label" id="badgeBest">—</div>
-            </div>
-            <div class="badge">
-              <div class="badge-icon silver">
-                <i class="fas fa-graduation-cap"></i>
-              </div>
-              <div class="badge-label" id="badgeProgress">—</div>
-            </div>
-            <div class="badge">
-              <div class="badge-icon" style="background: #e8f5e9">
-                <i class="fas fa-book" style="color: #2e7d32"></i>
-              </div>
-              <div class="badge-label" id="badgeLearned">—</div>
-            </div>
-          </div>
-          <button
-            class="btn btn-outline btn-sm btn-full"
-            style="margin-top: 14px"
-            onclick="window.location = 'student/xep-hang.html'"
-          >
-            Xem tất cả thành tích →
-          </button>
         </div>
-        </div>
+
         </div>
       </div>
     </main>
