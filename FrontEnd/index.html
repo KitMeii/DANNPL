@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826e" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826e" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826e" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826e" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826e" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826g" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826g" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826g" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826g" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826g" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826e"></script>
+    <script src="api-client.js?v=20260826g"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -64,6 +64,27 @@
       .search-tag:active {
         transform: scale(0.92);
         transition-duration: 0.08s;
+      }
+
+      /* ===================== DASHBOARD GRID (2026-08-26) =====================
+         Thay bố cục xếp tràn 1 cột dọc cũ bằng 1 trục chính (hero + tiếp tục học + biểu đồ — luồng
+         "làm gì tiếp theo") có nhân, kèm 1 cột phụ bên cạnh (thống kê nhanh + truy cập nhanh +
+         thành tích — thông tin liếc nhanh). Dưới 992px gộp lại thành 1 cột dọc như cũ, thứ tự HTML
+         giữ nguyên (main trước, side sau) nên fallback tự nhiên không cần đảo DOM. */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      @media (min-width: 992px) {
+        .dashboard-grid {
+          grid-template-columns: 1.7fr 1fr;
+        }
+        .dash-side {
+          position: sticky;
+          top: calc(var(--header-height) + var(--nav-row-height) + 16px);
+        }
       }
 
       /* Quick actions grid */
@@ -247,6 +268,8 @@
 
     <main class="main-content">
       <div class="container">
+        <div class="dashboard-grid">
+        <div class="dash-main">
         <!-- Welcome Card -->
         <div class="welcome-card fade-in">
           <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
@@ -267,6 +290,65 @@
           </button>
         </div>
 
+        <!-- Tiếp tục + Biểu đồ -->
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">
+              <i class="fas fa-book-open"></i>Tiếp tục học tập
+            </div>
+            <div
+              style="
+                font-size: 0.82rem;
+                font-weight: 600;
+                color: var(--gray-700);
+                margin-bottom: 8px;
+              "
+              id="currentLesson"
+            >
+              Điểm trung bình Kiểm tra
+            </div>
+            <div class="prog-track" style="margin-bottom: 4px">
+              <div class="prog-fill" id="progFill" style="width: 0%"></div>
+            </div>
+            <div
+              style="
+                font-size: 0.7rem;
+                color: var(--gray-500);
+                text-align: right;
+                margin-bottom: 12px;
+              "
+              id="progPct"
+            >
+              0%
+            </div>
+            <button
+              class="btn btn-red btn-sm btn-full"
+              onclick="window.location = 'student/chat.html'"
+            >
+              Tiếp tục học →
+            </button>
+          </div>
+          <div class="card">
+            <div class="card-title">
+              <i class="fas fa-chart-line"></i>Học tập tuần này
+            </div>
+            <div style="height: 140px"><canvas id="weekChart"></canvas></div>
+            <div
+              style="
+                font-size: 0.7rem;
+                color: var(--gray-500);
+                text-align: center;
+                margin-top: 6px;
+              "
+              id="avgMinutes"
+            >
+              TB: <strong>—</strong> phút/ngày
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="dash-side">
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -362,63 +444,6 @@
           </a>
         </div>
 
-        <!-- Tiếp tục + Biểu đồ -->
-        <div class="two-col">
-          <div class="card">
-            <div class="card-title">
-              <i class="fas fa-book-open"></i>Tiếp tục học tập
-            </div>
-            <div
-              style="
-                font-size: 0.82rem;
-                font-weight: 600;
-                color: var(--gray-700);
-                margin-bottom: 8px;
-              "
-              id="currentLesson"
-            >
-              Điểm trung bình Kiểm tra
-            </div>
-            <div class="prog-track" style="margin-bottom: 4px">
-              <div class="prog-fill" id="progFill" style="width: 0%"></div>
-            </div>
-            <div
-              style="
-                font-size: 0.7rem;
-                color: var(--gray-500);
-                text-align: right;
-                margin-bottom: 12px;
-              "
-              id="progPct"
-            >
-              0%
-            </div>
-            <button
-              class="btn btn-red btn-sm btn-full"
-              onclick="window.location = 'student/chat.html'"
-            >
-              Tiếp tục học →
-            </button>
-          </div>
-          <div class="card">
-            <div class="card-title">
-              <i class="fas fa-chart-line"></i>Học tập tuần này
-            </div>
-            <div style="height: 140px"><canvas id="weekChart"></canvas></div>
-            <div
-              style="
-                font-size: 0.7rem;
-                color: var(--gray-500);
-                text-align: center;
-                margin-top: 6px;
-              "
-              id="avgMinutes"
-            >
-              TB: <strong>—</strong> phút/ngày
-            </div>
-          </div>
-        </div>
-
         <!-- Thành tích -->
         <div class="card">
           <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
@@ -451,6 +476,8 @@
           >
             Xem tất cả thành tích →
           </button>
+        </div>
+        </div>
         </div>
       </div>
     </main>

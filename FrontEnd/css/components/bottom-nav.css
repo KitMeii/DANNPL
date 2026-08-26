@@ -46,7 +46,7 @@
   align-items: center;
   gap: 9px;
   color: rgba(255, 255, 255, 0.66);
-  font-size: 0.86rem;
+  font-size: 0.98rem;
   font-weight: 600;
   padding: 11px 18px;
   border-radius: 12px;
@@ -60,8 +60,8 @@
     transform 0.22s var(--ease-bounce);
 }
 .nav-link i {
-  font-size: 1.02rem;
-  width: 18px;
+  font-size: 1.1rem;
+  width: 20px;
   text-align: center;
   flex-shrink: 0;
   transition: transform 0.22s var(--ease-bounce);
