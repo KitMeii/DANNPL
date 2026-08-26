@@ -31,6 +31,7 @@
   background: var(--primary-dark);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   padding: 0 16px;
   height: var(--nav-row-height);
@@ -141,6 +142,7 @@
     z-index: 999;
     flex-direction: column;
     align-items: stretch;
+    justify-content: flex-start;
     height: auto;
     max-height: 0;
     overflow: hidden;
