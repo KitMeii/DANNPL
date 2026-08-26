@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="../assets/logo.png" />
     <title data-title-suffix>Quản trị hệ thống</title>
-    <link rel="stylesheet" href="../css/base/variables.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/base/reset.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/header.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/card.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/button.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/modal.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/form.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/badge.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/chat.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/components/misc.css?v=20260826n" />
-    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826n" />
+    <link rel="stylesheet" href="../css/base/variables.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/base/reset.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/header.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/card.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/button.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/modal.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/form.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/badge.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/chat.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/components/misc.css?v=20260826o" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826o" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <script src="../api-client.js?v=20260826n"></script>
+    <script src="../api-client.js?v=20260826o"></script>
     <!-- mammoth + pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -309,6 +309,18 @@
       }
       .data-table-even th {
         white-space: normal;
+      }
+
+      /* Rà soát Lần XXV (2026-08-26) — nút thao tác trong bảng (Gán Học phần/Gán Lớp/Sửa/Khóa...)
+      trước dùng nguyên .btn (bo tròn 30px, padding to) nhồi vào ô hẹp — chữ 2 dòng + bo quá tròn
+      nhìn "phồng" mất cân đối. .tbl-btn ghi đè bo góc/padding/cỡ chữ nhỏ gọn hơn hẳn, đúng tỷ lệ
+      cho nút nằm trong bảng; giữ nguyên màu/viền/hover kế thừa từ .btn-outline. */
+      .tbl-btn {
+        border-radius: 8px !important;
+        padding: 7px 10px !important;
+        font-size: 0.76rem !important;
+        white-space: nowrap;
+        gap: 5px;
       }
 
       /* Badges */
@@ -3417,18 +3429,18 @@
         </td>
         <td>
           <div style="margin-bottom: 6px; display: flex; gap: 6px;">
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openTeacherMonHocModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.monHocPhuTrachList.map((m) => m.monHocId))})'>
-              <i class="fas fa-book-open"></i> Gán Học phần
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick='openTeacherMonHocModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.monHocPhuTrachList.map((m) => m.monHocId))})'>
+              <i class="fas fa-book-open"></i> Gán HP
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openTeacherLopModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.lopPhuTrach.map((l) => l.lopId))})'>
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick='openTeacherLopModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.lopPhuTrach.map((l) => l.lopId))})'>
               <i class="fas fa-layer-group"></i> Gán Lớp
             </button>
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openTeacherEditModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.capBac || "")}, ${JSON.stringify(t.chucVuGV || "")})'>
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick='openTeacherEditModal(${JSON.stringify(t.id)}, ${JSON.stringify(t.name)}, ${JSON.stringify(t.capBac || "")}, ${JSON.stringify(t.chucVuGV || "")})'>
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; ${t.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${t.id}', ${t.isLocked ? "true" : "false"}, '${t.name.replace(/'/g, "\\'")}')">
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1; ${t.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${t.id}', ${t.isLocked ? "true" : "false"}, '${t.name.replace(/'/g, "\\'")}')">
               <i class="fas fa-${t.isLocked ? "unlock" : "lock"}"></i> ${t.isLocked ? "Mở khóa" : "Khóa"}
             </button>
           </div>
@@ -3875,10 +3887,10 @@
             </button>
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openMonHocModal(${JSON.stringify(m.id)})'>
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick='openMonHocModal(${JSON.stringify(m.id)})'>
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteMonHoc('${m.id}', '${m.ten.replace(/'/g, "\\'")}')">
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteMonHoc('${m.id}', '${m.ten.replace(/'/g, "\\'")}')">
               <i class="fas fa-trash"></i> Xóa
             </button>
           </div>
@@ -4364,10 +4376,10 @@
           s.id === me.id
             ? '<span style="font-size:0.78rem;color:var(--gray-400);">Tài khoản của bạn</span>'
             : `<div style="display: flex; gap: 6px; margin-bottom: 6px;">
-          <button class="btn btn-outline btn-sm" style="flex: 1;" onclick='openStaffNameEditModal(${JSON.stringify(s.id)}, ${JSON.stringify(s.name)})'>
+          <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick='openStaffNameEditModal(${JSON.stringify(s.id)}, ${JSON.stringify(s.name)})'>
             <i class="fas fa-pen"></i> Sửa tên
           </button>
-          <button class="btn btn-outline btn-sm" style="flex: 1; ${s.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${s.id}', ${s.isLocked ? "true" : "false"}, '${(s.name || "").replace(/'/g, "\\'")}')">
+          <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1; ${s.isLocked ? "color: #2e7d32; border-color: #2e7d32;" : "color: var(--danger); border-color: var(--danger);"}" onclick="toggleUserLocked('${s.id}', ${s.isLocked ? "true" : "false"}, '${(s.name || "").replace(/'/g, "\\'")}')">
             <i class="fas fa-${s.isLocked ? "unlock" : "lock"}"></i> ${s.isLocked ? "Mở khóa" : "Khóa"}
           </button>
         </div>
@@ -5000,10 +5012,10 @@
             </button>
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openKhoaModal('${k.id}')">
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick="openKhoaModal('${k.id}')">
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteKhoa('${k.id}')">
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteKhoa('${k.id}')">
               <i class="fas fa-trash"></i> Xóa
             </button>
           </div>
@@ -5154,10 +5166,10 @@
             </button>
           </div>
           <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="openLopModal('${r.id}')">
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1;" onclick="openLopModal('${r.id}')">
               <i class="fas fa-pen"></i> Sửa
             </button>
-            <button class="btn btn-outline btn-sm" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteLop('${r.id}')">
+            <button class="btn btn-outline btn-sm tbl-btn" style="flex: 1; color: var(--danger); border-color: var(--danger)" onclick="deleteLop('${r.id}')">
               <i class="fas fa-trash"></i> Xóa
             </button>
           </div>
