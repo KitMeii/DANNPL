@@ -101,11 +101,15 @@
   font-weight: 700;
   cursor: pointer;
   margin-top: 12px;
-  transition: all 0.2s;
+  transition: transform 0.18s var(--ease-bounce), background 0.2s ease;
   font-family: "Be Vietnam Pro", sans-serif;
   letter-spacing: 0.3px;
 }
 .btn-start:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: translateX(2px);
+  transform: translateX(3px) translateY(-1px);
+}
+.btn-start:active {
+  transform: translateX(1px) scale(0.94);
+  transition-duration: 0.08s;
 }

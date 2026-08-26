@@ -45,6 +45,9 @@
   --radius: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-  --nav-row-height: 46px;
+  --nav-row-height: 60px;
   --header-height: 70px;
+  /* Easing "nảy nhẹ" dùng cho hover/press — thay cho ease-out phẳng lì mặc định, cho cảm giác
+     bấm/chạm có phản hồi vật lý thay vì chỉ đổi màu tức thời. */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }

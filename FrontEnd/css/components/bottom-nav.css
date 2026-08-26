@@ -17,17 +17,21 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.18s var(--ease-bounce);
 }
 .hamburger:hover {
   background: rgba(255, 255, 255, 0.28);
+}
+.hamburger:active {
+  transform: scale(0.88);
+  transition-duration: 0.08s;
 }
 
 .nav-row {
   background: var(--primary-dark);
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   padding: 0 16px;
   height: var(--nav-row-height);
   overflow-x: auto;
@@ -39,33 +43,82 @@
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 20px;
+  padding: 11px 18px;
+  border-radius: 24px;
   white-space: nowrap;
   cursor: pointer;
   text-decoration: none;
   transition:
     background 0.18s ease,
-    color 0.18s ease;
+    color 0.18s ease,
+    transform 0.22s var(--ease-bounce),
+    box-shadow 0.22s ease;
 }
 .nav-link i {
-  font-size: 0.95rem;
-  width: 16px;
+  font-size: 1.05rem;
+  width: 18px;
   text-align: center;
   flex-shrink: 0;
+  transition: transform 0.22s var(--ease-bounce);
 }
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: white;
+  transform: translateY(-2px);
+}
+.nav-link:hover i {
+  transform: scale(1.18) rotate(-6deg);
+}
+.nav-link:active {
+  transform: translateY(0) scale(0.94);
+  transition-duration: 0.08s;
 }
 .nav-link.active {
   background: var(--accent);
   color: #241300;
-  box-shadow: 0 2px 8px rgba(245, 124, 0, 0.4);
+  box-shadow: 0 3px 12px rgba(245, 124, 0, 0.45);
+  animation: navActivePop 0.4s var(--ease-bounce);
+}
+.nav-link.active:hover {
+  transform: translateY(-1px);
+}
+.nav-link.active i {
+  animation: navIconWiggle 0.5s var(--ease-bounce) 0.05s;
+}
+
+@keyframes navActivePop {
+  0% {
+    transform: scale(0.82);
+  }
+  60% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes navIconWiggle {
+  0% {
+    transform: rotate(0deg) scale(0.7);
+  }
+  50% {
+    transform: rotate(-12deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link,
+  .nav-link i,
+  .nav-link.active {
+    animation: none !important;
+    transition: background 0.18s ease, color 0.18s ease !important;
+  }
 }
 
 @media (max-width: 400px) {

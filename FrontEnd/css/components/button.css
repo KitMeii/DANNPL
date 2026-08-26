@@ -11,9 +11,17 @@
   font-size: 0.82rem;
   cursor: pointer;
   border: none;
-  transition: all 0.2s;
+  transition:
+    transform 0.18s var(--ease-bounce),
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
   text-decoration: none;
   letter-spacing: 0.2px;
+}
+.btn:active {
+  transform: scale(0.94);
+  transition-duration: 0.08s;
 }
 .btn-red {
   background: var(--primary);
@@ -21,8 +29,11 @@
 }
 .btn-red:hover {
   background: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(27, 94, 32, 0.4);
+}
+.btn-red:active {
+  transform: translateY(0) scale(0.94);
 }
 .btn-outline {
   background: transparent;
@@ -31,6 +42,10 @@
 }
 .btn-outline:hover {
   background: var(--primary-bg);
+  transform: translateY(-2px);
+}
+.btn-outline:active {
+  transform: translateY(0) scale(0.94);
 }
 /* Hành động phá huỷ thật sự (xoá vĩnh viễn, không phục hồi được) — tách khỏi .btn-red vì
    .btn-red giờ là màu thương hiệu (xanh), không còn tự nhiên biểu thị "nguy hiểm" nữa. */
@@ -40,8 +55,11 @@
 }
 .btn-danger:hover {
   background: var(--danger-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(198, 40, 40, 0.4);
+}
+.btn-danger:active {
+  transform: translateY(0) scale(0.94);
 }
 .btn-full {
   width: 100%;

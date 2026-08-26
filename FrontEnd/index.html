@@ -51,10 +51,18 @@
         font-size: 0.75rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.15s;
+        transition:
+          background 0.15s ease,
+          transform 0.16s var(--ease-bounce);
       }
       .search-tag:hover {
-        background: #ffcdd2;
+        background: var(--accent-light);
+        color: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+      .search-tag:active {
+        transform: scale(0.92);
+        transition-duration: 0.08s;
       }
 
       /* Quick actions grid */
@@ -72,13 +80,23 @@
         align-items: center;
         gap: 12px;
         cursor: pointer;
-        transition: all 0.15s;
+        transition:
+          transform 0.2s var(--ease-bounce),
+          box-shadow 0.2s ease;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         text-decoration: none;
       }
       .quick-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      }
+      .quick-card:hover .quick-icon {
+        transform: scale(1.12) rotate(-6deg);
+      }
+      .quick-card:active {
+        transform: translateY(0) scale(0.97);
+        transition-duration: 0.08s;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
       }
       .quick-icon {
         width: 40px;
@@ -89,6 +107,7 @@
         justify-content: center;
         font-size: 1.1rem;
         flex-shrink: 0;
+        transition: transform 0.22s var(--ease-bounce);
       }
       .quick-title {
         font-size: 0.8rem;
@@ -194,9 +213,6 @@
         >
         <a href="student/thi-thu.html" class="nav-link"
           ><i class="fas fa-pencil-alt"></i><span>Kiểm tra</span></a
-        >
-        <a href="student/tien-do.html" class="nav-link"
-          ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
         >
         <a href="student/xep-hang.html" class="nav-link"
           ><i class="fas fa-trophy"></i><span>Bảng XH</span></a
@@ -445,8 +461,8 @@
             >
             <span
               class="search-tag"
-              onclick="window.location = 'student/tien-do.html'"
-              >Tiến độ học tập</span
+              onclick="window.location = 'student/xep-hang.html'"
+              >Bảng xếp hạng</span
             >
             <span
               class="search-tag"
