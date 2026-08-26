@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826l" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826l" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826l" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826l" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826l" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826m" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826m" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826m" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826m" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826m" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826l"></script>
+    <script src="api-client.js?v=20260826m"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -66,35 +66,19 @@
         transition-duration: 0.08s;
       }
 
-      /* Thống kê — 1 hàng ngang 4 ô trên màn đủ rộng (thay 2x2), giữ 2x2 trên mobile chật. */
-      @media (min-width: 640px) {
-        .stats-grid {
-          grid-template-columns: repeat(4, 1fr);
-        }
-      }
-
-      /* ===================== HOME SPLIT (2026-08-26) =====================
-         2 cột dưới hàng Thống kê: trái = Hero chào mừng + Tiếp tục học tập + Biểu đồ tuần, phải =
-         Truy cập nhanh + Thành tích. Grid mặc định stretch 2 cột bằng chiều cao
-         nhau (cùng 1 hàng grid); bên trong mỗi cột dùng flex column + justify-content:space-between
-         nên khoảng dư (do 1 bên nhiều/ít khối hơn) chia đều vào GIỮA các khối thay vì dồn thành 1
-         khoảng trắng chết ở cuối — nhờ vậy khối cuối cùng của 2 cột luôn kết thúc ngang nhau mà
-         không cần đo/canh thủ công. Dưới 900px gộp về 1 cột dọc (thứ tự HTML: trái rồi phải). */
-      .home-split {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
+      /* ===================== BỐ CỤC TRANG CHỦ (2026-08-26) =====================
+         2 hàng .two-col (grid mặc định stretch chiều cao theo hàng — không cần đo/canh thủ công,
+         2 ô trong CÙNG 1 hàng luôn ngang nhau):
+           Hàng 1: Hero chào mừng | Thống kê 4 ô (2x2, vừa khít nửa trang).
+           Hàng 2: [Tiếp tục học tập + Biểu đồ tuần] | [Truy cập nhanh + Thành tích] — mỗi bên là
+           1 .home-col (flex column), justify-content:space-between chia đều khoảng dư (nếu 2 bên
+           không cùng chiều cao tự nhiên) vào GIỮA các khối thay vì dồn thành khoảng trắng cuối. */
       .home-col {
         display: flex;
         flex-direction: column;
         gap: 16px;
       }
       @media (min-width: 900px) {
-        .home-split {
-          grid-template-columns: 1fr 1fr;
-          align-items: stretch;
-        }
         .home-col {
           justify-content: space-between;
         }
@@ -281,73 +265,74 @@
 
     <main class="main-content">
       <div class="container">
-        <!-- Stats -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-card-head">
-              <div class="stat-icon" style="background: var(--primary-bg); color: var(--primary)">
-                <i class="fas fa-clipboard-check"></i>
-              </div>
-              <div class="stat-label">Lượt Kiểm tra</div>
+        <!-- Hàng 1: Hero chào mừng | Thống kê 4 ô — ghép cặp cùng hàng nên luôn ngang nhau -->
+        <div class="two-col">
+          <div class="welcome-card fade-in">
+            <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
+            <div class="welcome-name" id="welcomeName">—</div>
+            <div class="welcome-sub">
+              Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
             </div>
-            <div class="stat-value" id="statLearned">—</div>
-            <div class="stat-unit">lượt</div>
+            <div class="welcome-meta" id="welcomeSub">—</div>
+            <div class="welcome-streak">
+              <i class="fas fa-fire" style="color: var(--accent-light)"></i>
+              Chuỗi học tập <span id="streakNum">0</span> ngày
+            </div>
+            <button
+              class="btn-start"
+              onclick="window.location = 'student/chat.html'"
+            >
+              <i class="fas fa-play"></i> Bắt đầu học ngay →
+            </button>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-head">
-              <div class="stat-icon" style="background: #fef3e0; color: var(--accent-dark)">
-                <i class="fas fa-fire"></i>
+
+          <div class="stats-grid" style="margin-bottom: 0">
+            <div class="stat-card">
+              <div class="stat-card-head">
+                <div class="stat-icon" style="background: var(--primary-bg); color: var(--primary)">
+                  <i class="fas fa-clipboard-check"></i>
+                </div>
+                <div class="stat-label">Lượt Kiểm tra</div>
               </div>
-              <div class="stat-label">Streak</div>
+              <div class="stat-value" id="statLearned">—</div>
+              <div class="stat-unit">lượt</div>
             </div>
-            <div class="stat-value" id="statStreak">—</div>
-            <div class="stat-unit">ngày liên tiếp</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-head">
-              <div class="stat-icon" style="background: #e3f2fd; color: #1565c0">
-                <i class="fas fa-star"></i>
+            <div class="stat-card">
+              <div class="stat-card-head">
+                <div class="stat-icon" style="background: #fef3e0; color: var(--accent-dark)">
+                  <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-label">Streak</div>
               </div>
-              <div class="stat-label">Điểm TB</div>
+              <div class="stat-value" id="statStreak">—</div>
+              <div class="stat-unit">ngày liên tiếp</div>
             </div>
-            <div class="stat-value" id="statAvg">—</div>
-            <div class="stat-unit">Kiểm tra</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-head">
-              <div class="stat-icon" style="background: var(--surface-2); color: var(--text-secondary)">
-                <i class="fas fa-clock"></i>
+            <div class="stat-card">
+              <div class="stat-card-head">
+                <div class="stat-icon" style="background: #e3f2fd; color: #1565c0">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-label">Điểm TB</div>
               </div>
-              <div class="stat-label">Thời gian học</div>
+              <div class="stat-value" id="statAvg">—</div>
+              <div class="stat-unit">Kiểm tra</div>
             </div>
-            <div class="stat-value" id="statProgress">—</div>
-            <div class="stat-unit">phút</div>
+            <div class="stat-card">
+              <div class="stat-card-head">
+                <div class="stat-icon" style="background: var(--surface-2); color: var(--text-secondary)">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-label">Thời gian học</div>
+              </div>
+              <div class="stat-value" id="statProgress">—</div>
+              <div class="stat-unit">phút</div>
+            </div>
           </div>
         </div>
 
-        <div class="home-split">
-          <!-- Cột trái: Hero chào mừng + Tiếp tục học tập + Biểu đồ tuần -->
+        <!-- Hàng 2: [Tiếp tục học tập + Biểu đồ tuần] | [Truy cập nhanh + Thành tích] -->
+        <div class="two-col">
           <div class="home-col">
-            <!-- Welcome Card -->
-            <div class="welcome-card fade-in">
-              <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
-              <div class="welcome-name" id="welcomeName">—</div>
-              <div class="welcome-sub">
-                Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
-              </div>
-              <div class="welcome-meta" id="welcomeSub">—</div>
-              <div class="welcome-streak">
-                <i class="fas fa-fire" style="color: var(--accent-light)"></i>
-                Chuỗi học tập <span id="streakNum">0</span> ngày
-              </div>
-              <button
-                class="btn-start"
-                onclick="window.location = 'student/chat.html'"
-              >
-                <i class="fas fa-play"></i> Bắt đầu học ngay →
-              </button>
-            </div>
-
             <div class="card">
               <div class="card-title">
                 <i class="fas fa-book-open"></i>Tiếp tục học tập
