@@ -5,43 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="../assets/logo.png" />
     <title data-title-suffix>Kiểm tra</title>
-    <link rel="stylesheet" href="../css/base/variables.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/base/reset.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/header.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/bottom-nav.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/card.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/button.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/modal.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/form.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/badge.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/chat.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/misc.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/base/variables.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/base/reset.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/header.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/card.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/button.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/modal.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/form.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/badge.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/chat.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/misc.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826f" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <script src="../api-client.js?v=20260826e"></script>
+    <script src="../api-client.js?v=20260826f"></script>
     <style>
+      .exam-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 5px;
+        background: var(--surface-2);
+      }
       .exam-tab {
         flex: 1;
-        padding: 12px;
+        padding: 10px;
         text-align: center;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         cursor: pointer;
-        border-bottom: 3px solid transparent;
-        color: var(--gray-400);
-        transition: all 0.2s;
+        border-radius: 10px;
+        color: var(--text-secondary);
+        transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+      }
+      .exam-tab:hover {
+        color: var(--text-primary);
       }
       .exam-tab.active {
         color: var(--primary);
-        border-bottom-color: var(--primary);
+        background: var(--surface);
+        box-shadow: var(--shadow-sm);
+      }
+      .tn-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 16px;
+        text-align: left;
+      }
+      .tn-info-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface-2);
+        padding: 12px;
+        border-radius: var(--radius);
+      }
+      .tn-info-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--primary-bg);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .tn-info-label {
+        font-size: 0.66rem;
+        color: var(--text-secondary);
+        margin-bottom: 2px;
+      }
+      .tn-info-value {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        line-height: 1.1;
       }
       .q-nav-dot {
         width: 26px;
@@ -106,14 +155,15 @@
 
       /* Oral exam */
       .oral-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-sm);
         overflow: hidden;
         margin-bottom: 14px;
       }
       .oral-header {
-        background: linear-gradient(135deg, #0d47a1, #1565c0);
+        background: linear-gradient(135deg, #0b3d2e, #145a3a);
         padding: 16px 20px;
         color: white;
         display: flex;
@@ -156,7 +206,7 @@
         transition: border 0.2s;
       }
       .oral-textarea:focus {
-        border-color: #1565c0;
+        border-color: #145a3a;
       }
       .oral-timer {
         font-family: "Oswald", sans-serif;
@@ -169,8 +219,8 @@
 
       /* Follow-up questions */
       .followup-panel {
-        background: #f3f8ff;
-        border: 1.5px solid #90caf9;
+        background: #f2f8f4;
+        border: 1.5px solid #a8d5bb;
         border-radius: 12px;
         padding: 14px;
         margin-top: 12px;
@@ -183,12 +233,12 @@
       .followup-q {
         font-size: 0.85rem;
         font-weight: 700;
-        color: #0d47a1;
+        color: #0b3d2e;
         margin-bottom: 8px;
       }
       .followup-input {
         width: 100%;
-        border: 1.5px solid #90caf9;
+        border: 1.5px solid #a8d5bb;
         border-radius: 8px;
         padding: 9px 12px;
         font-size: 0.82rem;
@@ -197,7 +247,7 @@
         box-sizing: border-box;
       }
       .followup-input:focus {
-        border-color: #1565c0;
+        border-color: #145a3a;
       }
 
       /* ── ANSWER INPUT ── */
@@ -384,9 +434,7 @@
             class="card"
             style="padding: 0; overflow: hidden; margin-bottom: 14px"
           >
-            <div
-              style="display: flex; border-bottom: 1px solid var(--gray-100)"
-            >
+            <div class="exam-tabs">
               <div
                 class="exam-tab active"
                 id="tabTN"
@@ -401,121 +449,33 @@
 
             <!-- TN info -->
             <div id="infoTN" style="padding: 20px; text-align: center">
-              <div
-                style="
-                  display: grid;
-                  grid-template-columns: 1fr 1fr;
-                  gap: 10px;
-                  margin-bottom: 16px;
-                  text-align: left;
-                "
-              >
-                <div
-                  style="
-                    background: var(--gray-50);
-                    padding: 12px;
-                    border-radius: var(--radius);
-                  "
-                >
-                  <div
-                    style="
-                      font-size: 0.7rem;
-                      color: var(--gray-500);
-                      margin-bottom: 3px;
-                    "
-                  >
-                    Số câu hỏi
-                  </div>
-                  <div
-                    style="
-                      font-family: &quot;Oswald&quot;, sans-serif;
-                      font-size: 1.5rem;
-                      font-weight: 700;
-                      color: var(--primary);
-                    "
-                  >
-                    40 câu
+              <div class="tn-info-grid">
+                <div class="tn-info-cell">
+                  <div class="tn-info-icon"><i class="fas fa-list-ol"></i></div>
+                  <div>
+                    <div class="tn-info-label">Số câu hỏi</div>
+                    <div class="tn-info-value">40 câu</div>
                   </div>
                 </div>
-                <div
-                  style="
-                    background: var(--gray-50);
-                    padding: 12px;
-                    border-radius: var(--radius);
-                  "
-                >
-                  <div
-                    style="
-                      font-size: 0.7rem;
-                      color: var(--gray-500);
-                      margin-bottom: 3px;
-                    "
-                  >
-                    Thời gian
-                  </div>
-                  <div
-                    style="
-                      font-family: &quot;Oswald&quot;, sans-serif;
-                      font-size: 1.5rem;
-                      font-weight: 700;
-                      color: var(--primary);
-                    "
-                  >
-                    45 phút
+                <div class="tn-info-cell">
+                  <div class="tn-info-icon"><i class="fas fa-hourglass-half"></i></div>
+                  <div>
+                    <div class="tn-info-label">Thời gian</div>
+                    <div class="tn-info-value">45 phút</div>
                   </div>
                 </div>
-                <div
-                  style="
-                    background: var(--gray-50);
-                    padding: 12px;
-                    border-radius: var(--radius);
-                  "
-                >
-                  <div
-                    style="
-                      font-size: 0.7rem;
-                      color: var(--gray-500);
-                      margin-bottom: 3px;
-                    "
-                  >
-                    Điểm đạt
-                  </div>
-                  <div
-                    style="
-                      font-family: &quot;Oswald&quot;, sans-serif;
-                      font-size: 1.5rem;
-                      font-weight: 700;
-                      color: #2e7d32;
-                    "
-                  >
-                    5.0/10
+                <div class="tn-info-cell">
+                  <div class="tn-info-icon" style="background: #fef3e0; color: var(--accent-dark)"><i class="fas fa-bullseye"></i></div>
+                  <div>
+                    <div class="tn-info-label">Điểm đạt</div>
+                    <div class="tn-info-value" style="color: var(--accent-dark)">5.0/10</div>
                   </div>
                 </div>
-                <div
-                  style="
-                    background: var(--gray-50);
-                    padding: 12px;
-                    border-radius: var(--radius);
-                  "
-                >
-                  <div
-                    style="
-                      font-size: 0.7rem;
-                      color: var(--gray-500);
-                      margin-bottom: 3px;
-                    "
-                  >
-                    Nguồn câu hỏi
-                  </div>
-                  <div
-                    style="
-                      font-family: &quot;Oswald&quot;, sans-serif;
-                      font-size: 1rem;
-                      font-weight: 700;
-                      color: var(--gray-700);
-                    "
-                  >
-                    DB + mặc định
+                <div class="tn-info-cell">
+                  <div class="tn-info-icon" style="background: var(--surface-2); color: var(--text-secondary)"><i class="fas fa-database"></i></div>
+                  <div>
+                    <div class="tn-info-label">Nguồn câu hỏi</div>
+                    <div class="tn-info-value" style="font-size: 0.88rem; color: var(--text-primary)">DB + mặc định</div>
                   </div>
                 </div>
               </div>
@@ -535,7 +495,7 @@
             >
               <div
                 style="
-                  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                  background: linear-gradient(135deg, #eaf3ee, #cfe8da);
                   border-radius: 12px;
                   padding: 16px;
                   margin-bottom: 14px;
@@ -543,12 +503,12 @@
                 "
               >
                 <div
-                  style="font-weight: 700; color: #0d47a1; margin-bottom: 8px"
+                  style="font-weight: 700; color: #0b3d2e; margin-bottom: 8px"
                 >
                   <i class="fas fa-robot"></i> Cách thức thi tự luận AI
                 </div>
                 <div
-                  style="font-size: 0.82rem; color: #1565c0; line-height: 1.7"
+                  style="font-size: 0.82rem; color: #145a3a; line-height: 1.7"
                 >
                   1️⃣ Nhận <strong>2 câu hỏi chính</strong> (tự luận)<br />
                   2️⃣ Gõ câu trả lời trong <strong>3 phút/câu</strong><br />
@@ -562,7 +522,7 @@
                 style="
                   padding: 14px;
                   font-size: 1rem;
-                  background: linear-gradient(135deg, #0d47a1, #1565c0);
+                  background: linear-gradient(135deg, #0b3d2e, #145a3a);
                   color: white;
                   border: none;
                   border-radius: 10px;
@@ -677,8 +637,8 @@
             <button
               class="btn"
               style="
-                background: #ffebee;
-                color: var(--primary);
+                background: var(--danger-bg);
+                color: var(--danger);
                 border: 1px solid #ffcdd2;
                 border-radius: 10px;
                 padding: 10px 14px;
@@ -1181,18 +1141,18 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
         area.innerHTML = `
     <div class="followup-panel show">
       <div class="followup-q">
-        <i class="fas fa-robot" style="color:#1565c0;margin-right:5px;"></i>
+        <i class="fas fa-robot" style="color:#145a3a;margin-right:5px;"></i>
         Câu hỏi phụ ${fIdx + 1}/${vdFollowups.length}: ${fq.q}
         <button onclick="speakText('${fq.q.replace(/'/g, "\'")}')"
-          style="margin-left:8px;background:#e3f2fd;border:none;border-radius:6px;
-                 padding:3px 8px;cursor:pointer;color:#1565c0;font-size:0.72rem;vertical-align:middle;">
+          style="margin-left:8px;background:#eaf3ee;border:none;border-radius:6px;
+                 padding:3px 8px;cursor:pointer;color:#145a3a;font-size:0.72rem;vertical-align:middle;">
           <i class="fas fa-volume-up"></i> Nghe lại
         </button>
       </div>
       <div class="followup-result-area">
         <textarea class="followup-input" id="fuAns${qIdx}_${fIdx}" rows="2" placeholder="Nhập câu trả lời..."></textarea>
       </div>
-      <button class="btn btn-sm" style="margin-top:4px;background:#1565c0;color:white;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;" onclick="submitFollowup(${qIdx},${fIdx})">
+      <button class="btn btn-sm" style="margin-top:4px;background:#145a3a;color:white;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;" onclick="submitFollowup(${qIdx},${fIdx})">
         Trả lời <i class="fas fa-arrow-right"></i>
       </button>
     </div>`;

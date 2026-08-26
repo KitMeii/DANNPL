@@ -5,28 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="../assets/logo.png" />
     <title data-title-suffix>AI Giảng bài</title>
-    <link rel="stylesheet" href="../css/base/variables.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/base/reset.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/header.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/bottom-nav.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/card.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/button.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/modal.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/form.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/badge.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/chat.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/components/misc.css?v=20260826e" />
-    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826e" />
+    <link rel="stylesheet" href="../css/base/variables.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/base/reset.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/layout/layout.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/header.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/bottom-nav.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/card.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/button.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/modal.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/form.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/table-grid.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/badge.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/chat.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/quiz.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/progress-list.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/settings-row.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/components/misc.css?v=20260826f" />
+    <link rel="stylesheet" href="../css/base/dark-mode.css?v=20260826f" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <script src="../api-client.js?v=20260826e"></script>
+    <script src="../api-client.js?v=20260826f"></script>
     <!-- PDF.js (đọc text từ PDF ở client trước khi gửi cho ai-service tạo bài giảng) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
@@ -474,7 +474,7 @@
       .mat-card-icon {
         width: 48px;
         height: 48px;
-        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        background: linear-gradient(135deg, var(--primary-bg), #dcefe3);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -537,13 +537,13 @@
 
       /* ===================== Q&A OVERLAY ===================== */
       .qa-panel {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
         overflow: hidden;
         display: none;
         margin-bottom: 14px;
-        border: 2px solid #1565c0;
+        border: 1px solid var(--primary);
       }
       .qa-panel.show {
         display: block;
@@ -561,7 +561,7 @@
       }
 
       .qa-header {
-        background: linear-gradient(135deg, #0d47a1, #1565c0);
+        background: linear-gradient(135deg, #0b3d2e, #145a3a);
         padding: 14px 18px;
         color: white;
         display: flex;
@@ -608,7 +608,7 @@
         box-sizing: border-box;
       }
       .qa-textarea:focus {
-        border-color: #1565c0;
+        border-color: #145a3a;
       }
       .qa-actions {
         display: flex;
@@ -647,13 +647,13 @@
       Panel riêng, KHÔNG dùng chung state với .qa-panel (Q&A tự động chèn giữa lúc phát bài giảng)
       — 2 tính năng khác hẳn nhau, cùng tồn tại độc lập. */
       .quick-check-panel {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
         overflow: hidden;
         display: none;
         margin-bottom: 14px;
-        border: 2px solid #5e35b1;
+        border: 1px solid #5e35b1;
       }
       .quick-check-panel.show {
         display: block;
@@ -755,8 +755,8 @@
         font-weight: 700;
       }
       .status-badge.reading {
-        background: #e3f2fd;
-        color: #1565c0;
+        background: #fef3e0;
+        color: #b45309;
       }
       .status-badge.speaking {
         background: #e8f5e9;
