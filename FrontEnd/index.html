@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="assets/logo.png" />
     <title data-title-suffix>Trang chủ</title>
-    <link rel="stylesheet" href="css/base/variables.css?v=20260826j" />
-    <link rel="stylesheet" href="css/base/reset.css?v=20260826j" />
-    <link rel="stylesheet" href="css/layout/layout.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/header.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/card.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/button.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/modal.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/form.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/badge.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/chat.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/quiz.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826j" />
-    <link rel="stylesheet" href="css/components/misc.css?v=20260826j" />
-    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826j" />
+    <link rel="stylesheet" href="css/base/variables.css?v=20260826k" />
+    <link rel="stylesheet" href="css/base/reset.css?v=20260826k" />
+    <link rel="stylesheet" href="css/layout/layout.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/header.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/bottom-nav.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/card.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/button.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/modal.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/form.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/table-grid.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/badge.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/chat.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/quiz.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/progress-list.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/settings-row.css?v=20260826k" />
+    <link rel="stylesheet" href="css/components/misc.css?v=20260826k" />
+    <link rel="stylesheet" href="css/base/dark-mode.css?v=20260826k" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="api-client.js?v=20260826j"></script>
+    <script src="api-client.js?v=20260826k"></script>
     <style>
       @keyframes loadbar {
         0% {
@@ -70,6 +70,33 @@
       @media (min-width: 640px) {
         .stats-grid {
           grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      /* ===================== HOME SPLIT (2026-08-26) =====================
+         2 cột dưới hàng Thống kê: trái = Tiếp tục học tập + Biểu đồ tuần, phải = phần còn lại
+         (Hero chào mừng + Truy cập nhanh + Thành tích). Grid mặc định stretch 2 cột bằng chiều cao
+         nhau (cùng 1 hàng grid); bên trong mỗi cột dùng flex column + justify-content:space-between
+         nên khoảng dư (do 1 bên nhiều/ít khối hơn) chia đều vào GIỮA các khối thay vì dồn thành 1
+         khoảng trắng chết ở cuối — nhờ vậy khối cuối cùng của 2 cột luôn kết thúc ngang nhau mà
+         không cần đo/canh thủ công. Dưới 900px gộp về 1 cột dọc (thứ tự HTML: trái rồi phải). */
+      .home-split {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .home-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      @media (min-width: 900px) {
+        .home-split {
+          grid-template-columns: 1fr 1fr;
+          align-items: stretch;
+        }
+        .home-col {
+          justify-content: space-between;
         }
       }
 
@@ -254,83 +281,6 @@
 
     <main class="main-content">
       <div class="container">
-        <!-- Welcome Card -->
-        <div class="welcome-card fade-in">
-          <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
-          <div class="welcome-name" id="welcomeName">—</div>
-          <div class="welcome-sub">
-            Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
-          </div>
-          <div class="welcome-meta" id="welcomeSub">—</div>
-          <div class="welcome-streak">
-            <i class="fas fa-fire" style="color: var(--accent-light)"></i>
-            Chuỗi học tập <span id="streakNum">0</span> ngày
-          </div>
-          <button
-            class="btn-start"
-            onclick="window.location = 'student/chat.html'"
-          >
-            <i class="fas fa-play"></i> Bắt đầu học ngay →
-          </button>
-        </div>
-
-        <!-- Tiếp tục + Biểu đồ -->
-        <div class="two-col">
-          <div class="card">
-            <div class="card-title">
-              <i class="fas fa-book-open"></i>Tiếp tục học tập
-            </div>
-            <div
-              style="
-                font-size: 0.82rem;
-                font-weight: 600;
-                color: var(--gray-700);
-                margin-bottom: 8px;
-              "
-              id="currentLesson"
-            >
-              Điểm trung bình Kiểm tra
-            </div>
-            <div class="prog-track" style="margin-bottom: 4px">
-              <div class="prog-fill" id="progFill" style="width: 0%"></div>
-            </div>
-            <div
-              style="
-                font-size: 0.7rem;
-                color: var(--gray-500);
-                text-align: right;
-                margin-bottom: 12px;
-              "
-              id="progPct"
-            >
-              0%
-            </div>
-            <button
-              class="btn btn-red btn-sm btn-full"
-              onclick="window.location = 'student/chat.html'"
-            >
-              Tiếp tục học →
-            </button>
-          </div>
-          <div class="card">
-            <div class="card-title">
-              <i class="fas fa-chart-line"></i>Học tập tuần này
-            </div>
-            <div style="height: 140px"><canvas id="weekChart"></canvas></div>
-            <div
-              style="
-                font-size: 0.7rem;
-                color: var(--gray-500);
-                text-align: center;
-                margin-top: 6px;
-              "
-              id="avgMinutes"
-            >
-              TB: <strong>—</strong> phút/ngày
-            </div>
-          </div>
-        </div>
-
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -375,88 +325,166 @@
           </div>
         </div>
 
-        <!-- Truy cập nhanh + Thành tích — ghép cặp cùng hàng, chiều cao tự bằng nhau (grid mặc
-             định stretch theo hàng) nên 2 khối luôn kết thúc ngang nhau ở cuối trang. -->
-        <div class="two-col">
-          <div class="card">
-            <div class="card-title">
-              <i class="fas fa-th-large"></i>Truy cập nhanh
+        <div class="home-split">
+          <!-- Cột trái: Tiếp tục học tập + Biểu đồ tuần -->
+          <div class="home-col">
+            <div class="card">
+              <div class="card-title">
+                <i class="fas fa-book-open"></i>Tiếp tục học tập
+              </div>
+              <div
+                style="
+                  font-size: 0.82rem;
+                  font-weight: 600;
+                  color: var(--gray-700);
+                  margin-bottom: 8px;
+                "
+                id="currentLesson"
+              >
+                Điểm trung bình Kiểm tra
+              </div>
+              <div class="prog-track" style="margin-bottom: 4px">
+                <div class="prog-fill" id="progFill" style="width: 0%"></div>
+              </div>
+              <div
+                style="
+                  font-size: 0.7rem;
+                  color: var(--gray-500);
+                  text-align: right;
+                  margin-bottom: 12px;
+                "
+                id="progPct"
+              >
+                0%
+              </div>
+              <button
+                class="btn btn-red btn-sm btn-full"
+                onclick="window.location = 'student/chat.html'"
+              >
+                Tiếp tục học →
+              </button>
             </div>
-            <div class="quick-grid">
-              <a href="student/chat.html" class="quick-card">
-                <div class="quick-icon" style="background: var(--surface-2); color: var(--accent-dark)">
-                  <i class="fas fa-robot"></i>
-                </div>
-                <div>
-                  <div class="quick-title">Chat AI</div>
-                  <div class="quick-sub">Hỏi đáp <span data-subject-name>Môn học</span></div>
-                </div>
-                <i class="fas fa-arrow-right quick-arrow"></i>
-              </a>
-              <a href="student/thi-thu.html" class="quick-card">
-                <div class="quick-icon" style="background: var(--surface-2); color: #1565c0">
-                  <i class="fas fa-pencil-alt"></i>
-                </div>
-                <div>
-                  <div class="quick-title">Kiểm tra</div>
-                  <div class="quick-sub">TN + Tự luận AI</div>
-                </div>
-                <i class="fas fa-arrow-right quick-arrow"></i>
-              </a>
-              <a href="student/giang-bai.html" class="quick-card">
-                <div class="quick-icon" style="background: var(--primary-bg); color: var(--primary)">
-                  <i class="fas fa-chalkboard-teacher"></i>
-                </div>
-                <div>
-                  <div class="quick-title">AI Giảng bài</div>
-                  <div class="quick-sub">Upload PDF + TTS</div>
-                </div>
-                <i class="fas fa-arrow-right quick-arrow"></i>
-              </a>
-              <a href="student/xep-hang.html" class="quick-card">
-                <div class="quick-icon" style="background: #fef3e0; color: var(--accent-dark)">
-                  <i class="fas fa-trophy"></i>
-                </div>
-                <div>
-                  <div class="quick-title">Bảng XH</div>
-                  <div class="quick-sub">Top học viên lớp</div>
-                </div>
-                <i class="fas fa-arrow-right quick-arrow"></i>
-              </a>
+            <div class="card">
+              <div class="card-title">
+                <i class="fas fa-chart-line"></i>Học tập tuần này
+              </div>
+              <div style="height: 140px"><canvas id="weekChart"></canvas></div>
+              <div
+                style="
+                  font-size: 0.7rem;
+                  color: var(--gray-500);
+                  text-align: center;
+                  margin-top: 6px;
+                "
+                id="avgMinutes"
+              >
+                TB: <strong>—</strong> phút/ngày
+              </div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
-            <div class="badge-row">
-              <div class="badge">
-                <div class="badge-icon gold"><i class="fas fa-fire"></i></div>
-                <div class="badge-label" id="badgeStreak">—</div>
+          <!-- Cột phải: Hero chào mừng + Truy cập nhanh + Thành tích -->
+          <div class="home-col">
+            <!-- Welcome Card -->
+            <div class="welcome-card fade-in">
+              <div class="welcome-label" id="welcomeGreeting">Chào mừng học viên</div>
+              <div class="welcome-name" id="welcomeName">—</div>
+              <div class="welcome-sub">
+                Hôm nay là một ngày tuyệt vời để tiếp tục hành trình học tập.
               </div>
-              <div class="badge">
-                <div class="badge-icon"><i class="fas fa-bullseye"></i></div>
-                <div class="badge-label" id="badgeBest">—</div>
+              <div class="welcome-meta" id="welcomeSub">—</div>
+              <div class="welcome-streak">
+                <i class="fas fa-fire" style="color: var(--accent-light)"></i>
+                Chuỗi học tập <span id="streakNum">0</span> ngày
               </div>
-              <div class="badge">
-                <div class="badge-icon silver">
-                  <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="badge-label" id="badgeProgress">—</div>
+              <button
+                class="btn-start"
+                onclick="window.location = 'student/chat.html'"
+              >
+                <i class="fas fa-play"></i> Bắt đầu học ngay →
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <i class="fas fa-th-large"></i>Truy cập nhanh
               </div>
-              <div class="badge">
-                <div class="badge-icon" style="background: #e8f5e9">
-                  <i class="fas fa-book" style="color: #2e7d32"></i>
-                </div>
-                <div class="badge-label" id="badgeLearned">—</div>
+              <div class="quick-grid">
+                <a href="student/chat.html" class="quick-card">
+                  <div class="quick-icon" style="background: var(--surface-2); color: var(--accent-dark)">
+                    <i class="fas fa-robot"></i>
+                  </div>
+                  <div>
+                    <div class="quick-title">Chat AI</div>
+                    <div class="quick-sub">Hỏi đáp <span data-subject-name>Môn học</span></div>
+                  </div>
+                  <i class="fas fa-arrow-right quick-arrow"></i>
+                </a>
+                <a href="student/thi-thu.html" class="quick-card">
+                  <div class="quick-icon" style="background: var(--surface-2); color: #1565c0">
+                    <i class="fas fa-pencil-alt"></i>
+                  </div>
+                  <div>
+                    <div class="quick-title">Kiểm tra</div>
+                    <div class="quick-sub">TN + Tự luận AI</div>
+                  </div>
+                  <i class="fas fa-arrow-right quick-arrow"></i>
+                </a>
+                <a href="student/giang-bai.html" class="quick-card">
+                  <div class="quick-icon" style="background: var(--primary-bg); color: var(--primary)">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                  </div>
+                  <div>
+                    <div class="quick-title">AI Giảng bài</div>
+                    <div class="quick-sub">Upload PDF + TTS</div>
+                  </div>
+                  <i class="fas fa-arrow-right quick-arrow"></i>
+                </a>
+                <a href="student/xep-hang.html" class="quick-card">
+                  <div class="quick-icon" style="background: #fef3e0; color: var(--accent-dark)">
+                    <i class="fas fa-trophy"></i>
+                  </div>
+                  <div>
+                    <div class="quick-title">Bảng XH</div>
+                    <div class="quick-sub">Top học viên lớp</div>
+                  </div>
+                  <i class="fas fa-arrow-right quick-arrow"></i>
+                </a>
               </div>
             </div>
-            <button
-              class="btn btn-outline btn-sm btn-full"
-              style="margin-top: 14px"
-              onclick="window.location = 'student/xep-hang.html'"
-            >
-              Xem tất cả thành tích →
-            </button>
+
+            <div class="card">
+              <div class="card-title"><i class="fas fa-trophy"></i>Thành tích</div>
+              <div class="badge-row">
+                <div class="badge">
+                  <div class="badge-icon gold"><i class="fas fa-fire"></i></div>
+                  <div class="badge-label" id="badgeStreak">—</div>
+                </div>
+                <div class="badge">
+                  <div class="badge-icon"><i class="fas fa-bullseye"></i></div>
+                  <div class="badge-label" id="badgeBest">—</div>
+                </div>
+                <div class="badge">
+                  <div class="badge-icon silver">
+                    <i class="fas fa-graduation-cap"></i>
+                  </div>
+                  <div class="badge-label" id="badgeProgress">—</div>
+                </div>
+                <div class="badge">
+                  <div class="badge-icon" style="background: #e8f5e9">
+                    <i class="fas fa-book" style="color: #2e7d32"></i>
+                  </div>
+                  <div class="badge-label" id="badgeLearned">—</div>
+                </div>
+              </div>
+              <button
+                class="btn btn-outline btn-sm btn-full"
+                style="margin-top: 14px"
+                onclick="window.location = 'student/xep-hang.html'"
+              >
+                Xem tất cả thành tích →
+              </button>
+            </div>
           </div>
         </div>
       </div>
