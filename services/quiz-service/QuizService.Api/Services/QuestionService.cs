@@ -28,7 +28,7 @@ public sealed class QuestionService(QuizDbContext db, ILopScopeGuard lopScopeGua
         return questions.Select(q => ToResponse(q, lopIdsByQuestion)).ToList();
     }
 
-    public async Task<IReadOnlyList<QuizQuestionResponse>> ListForPracticeAsync(string? chapter, Guid? callerLopId, CancellationToken ct)
+    public async Task<IReadOnlyList<QuizQuestionResponse>> ListPublishedAsync(string? chapter, Guid? callerLopId, CancellationToken ct)
     {
         var query = db.Questions.AsQueryable();
         if (!string.IsNullOrWhiteSpace(chapter))
@@ -40,7 +40,7 @@ public sealed class QuestionService(QuizDbContext db, ILopScopeGuard lopScopeGua
         // Có dòng = chỉ hiện nếu 1 trong số đó khớp đúng Lớp của người gọi; học viên chưa gán Lớp
         // (callerLopId null) không khớp được bất kỳ giới hạn nào nên chỉ thấy câu toàn hệ thống.
         return await query
-            .Where(q => q.IsPublishedForPractice)
+            .Where(q => q.IsPublished)
             .Where(q => !db.QuestionLopVisibilities.Any(v => v.QuestionId == q.Id) ||
                         (callerLopId != null && db.QuestionLopVisibilities.Any(v => v.QuestionId == q.Id && v.LopId == callerLopId)))
             .OrderBy(q => q.CreatedAtUtc)
@@ -70,7 +70,7 @@ public sealed class QuestionService(QuizDbContext db, ILopScopeGuard lopScopeGua
             Topic = request.Topic?.Trim(),
             // Manual (giáo viên tự soạn) coi như đã xuất bản — giữ nguyên trải nghiệm cũ.
             // AiGenerated/Imported cần giáo viên chủ động xuất bản sau khi kiểm duyệt (C3).
-            IsPublishedForPractice = request.SourceType == "Manual",
+            IsPublished = request.SourceType == "Manual",
         };
 
         db.Questions.Add(question);
@@ -134,7 +134,7 @@ public sealed class QuestionService(QuizDbContext db, ILopScopeGuard lopScopeGua
             ?? throw new NotFoundException("Không tìm thấy câu hỏi.");
         EnsureOwnerOrAdmin(question, callerUserId, callerRole);
 
-        question.IsPublishedForPractice = !question.IsPublishedForPractice;
+        question.IsPublished = !question.IsPublished;
         await db.SaveChangesAsync(ct);
         var lopIds = await db.QuestionLopVisibilities.Where(v => v.QuestionId == id).Select(v => v.LopId).ToListAsync(ct);
         return ToResponse(question, lopIds);
@@ -176,7 +176,7 @@ public sealed class QuestionService(QuizDbContext db, ILopScopeGuard lopScopeGua
     private static QuestionResponse ToResponse(Question q, List<Guid> lopIds) => new(
         q.Id, q.Chapter, q.QuestionText, q.OptionA, q.OptionB, q.OptionC, q.OptionD,
         q.CorrectAnswer, q.Explanation, q.CreatedBy, q.CreatedAtUtc, q.SourceType, q.SourceMaterialId,
-        q.Difficulty, q.Topic, q.IsPublishedForPractice, lopIds);
+        q.Difficulty, q.Topic, q.IsPublished, lopIds);
 
     /// <summary>Rà soát Lần VIII (2026-08-21) — chỉ người tạo (CreatedBy) hoặc Admin được sửa/xóa/
     /// xuất bản/đổi phạm vi Lớp của 1 câu hỏi. CreatedBy null (câu tạo trước khi field này tồn tại,

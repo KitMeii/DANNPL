@@ -44,7 +44,7 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
     }
 
     [Fact]
-    public async Task Lop_stats_aggregates_exam_and_practice_separately_across_students()
+    public async Task Lop_stats_aggregates_exam_scores_across_students()
     {
         var (_, lopId) = SeedKhoaAndLop("K-Test1", "Lop-Test1");
         var s1 = SeedStudentInLop(lopId, "SV1");
@@ -53,8 +53,8 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
         // không kéo trung bình về 0.
         var s3 = SeedStudentInLop(lopId, "SV3");
 
-        _factory.QuizStatsClient.Scores[s1] = new RemoteUserScore(s1, AvgExamScore: 8m, ExamAttempts: 2, AvgPracticeScore: 7m, PracticeAttempts: 5);
-        _factory.QuizStatsClient.Scores[s2] = new RemoteUserScore(s2, AvgExamScore: 6m, ExamAttempts: 1, AvgPracticeScore: null, PracticeAttempts: 0);
+        _factory.QuizStatsClient.Scores[s1] = new RemoteUserScore(s1, AvgExamScore: 8m, ExamAttempts: 2);
+        _factory.QuizStatsClient.Scores[s2] = new RemoteUserScore(s2, AvgExamScore: 6m, ExamAttempts: 1);
         _ = s3;
 
         var response = await _client.SendAsync(WithAuth(HttpMethod.Get, $"/api/v1/admin/stats/lop/{lopId}", TestTokens.Admin()));
@@ -68,9 +68,6 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
         // (8 + 6) / 2 = 7 — chỉ SV1/SV2 có điểm thi, SV3 không kéo trung bình xuống.
         Assert.Equal(7m, body.DiemTBThiThu);
         Assert.Equal(3, body.TongLuotThiThu); // 2 + 1
-        // Chỉ SV1 có điểm luyện tập.
-        Assert.Equal(7m, body.DiemTBLuyenTap);
-        Assert.Equal(5, body.TongLuotLuyenTap);
     }
 
     [Fact]
@@ -85,9 +82,7 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
 
         Assert.Equal(0, body.TongHocVien);
         Assert.Null(body.DiemTBThiThu);
-        Assert.Null(body.DiemTBLuyenTap);
         Assert.Equal(0, body.TongLuotThiThu);
-        Assert.Equal(0, body.TongLuotLuyenTap);
     }
 
     [Fact]
@@ -107,8 +102,8 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
         var s1 = SeedStudentInLop(lop1, "SV-A1");
         var s2 = SeedStudentInLop(lop2, "SV-B1");
 
-        _factory.QuizStatsClient.Scores[s1] = new RemoteUserScore(s1, AvgExamScore: 9m, ExamAttempts: 1, AvgPracticeScore: null, PracticeAttempts: 0);
-        _factory.QuizStatsClient.Scores[s2] = new RemoteUserScore(s2, AvgExamScore: 5m, ExamAttempts: 1, AvgPracticeScore: null, PracticeAttempts: 0);
+        _factory.QuizStatsClient.Scores[s1] = new RemoteUserScore(s1, AvgExamScore: 9m, ExamAttempts: 1);
+        _factory.QuizStatsClient.Scores[s2] = new RemoteUserScore(s2, AvgExamScore: 5m, ExamAttempts: 1);
 
         var response = await _client.SendAsync(WithAuth(HttpMethod.Get, $"/api/v1/admin/stats/khoa/{khoaId}", TestTokens.Admin()));
 
@@ -143,7 +138,7 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
         var s1 = SeedStudentInLop(lopId, "SV-Detail1");
         var s2 = SeedStudentInLop(lopId, "SV-Detail2"); // chưa làm bài nào
 
-        _factory.QuizStatsClient.Scores[s1] = new RemoteUserScore(s1, AvgExamScore: 8m, ExamAttempts: 2, AvgPracticeScore: 7m, PracticeAttempts: 5);
+        _factory.QuizStatsClient.Scores[s1] = new RemoteUserScore(s1, AvgExamScore: 8m, ExamAttempts: 2);
 
         var response = await _client.SendAsync(WithAuth(HttpMethod.Get, $"/api/v1/admin/stats/lop/{lopId}", TestTokens.Admin()));
 
@@ -154,14 +149,10 @@ public sealed class LopKhoaStatsEndpointsTests : IClassFixture<AdminApiFactory>
         var hv1 = body.HocVien.Single(h => h.UserId == s1);
         Assert.Equal(8m, hv1.DiemThiThu);
         Assert.Equal(2, hv1.SoLuotThiThu);
-        Assert.Equal(7m, hv1.DiemLuyenTap);
-        Assert.Equal(5, hv1.SoLuotLuyenTap);
 
         var hv2 = body.HocVien.Single(h => h.UserId == s2);
         Assert.Null(hv2.DiemThiThu);
         Assert.Equal(0, hv2.SoLuotThiThu);
-        Assert.Null(hv2.DiemLuyenTap);
-        Assert.Equal(0, hv2.SoLuotLuyenTap);
     }
 
     // ---------------------------------------------------------------------------

@@ -25,10 +25,10 @@ public static class QuestionEndpoints
             })
             .RequireAuthorization(policy => policy.RequireRole(Roles.Teacher, Roles.Admin));
 
-        group.MapGet("/practice", async (string? chapter, IAuthQuizClient authClient, IQuestionService service, CancellationToken ct) =>
+        group.MapGet("/published", async (string? chapter, IAuthQuizClient authClient, IQuestionService service, CancellationToken ct) =>
         {
             var callerLopId = await authClient.GetMyLopIdAsync(ct);
-            var result = await service.ListForPracticeAsync(chapter, callerLopId, ct);
+            var result = await service.ListPublishedAsync(chapter, callerLopId, ct);
             return Results.Ok(ApiResponse<IReadOnlyList<QuizQuestionResponse>>.Ok(result));
         });
 

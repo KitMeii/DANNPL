@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-title-suffix>Thi thử</title>
+    <title data-title-suffix>Kiểm tra</title>
     <link rel="stylesheet" href="../css/base/variables.css" />
     <link rel="stylesheet" href="../css/base/reset.css" />
     <link rel="stylesheet" href="../css/layout/layout.css" />
@@ -199,7 +199,7 @@
         border-color: #1565c0;
       }
 
-      /* ── VOICE INPUT ── */
+      /* ── ANSWER INPUT ── */
       .voice-box {
         border: 2px solid var(--gray-200);
         border-radius: 14px;
@@ -221,88 +221,6 @@
         color: var(--gray-600);
         flex: 1;
       }
-      .voice-status {
-        font-size: 0.65rem;
-        padding: 3px 8px;
-        border-radius: 100px;
-        font-weight: 700;
-        background: var(--gray-100);
-        color: var(--gray-500);
-      }
-      .voice-status.listening {
-        background: #fce4ec;
-        color: #c62828;
-        animation: pulse-red 1s infinite;
-      }
-      .voice-status.processing {
-        background: #e3f2fd;
-        color: #1565c0;
-      }
-      .voice-status.done {
-        background: #e8f5e9;
-        color: #2e7d32;
-      }
-      @keyframes pulse-red {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
-      }
-
-      .voice-transcript {
-        padding: 10px 14px;
-        min-height: 52px;
-        font-size: 0.8rem;
-        color: var(--gray-500);
-        font-style: italic;
-        line-height: 1.5;
-        border-bottom: 1px solid var(--gray-100);
-      }
-      .voice-transcript.has-text {
-        color: var(--gray-700);
-        font-style: normal;
-      }
-
-      .voice-result {
-        padding: 10px 14px;
-        background: #f0f9ff;
-        display: none;
-      }
-      .voice-result.show {
-        display: block;
-      }
-      .voice-result-label {
-        font-size: 0.65rem;
-        font-weight: 700;
-        color: #0369a1;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 6px;
-      }
-      .key-points {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      .key-point {
-        display: flex;
-        align-items: flex-start;
-        gap: 7px;
-        font-size: 0.79rem;
-        color: var(--gray-800);
-        line-height: 1.5;
-      }
-      .key-point-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #0369a1;
-        flex-shrink: 0;
-        margin-top: 6px;
-      }
 
       .voice-textarea {
         width: 100%;
@@ -321,106 +239,7 @@
         color: var(--gray-400);
       }
 
-      .voice-actions {
-        padding: 10px 14px;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        border-top: 1px solid var(--gray-100);
-      }
-      .mic-btn {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        transition: all 0.2s;
-        flex-shrink: 0;
-        background: #1565c0;
-        color: white;
-        box-shadow: 0 4px 14px rgba(21, 101, 192, 0.35);
-      }
-      .mic-btn.recording {
-        background: #c62828;
-        box-shadow: 0 4px 20px rgba(198, 40, 40, 0.5);
-        animation: mic-pulse 1s infinite;
-      }
-      .mic-btn:disabled {
-        background: var(--gray-300);
-        box-shadow: none;
-        cursor: not-allowed;
-      }
-      @keyframes mic-pulse {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.08);
-        }
-      }
-
-      .mic-hint {
-        font-size: 0.72rem;
-        color: var(--gray-500);
-        line-height: 1.5;
-        flex: 1;
-      }
-      .mic-hint strong {
-        color: var(--gray-700);
-      }
-
-      .voice-edit-note {
-        font-size: 0.67rem;
-        color: var(--gray-400);
-        padding: 4px 14px 8px;
-        font-style: italic;
-      }
-
-      /* Followup voice */
-      .followup-voice-box {
-        border: 1.5px solid #90caf9;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 8px;
-      }
-      .followup-mic-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: #e3f2fd;
-      }
-      .followup-mic-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: none;
-        cursor: pointer;
-        background: #1565c0;
-        color: white;
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        flex-shrink: 0;
-      }
-      .followup-mic-btn.recording {
-        background: #c62828;
-        animation: mic-pulse 1s infinite;
-      }
-      .followup-transcript {
-        font-size: 0.75rem;
-        color: #1565c0;
-        flex: 1;
-        font-style: italic;
-        line-height: 1.4;
-      }
+      /* Followup answer */
       .followup-result-area {
         padding: 8px 12px;
         background: white;
@@ -495,8 +314,8 @@
         <a href="../index.html" class="logo-wrap">
           <div class="logo-badge"><i class="fas fa-star"></i>MTA</div>
           <div class="logo-info">
-            <div class="logo-title">Thi thử</div>
-            <div class="logo-sub">Trắc nghiệm & Vấn đáp AI</div>
+            <div class="logo-title">Kiểm tra</div>
+            <div class="logo-sub">Trắc nghiệm & Tự luận AI</div>
           </div>
         </a>
         <div class="header-actions">
@@ -535,11 +354,8 @@
         <a href="chat.html" class="nav-link"
           ><i class="fas fa-robot"></i><span>Chat AI</span></a
         >
-        <a href="luyen-tap.html" class="nav-link"
-          ><i class="fas fa-book"></i><span>Luyện tập</span></a
-        >
         <a href="thi-thu.html" class="nav-link active"
-          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+          ><i class="fas fa-pencil-alt"></i><span>Kiểm tra</span></a
         >
         <a href="tien-do.html" class="nav-link"
           ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
@@ -563,7 +379,7 @@
       <div class="container">
         <!-- START SCREEN -->
         <div id="startScreen">
-          <div class="page-title">Thi thử <span data-subject-name>Môn học</span></div>
+          <div class="page-title">Kiểm tra <span data-subject-name>Môn học</span></div>
 
           <!-- Mode tabs -->
           <div
@@ -581,7 +397,7 @@
                 <i class="fas fa-check-circle"></i> Trắc nghiệm
               </div>
               <div class="exam-tab" id="tabVD" onclick="switchMode('vd')">
-                <i class="fas fa-comments"></i> Vấn đáp AI
+                <i class="fas fa-comments"></i> Tự luận AI
               </div>
             </div>
 
@@ -731,7 +547,7 @@
                 <div
                   style="font-weight: 700; color: #0d47a1; margin-bottom: 8px"
                 >
-                  <i class="fas fa-robot"></i> Cách thức thi vấn đáp AI
+                  <i class="fas fa-robot"></i> Cách thức thi tự luận AI
                 </div>
                 <div
                   style="font-size: 0.82rem; color: #1565c0; line-height: 1.7"
@@ -758,7 +574,7 @@
                 "
                 onclick="startExam('vd')"
               >
-                <i class="fas fa-microphone"></i> BẮT ĐẦU THI VẤN ĐÁP
+                <i class="fas fa-pen"></i> BẮT ĐẦU THI TỰ LUẬN
               </button>
             </div>
           </div>
@@ -879,7 +695,7 @@
           </div>
         </div>
 
-        <!-- VẤN ĐÁP SCREEN -->
+        <!-- TỰ LUẬN SCREEN -->
         <div id="vdScreen" style="display: none">
           <div id="vdContent"></div>
         </div>
@@ -924,7 +740,7 @@
 
 
     <script>
-      // Việc 4.5 (2026-08-20) — Thi thử là trải nghiệm học viên, không còn dành cho Admin — redirect
+      // Việc 4.5 (2026-08-20) — Kiểm tra là trải nghiệm học viên, không còn dành cho Admin — redirect
       // thẳng sang trang quản trị (trước đây chỉ ẩn nav, Admin gõ thẳng URL vẫn vào được).
       // applyRoleGate() dùng chung (api-client.js).
       applyRoleGate("../admin/quan-tri-he-thong.html", "../teacher/quan-ly-noi-dung.html");
@@ -943,7 +759,7 @@
         tnTimeLeft = 45 * 60,
         tnStart = null;
 
-      // Việc 4.1 (2026-08-19) — chống thoát thi thử. Có giá trị = đang thi dở (phiên InProgress ở
+      // Việc 4.1 (2026-08-19) — chống thoát kiểm tra. Có giá trị = đang thi dở (phiên InProgress ở
       // server) — dùng làm cờ "examInProgress" luôn, không cần biến riêng: null ở CẢ 2 nghĩa là
       // "chưa bắt đầu" và "đã nộp xong", chỉ khác nhau ở thời điểm gán null (sau khi nộp thành
       // công / lúc mới tải trang) — cả 2 đều đúng là "không còn gì cần bảo vệ".
@@ -963,7 +779,7 @@
         return [...arr].sort(() => Math.random() - 0.5);
       }
 
-      // ===================== Việc 4.1 (2026-08-19) — Chống thoát thi thử =====================
+      // ===================== Việc 4.1 (2026-08-19) — Chống thoát kiểm tra =====================
       // beforeunload: hỏi xác nhận CHỈ khi đang thi dở (có session đang mở) — không làm phiền lúc
       // đã nộp xong hoặc chưa bắt đầu thi. pagehide (không phải beforeunload) để BẮN BEACON thật —
       // pagehide đáng tin cậy hơn cho việc chạy code lúc trang bị hủy (1 số trình duyệt không chạy
@@ -1013,10 +829,10 @@
 
       // ======================== LOAD POOL ========================
       // Không còn fallback "câu hỏi mẫu" nhúng sẵn: mỗi câu phải có id thật trong quiz-service
-      // để có thể nộp bài và được chấm ở server (xem ghi chú F3 ở luyen-tap.html) — nếu ngân
+      // để có thể nộp bài và được chấm ở server (xem ghi chú F3 dưới hàm submitTN) — nếu ngân
       // hàng câu hỏi trống, báo rõ cho học viên thay vì thi với câu hỏi không chấm được.
       async function loadPool(count) {
-        const data = await getPracticeQuestions();
+        const data = await getPublishedQuestions();
         const pool = data.map((q) => ({
           id: q.id,
           q: q.questionText,
@@ -1066,7 +882,7 @@
         } else {
           const oralQs = await loadVDPool();
           if (oralQs.length === 0) {
-            alert("Chưa có câu hỏi vấn đáp nào. Vui lòng liên hệ giáo viên!");
+            alert("Chưa có câu hỏi tự luận nào. Vui lòng liên hệ giáo viên!");
             return;
           }
           document.getElementById("startScreen").style.display = "none";
@@ -1186,8 +1002,7 @@
       }
 
       // Điểm số luôn do quiz-service tính từ đáp án lưu trên server — client chỉ gửi lựa
-      // chọn của học viên, KHÔNG bao giờ tự tính hay gửi điểm số lên (khắc phục lỗ hổng F3,
-      // xem ghi chú chi tiết ở luyen-tap.html).
+      // chọn của học viên, KHÔNG bao giờ tự tính hay gửi điểm số lên (khắc phục lỗ hổng F3).
       async function submitTN() {
         clearInterval(tnTimer);
         document.getElementById("timerBox").style.display = "none";
@@ -1255,7 +1070,7 @@
         });
       }
 
-      // ======================== VẤN ĐÁP ========================
+      // ======================== TỰ LUẬN ========================
       function renderVDQuestion(idx) {
         const q = vdQuestions[idx];
         const timerKey = `vd_q${idx}`;
@@ -1268,7 +1083,7 @@
         <div class="oral-num">${idx + 1}</div>
         <div>
           <div style="font-weight:700;">Câu hỏi ${idx + 1}/${vdQuestions.length}</div>
-          <div style="font-size:0.72rem;opacity:0.8;">Tự luận · Vấn đáp AI</div>
+          <div style="font-size:0.72rem;opacity:0.8;">Tự luận</div>
         </div>
         <div style="margin-left:auto;font-size:1.2rem;font-weight:700;font-family:'Oswald',sans-serif;" id="vdTimer${idx}">3:00</div>
       </div>
@@ -1276,28 +1091,9 @@
         <div class="oral-question">${q.question}</div>
         <div class="voice-box">
           <div class="voice-header">
-            <i class="fas fa-microphone" style="color:#1565c0;"></i>
-            <span class="voice-label">Trả lời bằng giọng nói</span>
-            <span class="voice-status" id="vdStatus${idx}">Sẵn sàng</span>
+            <span class="voice-label">Nhập câu trả lời của bạn</span>
           </div>
-          <div class="voice-transcript" id="vdTranscript${idx}">
-            Nhấn nút mic bên dưới để bắt đầu nói...
-          </div>
-          <div class="voice-result" id="vdResult${idx}">
-            <div class="voice-result-label">🤖 AI tổng hợp ý chính:</div>
-            <div class="key-points" id="vdKeyPoints${idx}"></div>
-          </div>
-          <textarea class="voice-textarea" id="vdAns${idx}" placeholder="Câu trả lời sẽ được điền tự động sau khi nói. Bạn có thể chỉnh sửa thêm..."></textarea>
-          <div class="voice-edit-note">✏️ Bạn có thể chỉnh sửa câu trả lời trước khi gửi</div>
-          <div class="voice-actions">
-            <button class="mic-btn" id="vdMicBtn${idx}" onclick="toggleVoice(${idx})" aria-label="Bắt đầu ghi âm" aria-pressed="false">
-              <i class="fas fa-microphone"></i>
-            </button>
-            <div class="mic-hint">
-              <strong>Nhấn mic để nói</strong><br>
-              AI sẽ nhận diện giọng nói và tổng hợp ý chính
-            </div>
-          </div>
+          <textarea class="voice-textarea" id="vdAns${idx}" placeholder="Nhập câu trả lời của bạn..."></textarea>
         </div>
         <div id="followupArea${idx}"></div>
         <div id="feedbackArea${idx}"></div>
@@ -1354,7 +1150,7 @@
 
       async function generateFollowups(mainQ, answer) {
         try {
-          const prompt = `Bạn là giảng viên ${window.APP_CONFIG.subjectName} đang thi vấn đáp. Học viên vừa trả lời:
+          const prompt = `Bạn là giảng viên ${window.APP_CONFIG.subjectName} đang thi tự luận. Học viên vừa trả lời:
 
 Câu hỏi chính: ${mainQ}
 Câu trả lời: ${answer || "(Không trả lời)"}
@@ -1395,16 +1191,8 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
           <i class="fas fa-volume-up"></i> Nghe lại
         </button>
       </div>
-      <div class="followup-voice-box">
-        <div class="followup-mic-row">
-          <button class="followup-mic-btn" id="fuMicBtn${qIdx}_${fIdx}" onclick="toggleFollowupVoice(${qIdx},${fIdx})" aria-label="Bắt đầu ghi âm" aria-pressed="false">
-            <i class="fas fa-microphone"></i>
-          </button>
-          <span class="followup-transcript" id="fuTranscript${qIdx}_${fIdx}">Nhấn mic để trả lời bằng giọng nói...</span>
-        </div>
-        <div class="followup-result-area">
-          <textarea class="followup-input" id="fuAns${qIdx}_${fIdx}" rows="2" placeholder="Câu trả lời tự động điền sau khi nói. Có thể chỉnh sửa..."></textarea>
-        </div>
+      <div class="followup-result-area">
+        <textarea class="followup-input" id="fuAns${qIdx}_${fIdx}" rows="2" placeholder="Nhập câu trả lời..."></textarea>
       </div>
       <button class="btn btn-sm" style="margin-top:4px;background:#1565c0;color:white;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;" onclick="submitFollowup(${qIdx},${fIdx})">
         Trả lời <i class="fas fa-arrow-right"></i>
@@ -1512,13 +1300,13 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
           )
           .join("");
 
-        // Điểm vấn đáp là điểm hiển thị (trung bình các câu đã chấm qua ai-service),
+        // Điểm tự luận là điểm hiển thị (trung bình các câu đã chấm qua ai-service),
         // chưa gộp vào điểm TB/leaderboard — mỗi câu đã được lưu riêng ở quiz-service.
         showResult({
           score: avgScore.toFixed(1),
           correct: null,
           total: null,
-          type: "Vấn đáp AI",
+          type: "Tự luận AI",
           elapsed,
           detail,
         });
@@ -1610,240 +1398,6 @@ Hãy đặt đúng 2 câu hỏi phụ ngắn gọn để kiểm tra sâu hơn s�
       function stopSpeaking() {
         window.speechSynthesis.cancel();
         currentUtterance = null;
-      }
-
-      // ════════════════════════════════════════════
-      // VOICE INPUT — Web Speech API + Groq summarize
-      // ════════════════════════════════════════════
-
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-      let activeRecognition = null;
-      let activeVdIdx = null;
-      let activeFuKey = null;
-
-      function toggleVoice(idx) {
-        if (activeRecognition) {
-          activeRecognition.stop();
-          activeRecognition = null;
-        }
-        if (activeVdIdx === idx) {
-          activeVdIdx = null;
-          setVdMicState(idx, false);
-          return;
-        }
-        if (!SpeechRecognition) {
-          alert("Trình duyệt không hỗ trợ. Dùng Chrome hoặc Edge nhé!");
-          return;
-        }
-        activeVdIdx = idx;
-        startVoiceRecognition(idx);
-      }
-
-      function startVoiceRecognition(idx) {
-        const recognition = new SpeechRecognition();
-        recognition.lang = "vi-VN";
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.maxAlternatives = 1;
-        activeRecognition = recognition;
-        setVdMicState(idx, true);
-        setVdStatus(idx, "listening", "🔴 Đang nghe...");
-
-        const transcriptEl = document.getElementById("vdTranscript" + idx);
-        transcriptEl.className = "voice-transcript has-text";
-
-        let finalTranscript = "";
-        let silenceTimer = null;
-
-        recognition.onresult = (e) => {
-          let interim = "";
-          finalTranscript = "";
-          for (let i = 0; i < e.results.length; i++) {
-            if (e.results[i].isFinal)
-              finalTranscript += e.results[i][0].transcript + " ";
-            else interim += e.results[i][0].transcript;
-          }
-          transcriptEl.textContent =
-            finalTranscript + interim || "Đang nhận diện...";
-          clearTimeout(silenceTimer);
-          silenceTimer = setTimeout(() => {
-            if (activeRecognition) recognition.stop();
-          }, 5000);
-        };
-
-        recognition.onend = async () => {
-          activeRecognition = null;
-          activeVdIdx = null;
-          setVdMicState(idx, false);
-          const fullText = finalTranscript.trim();
-          if (!fullText) {
-            setVdStatus(idx, "", "Sẵn sàng");
-            transcriptEl.textContent = "Không nhận diện được. Thử lại nhé!";
-            transcriptEl.className = "voice-transcript";
-            return;
-          }
-          transcriptEl.textContent = "🎤 " + fullText;
-          setVdStatus(idx, "processing", "🤖 Đang tổng hợp...");
-          const keyPoints = await summarizeWithGroq(fullText);
-          renderKeyPoints(idx, keyPoints);
-          setVdStatus(idx, "done", "✅ Hoàn thành");
-        };
-
-        recognition.onerror = (e) => {
-          activeRecognition = null;
-          activeVdIdx = null;
-          setVdMicState(idx, false);
-          setVdStatus(idx, "", "Sẵn sàng");
-          if (e.error !== "aborted") {
-            document.getElementById("vdTranscript" + idx).textContent =
-              "⚠️ Lỗi: " + e.error;
-          }
-        };
-
-        recognition.start();
-      }
-
-      async function summarizeWithGroq(text) {
-        try {
-          const prompt =
-            'Ban la tro ly hoc thuat. Nguoi hoc vua noi cau tra loi cho mot cau hoi van dap.\nCau tra loi goc: "' +
-            text +
-            '"\nHay tong hop thanh 3-5 y chinh ngan gon, moi y 1 dong, khong danh so, khong giai thich them.';
-          const res = await askAI(prompt);
-          const lines = res
-            .split("\n")
-            .map((l) => l.replace(/^[-*\d.)\s]+/, "").trim())
-            .filter((l) => l.length > 5)
-            .slice(0, 5);
-          return lines.length > 0 ? lines : [text];
-        } catch {
-          return text
-            .split(/[,.;!?]+/)
-            .map((s) => s.trim())
-            .filter((s) => s.length > 5)
-            .slice(0, 5);
-        }
-      }
-
-      function renderKeyPoints(idx, points) {
-        const resultEl = document.getElementById("vdResult" + idx);
-        const kpEl = document.getElementById("vdKeyPoints" + idx);
-        const textarea = document.getElementById("vdAns" + idx);
-        resultEl.className = "voice-result show";
-        kpEl.innerHTML = points
-          .map(function (p) {
-            return (
-              '<div class="key-point"><div class="key-point-dot"></div><span>' +
-              p +
-              "</span></div>"
-            );
-          })
-          .join("");
-        textarea.value = points.join("\n");
-      }
-
-      function setVdMicState(idx, recording) {
-        const btn = document.getElementById("vdMicBtn" + idx);
-        if (!btn) return;
-        btn.className = "mic-btn" + (recording ? " recording" : "");
-        btn.innerHTML = recording
-          ? '<i class="fas fa-stop"></i>'
-          : '<i class="fas fa-microphone"></i>';
-        btn.setAttribute("aria-pressed", String(recording));
-        btn.setAttribute("aria-label", recording ? "Dừng ghi âm" : "Bắt đầu ghi âm");
-      }
-
-      function setVdStatus(idx, state, text) {
-        const el = document.getElementById("vdStatus" + idx);
-        if (!el) return;
-        el.className = "voice-status" + (state ? " " + state : "");
-        el.textContent = text;
-      }
-
-      // ── FOLLOWUP VOICE ──
-      function toggleFollowupVoice(qIdx, fIdx) {
-        const key = qIdx + "_" + fIdx;
-        if (activeRecognition) {
-          activeRecognition.stop();
-          activeRecognition = null;
-        }
-        if (activeFuKey === key) {
-          activeFuKey = null;
-          setFuMicState(qIdx, fIdx, false);
-          return;
-        }
-        if (!SpeechRecognition) {
-          alert("Dùng Chrome hoặc Edge để dùng tính năng này!");
-          return;
-        }
-        activeFuKey = key;
-        startFollowupRecognition(qIdx, fIdx);
-      }
-
-      function startFollowupRecognition(qIdx, fIdx) {
-        const recognition = new SpeechRecognition();
-        recognition.lang = "vi-VN";
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        activeRecognition = recognition;
-        setFuMicState(qIdx, fIdx, true);
-
-        const transcriptEl = document.getElementById(
-          "fuTranscript" + qIdx + "_" + fIdx,
-        );
-        const answerEl = document.getElementById("fuAns" + qIdx + "_" + fIdx);
-        transcriptEl.textContent = "🔴 Đang nghe...";
-
-        let finalTranscript = "";
-        let silenceTimer = null;
-
-        recognition.onresult = (e) => {
-          let interim = "";
-          finalTranscript = "";
-          for (let i = 0; i < e.results.length; i++) {
-            if (e.results[i].isFinal)
-              finalTranscript += e.results[i][0].transcript + " ";
-            else interim += e.results[i][0].transcript;
-          }
-          transcriptEl.textContent = "🎤 " + (finalTranscript + interim);
-          clearTimeout(silenceTimer);
-          silenceTimer = setTimeout(() => {
-            if (activeRecognition) recognition.stop();
-          }, 5000);
-        };
-
-        recognition.onend = () => {
-          activeRecognition = null;
-          activeFuKey = null;
-          setFuMicState(qIdx, fIdx, false);
-          if (finalTranscript.trim()) {
-            answerEl.value = finalTranscript.trim();
-            transcriptEl.textContent = "✅ " + finalTranscript.trim();
-          } else {
-            transcriptEl.textContent = "⚠️ Không nhận được. Nhập tay nhé!";
-          }
-        };
-
-        recognition.onerror = () => {
-          activeRecognition = null;
-          activeFuKey = null;
-          setFuMicState(qIdx, fIdx, false);
-          transcriptEl.textContent = "Lỗi nhận diện. Nhập tay nhé!";
-        };
-
-        recognition.start();
-      }
-
-      function setFuMicState(qIdx, fIdx, recording) {
-        const btn = document.getElementById("fuMicBtn" + qIdx + "_" + fIdx);
-        if (!btn) return;
-        btn.className = "followup-mic-btn" + (recording ? " recording" : "");
-        btn.innerHTML = recording
-          ? '<i class="fas fa-stop"></i>'
-          : '<i class="fas fa-microphone"></i>';
-        btn.setAttribute("aria-pressed", String(recording));
-        btn.setAttribute("aria-label", recording ? "Dừng ghi âm" : "Bắt đầu ghi âm");
       }
 
       // ── Materials sidebar for exam page ──

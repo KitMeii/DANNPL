@@ -10,10 +10,6 @@ public sealed class LopDataAdminService(QuizDbContext db) : ILopDataAdminService
     {
         var userIds = request.UserIds;
 
-        var quizResults = await db.QuizResults.Where(r => userIds.Contains(r.UserId))
-            .Select(r => new QuizResultDump(r.Id, r.UserId, r.Chapter, r.Score, r.Correct, r.Total, r.CreatedAtUtc))
-            .ToListAsync(ct);
-
         var examResults = await db.ExamResults.Where(r => userIds.Contains(r.UserId))
             .Select(r => new ExamResultDump(r.Id, r.UserId, r.Score, r.IsAutoSubmitted, r.ExamSessionId, r.CreatedAtUtc))
             .ToListAsync(ct);
@@ -39,7 +35,7 @@ public sealed class LopDataAdminService(QuizDbContext db) : ILopDataAdminService
         var examVersionVisibility = await db.ExamVersionLopVisibilities.Where(v => v.LopId == request.LopId)
             .Select(v => v.ExamVersionId).ToListAsync(ct);
 
-        return new LopDataDumpResponse(quizResults, examResults, examSessions, oralResults, wrongAnswers,
+        return new LopDataDumpResponse(examResults, examSessions, oralResults, wrongAnswers,
             questionVisibility, essayVisibility, examVersionVisibility);
     }
 
@@ -47,7 +43,6 @@ public sealed class LopDataAdminService(QuizDbContext db) : ILopDataAdminService
     {
         var userIds = request.UserIds;
 
-        var quizResultsDeleted = await db.QuizResults.Where(r => userIds.Contains(r.UserId)).ExecuteDeleteAsync(ct);
         var examResultsDeleted = await db.ExamResults.Where(r => userIds.Contains(r.UserId)).ExecuteDeleteAsync(ct);
         var examSessionsDeleted = await db.ExamSessions.Where(s => userIds.Contains(s.UserId)).ExecuteDeleteAsync(ct);
         var oralResultsDeleted = await db.OralResults.Where(r => userIds.Contains(r.UserId)).ExecuteDeleteAsync(ct);
@@ -57,7 +52,7 @@ public sealed class LopDataAdminService(QuizDbContext db) : ILopDataAdminService
         var essayVisibilityDeleted = await db.EssayQuestionLopVisibilities.Where(v => v.LopId == request.LopId).ExecuteDeleteAsync(ct);
         var examVersionVisibilityDeleted = await db.ExamVersionLopVisibilities.Where(v => v.LopId == request.LopId).ExecuteDeleteAsync(ct);
 
-        return new LopDataDeleteResponse(quizResultsDeleted, examResultsDeleted, examSessionsDeleted, oralResultsDeleted,
+        return new LopDataDeleteResponse(examResultsDeleted, examSessionsDeleted, oralResultsDeleted,
             wrongAnswersDeleted, questionVisibilityDeleted, essayVisibilityDeleted, examVersionVisibilityDeleted);
     }
 }

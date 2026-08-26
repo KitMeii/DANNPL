@@ -13,13 +13,6 @@ public static class AttemptEndpoints
     {
         var group = app.MapGroup("/api/v1/quiz").WithTags("Attempts").RequireAuthorization();
 
-        group.MapPost("/practice/submit", async (SubmitQuizRequest request, ClaimsPrincipal principal, IQuizAttemptService service, CancellationToken ct) =>
-            {
-                var result = await service.SubmitPracticeAsync(principal.GetUserId(), request, ct);
-                return Results.Ok(ApiResponse<SubmitResultResponse>.Ok(result));
-            })
-            .AddEndpointFilter<ValidationEndpointFilter<SubmitQuizRequest>>();
-
         group.MapPost("/exams/submit", async (SubmitExamRequest request, ClaimsPrincipal principal, IQuizAttemptService service, CancellationToken ct) =>
             {
                 var result = await service.SubmitExamAsync(principal.GetUserId(), request, ct);

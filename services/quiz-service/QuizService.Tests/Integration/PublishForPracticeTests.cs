@@ -53,9 +53,9 @@ public sealed class PublishForPracticeTests : IClassFixture<QuizApiFactory>
     public async Task Manual_question_is_published_by_default()
     {
         var q = await CreateQuestionAsync("Publish-manual-default");
-        Assert.True(q.IsPublishedForPractice);
+        Assert.True(q.IsPublished);
 
-        var practice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice?chapter=Publish-manual-default", TestTokens.Student()));
+        var practice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published?chapter=Publish-manual-default", TestTokens.Student()));
         var list = (await practice.Content.ReadFromJsonAsync<ApiResponse<List<QuizQuestionResponse>>>())!.Data!;
         Assert.Contains(list, x => x.Id == q.Id);
     }
@@ -64,9 +64,9 @@ public sealed class PublishForPracticeTests : IClassFixture<QuizApiFactory>
     public async Task AiGenerated_question_is_not_published_by_default_and_hidden_from_practice()
     {
         var q = await CreateQuestionAsync("Publish-ai-default", sourceType: "AiGenerated");
-        Assert.False(q.IsPublishedForPractice);
+        Assert.False(q.IsPublished);
 
-        var practice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice?chapter=Publish-ai-default", TestTokens.Student()));
+        var practice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published?chapter=Publish-ai-default", TestTokens.Student()));
         var list = (await practice.Content.ReadFromJsonAsync<ApiResponse<List<QuizQuestionResponse>>>())!.Data!;
         Assert.DoesNotContain(list, x => x.Id == q.Id);
     }
@@ -89,16 +89,16 @@ public sealed class PublishForPracticeTests : IClassFixture<QuizApiFactory>
         var toggleResponse = await _client.SendAsync(toggleRequest);
         Assert.Equal(HttpStatusCode.OK, toggleResponse.StatusCode);
         var toggled = (await toggleResponse.Content.ReadFromJsonAsync<ApiResponse<QuestionResponse>>())!.Data!;
-        Assert.True(toggled.IsPublishedForPractice);
+        Assert.True(toggled.IsPublished);
 
-        var practice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice?chapter=Publish-toggle-test", TestTokens.Student()));
+        var practice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published?chapter=Publish-toggle-test", TestTokens.Student()));
         var list = (await practice.Content.ReadFromJsonAsync<ApiResponse<List<QuizQuestionResponse>>>())!.Data!;
         Assert.Contains(list, x => x.Id == q.Id);
 
         // Toggle lần 2 phải gỡ xuất bản.
         var untoggleResponse = await _client.SendAsync(WithAuth(HttpMethod.Put, $"/api/v1/quiz/questions/{q.Id}/publish", _teacherToken));
         var untoggled = (await untoggleResponse.Content.ReadFromJsonAsync<ApiResponse<QuestionResponse>>())!.Data!;
-        Assert.False(untoggled.IsPublishedForPractice);
+        Assert.False(untoggled.IsPublished);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public sealed class PublishForPracticeTests : IClassFixture<QuizApiFactory>
         var version = examSet.Versions[0];
 
         // Trước khi publish: chưa câu nào trong mã đề này xuất hiện ở luyện tập.
-        var beforePractice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice?chapter=Publish-examversion-pool", TestTokens.Student()));
+        var beforePractice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published?chapter=Publish-examversion-pool", TestTokens.Student()));
         var beforeList = (await beforePractice.Content.ReadFromJsonAsync<ApiResponse<List<QuizQuestionResponse>>>())!.Data!;
         Assert.DoesNotContain(version.Questions, vq => beforeList.Any(b => b.Id == vq.Id));
 
@@ -161,7 +161,7 @@ public sealed class PublishForPracticeTests : IClassFixture<QuizApiFactory>
         var published = (await publishResponse.Content.ReadFromJsonAsync<ApiResponse<PublishVersionResponse>>())!.Data!;
         Assert.Equal(version.Questions.Count, published.PublishedCount);
 
-        var afterPractice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice?chapter=Publish-examversion-pool", TestTokens.Student()));
+        var afterPractice = await _client.SendAsync(WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published?chapter=Publish-examversion-pool", TestTokens.Student()));
         var afterList = (await afterPractice.Content.ReadFromJsonAsync<ApiResponse<List<QuizQuestionResponse>>>())!.Data!;
         Assert.All(version.Questions, vq => Assert.Contains(afterList, a => a.Id == vq.Id));
     }

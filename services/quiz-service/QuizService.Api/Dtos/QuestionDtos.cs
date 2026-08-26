@@ -11,7 +11,7 @@ public sealed record UpdateQuestionRequest(string? Chapter, string QuestionText,
 public sealed record UpdateQuestionLopVisibilityRequest(List<Guid> LopIds);
 
 /// <summary>Full question detail, including the answer key — Teacher/Admin bank management only.</summary>
-public sealed record QuestionResponse(Guid Id, string? Chapter, string QuestionText, string OptionA, string OptionB, string OptionC, string OptionD, int CorrectAnswer, string? Explanation, Guid? CreatedBy, DateTime CreatedAtUtc, string SourceType, Guid? SourceMaterialId, int? Difficulty, string? Topic, bool IsPublishedForPractice, IReadOnlyList<Guid> LopIds);
+public sealed record QuestionResponse(Guid Id, string? Chapter, string QuestionText, string OptionA, string OptionB, string OptionC, string OptionD, int CorrectAnswer, string? Explanation, Guid? CreatedBy, DateTime CreatedAtUtc, string SourceType, Guid? SourceMaterialId, int? Difficulty, string? Topic, bool IsPublished, IReadOnlyList<Guid> LopIds);
 
 /// <summary>What a student sees while attempting a quiz — no CorrectAnswer, no Explanation.</summary>
 public sealed record QuizQuestionResponse(Guid Id, string? Chapter, string QuestionText, string OptionA, string OptionB, string OptionC, string OptionD);

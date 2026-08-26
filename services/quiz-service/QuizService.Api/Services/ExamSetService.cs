@@ -234,7 +234,7 @@ public sealed class ExamSetService(QuizDbContext db, ILopScopeGuard lopScopeGuar
         var questions = await db.Questions.Where(q => questionIds.Contains(q.Id)).ToListAsync(ct);
         foreach (var question in questions)
         {
-            question.IsPublishedForPractice = true;
+            question.IsPublished = true;
         }
         version.IsPublished = true;
 
@@ -264,7 +264,7 @@ public sealed class ExamSetService(QuizDbContext db, ILopScopeGuard lopScopeGuar
 
     /// <summary>Thêm sau audit "Việc 1" — cần tồn tại để thông điệp lỗi 409 khi chặn xóa câu hỏi
     /// ("hủy xuất bản mã đề trước nếu muốn xóa") thực sự có lối thoát khả thi cho giáo viên.
-    /// Với mỗi câu trong mã đề: chỉ đặt lại IsPublishedForPractice=false nếu câu đó KHÔNG còn
+    /// Với mỗi câu trong mã đề: chỉ đặt lại IsPublished=false nếu câu đó KHÔNG còn
     /// thuộc bất kỳ ExamVersion nào khác đang IsPublished=true (tránh gỡ nhầm 1 câu vẫn đang hợp lệ
     /// hiển thị cho học viên qua mã đề khác — đã xảy ra thật do cho phép trùng lặp câu giữa các
     /// mã, xem BalancedSelection/test "2 mã đề KHÔNG giống hệt nhau nhưng CÓ THỂ trùng 1 phần").</summary>
@@ -298,7 +298,7 @@ public sealed class ExamSetService(QuizDbContext db, ILopScopeGuard lopScopeGuar
             .ToListAsync(ct);
         foreach (var question in questionsToUnpublish)
         {
-            question.IsPublishedForPractice = false;
+            question.IsPublished = false;
         }
 
         await db.SaveChangesAsync(ct);
@@ -365,7 +365,7 @@ public sealed class ExamSetService(QuizDbContext db, ILopScopeGuard lopScopeGuar
     private static QuestionResponse ToQuestionResponse(Question q, List<Guid> lopIds) => new(
         q.Id, q.Chapter, q.QuestionText, q.OptionA, q.OptionB, q.OptionC, q.OptionD,
         q.CorrectAnswer, q.Explanation, q.CreatedBy, q.CreatedAtUtc, q.SourceType, q.SourceMaterialId,
-        q.Difficulty, q.Topic, q.IsPublishedForPractice, lopIds);
+        q.Difficulty, q.Topic, q.IsPublished, lopIds);
 
     private static OralQuestionResponse ToOralQuestionResponse(OralQuestion q, List<Guid> lopIds) => new(
         q.Id, q.Chapter, q.QuestionText, q.ExpectedAnswer, q.Difficulty, q.CreatedBy, q.CreatedAtUtc, lopIds);

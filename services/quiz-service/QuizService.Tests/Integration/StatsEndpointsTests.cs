@@ -32,7 +32,7 @@ public sealed class StatsEndpointsTests : IClassFixture<QuizApiFactory>
         return request;
     }
 
-    private async Task SeedResultsAsync(Guid userId, decimal? examScore1, decimal? examScore2, decimal? practiceScore)
+    private async Task SeedResultsAsync(Guid userId, decimal? examScore1, decimal? examScore2)
     {
         using var scope = _factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
@@ -45,19 +45,15 @@ public sealed class StatsEndpointsTests : IClassFixture<QuizApiFactory>
         {
             db.ExamResults.Add(new ExamResult { UserId = userId, Score = examScore2.Value, Correct = 6, Total = 10, TimeSpentSeconds = 500 });
         }
-        if (practiceScore is not null)
-        {
-            db.QuizResults.Add(new QuizResult { UserId = userId, Chapter = "Chapter 1", Score = practiceScore.Value, Correct = 7, Total = 10 });
-        }
 
         await db.SaveChangesAsync();
     }
 
     [Fact]
-    public async Task Returns_separate_exam_and_practice_averages_per_user()
+    public async Task Returns_exam_average_per_user()
     {
         var userId = Guid.NewGuid();
-        await SeedResultsAsync(userId, examScore1: 8m, examScore2: 6m, practiceScore: 9m);
+        await SeedResultsAsync(userId, examScore1: 8m, examScore2: 6m);
 
         var request = WithAuthAndKey(HttpMethod.Post, "/api/v1/quiz/stats/scores-by-users", TestTokens.Admin());
         request.Content = JsonContent.Create(new ScoresByUsersRequest([userId]));
@@ -70,8 +66,6 @@ public sealed class StatsEndpointsTests : IClassFixture<QuizApiFactory>
         Assert.Equal(userId, summary.UserId);
         Assert.Equal(7m, summary.AvgExamScore); // (8 + 6) / 2
         Assert.Equal(2, summary.ExamAttempts);
-        Assert.Equal(9m, summary.AvgPracticeScore);
-        Assert.Equal(1, summary.PracticeAttempts);
     }
 
     [Fact]
@@ -89,8 +83,6 @@ public sealed class StatsEndpointsTests : IClassFixture<QuizApiFactory>
 
         Assert.Null(summary.AvgExamScore);
         Assert.Equal(0, summary.ExamAttempts);
-        Assert.Null(summary.AvgPracticeScore);
-        Assert.Equal(0, summary.PracticeAttempts);
     }
 
     [Fact]
@@ -119,7 +111,7 @@ public sealed class StatsEndpointsTests : IClassFixture<QuizApiFactory>
     public async Task Teacher_role_is_accepted_with_valid_internal_key()
     {
         var userId = Guid.NewGuid();
-        await SeedResultsAsync(userId, examScore1: 8m, examScore2: null, practiceScore: null);
+        await SeedResultsAsync(userId, examScore1: 8m, examScore2: null);
 
         var request = WithAuthAndKey(HttpMethod.Post, "/api/v1/quiz/stats/scores-by-users", TestTokens.Teacher());
         request.Content = JsonContent.Create(new ScoresByUsersRequest([userId]));

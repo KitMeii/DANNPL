@@ -370,41 +370,15 @@ async function uploadAvatar(file) {
 // Quiz (trắc nghiệm)
 // ---------------------------------------------------------------------------
 
-function getPracticeQuestions(chapter) {
+function getPublishedQuestions(chapter) {
   const qs = chapter ? `?chapter=${encodeURIComponent(chapter)}` : "";
-  return apiFetch(`/api/v1/quiz/questions/practice${qs}`);
-}
-
-function submitPracticeQuiz(chapter, answers) {
-  return apiFetch("/api/v1/quiz/practice/submit", { method: "POST", body: { chapter, answers } });
-}
-
-// Việc 4.4 Phần B (2026-08-20) — "Đề luyện tập" giáo viên tạo sẵn, giao theo Lớp.
-function listPracticeSetChapters() {
-  return apiFetch("/api/v1/quiz/practice-sets/chapters");
-}
-function createPracticeSet(ten, chapter, lopIds) {
-  return apiFetch("/api/v1/quiz/practice-sets", { method: "POST", body: { ten, chapter, lopIds } });
-}
-function listMyPracticeSets() {
-  return apiFetch("/api/v1/quiz/practice-sets/mine");
-}
-function deletePracticeSet(id) {
-  return apiFetch(`/api/v1/quiz/practice-sets/${id}`, { method: "DELETE" });
-}
-// Học viên (hoặc GV) xem đề khả dụng cho đúng Lớp của mình.
-function listAvailablePracticeSets() {
-  return apiFetch("/api/v1/quiz/practice-sets/available");
+  return apiFetch(`/api/v1/quiz/questions/published${qs}`);
 }
 
 // sessionId (Việc 4.1, tùy chọn) — gắn kết quả vào đúng phiên đã /exams/start, tránh lazy-check
 // sau này chốt trùng. Bỏ trống vẫn hoạt động như cũ (tương thích ngược).
 function submitExam(answers, timeSpentSeconds, sessionId) {
   return apiFetch("/api/v1/quiz/exams/submit", { method: "POST", body: { answers, timeSpentSeconds, sessionId: sessionId || null } });
-}
-
-function getWrongAnswers() {
-  return apiFetch("/api/v1/quiz/wrong-answers");
 }
 
 function getMyQuizResults() {
@@ -661,9 +635,8 @@ function getLeaderboard(top = 30) {
 }
 // Việc C (2026-08-16) — bảng xếp hạng theo Lớp, thay cho getLeaderboard() toàn hệ thống ở
 // xep-hang.html (getLeaderboard/progress-service giữ nguyên, không xóa — có nơi khác có thể còn
-// tham chiếu, xem ghi chú dọn dead code sau). Nguồn quiz-service (Điểm TB Thi thử/Luyện tập tách
-// riêng), tự xác thực quyền theo JWT — Student/Teacher chỉ xem đúng lớp mình, không nhận tham số
-// nào khác ngoài lopId.
+// tham chiếu, xem ghi chú dọn dead code sau). Nguồn quiz-service (Điểm TB Kiểm tra), tự xác thực
+// quyền theo JWT — Student/Teacher chỉ xem đúng lớp mình, không nhận tham số nào khác ngoài lopId.
 function getLopLeaderboard(lopId) {
   return apiFetch(`/api/v1/quiz/stats/leaderboard-by-lop?lopId=${encodeURIComponent(lopId)}`);
 }

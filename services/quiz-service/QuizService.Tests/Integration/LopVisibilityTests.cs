@@ -43,7 +43,7 @@ public sealed class LopVisibilityTests : IClassFixture<QuizApiFactory>
 
     private async Task<List<QuizQuestionResponse>> GetPracticeAsync(string token)
     {
-        var request = WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice", token);
+        var request = WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published", token);
         var response = await _client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         return (await response.Content.ReadFromJsonAsync<ApiResponse<List<QuizQuestionResponse>>>())!.Data!;

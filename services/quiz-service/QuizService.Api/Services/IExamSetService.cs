@@ -15,7 +15,7 @@ public interface IExamSetService
     Task<IReadOnlyList<ExamSetSummaryResponse>> ListAsync(Guid callerUserId, string callerRole, CancellationToken ct);
     Task<ExamSetResponse> GetByIdAsync(Guid id, Guid callerUserId, string callerRole, CancellationToken ct);
 
-    /// <summary>Xuất bản CẢ MÃ ĐỀ — set IsPublishedForPractice=true cho mọi Question thuộc
+    /// <summary>Xuất bản CẢ MÃ ĐỀ — set IsPublished=true cho mọi Question thuộc
     /// ExamVersion này, và ExamVersion.IsPublished=true.</summary>
     Task<int> PublishVersionAsync(Guid versionId, Guid callerUserId, string callerRole, CancellationToken ct);
 

@@ -192,11 +192,8 @@
         <a href="student/chat.html" class="nav-link"
           ><i class="fas fa-robot"></i><span>Chat AI</span></a
         >
-        <a href="student/luyen-tap.html" class="nav-link"
-          ><i class="fas fa-book"></i><span>Luyện tập</span></a
-        >
         <a href="student/thi-thu.html" class="nav-link"
-          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+          ><i class="fas fa-pencil-alt"></i><span>Kiểm tra</span></a
         >
         <a href="student/tien-do.html" class="nav-link"
           ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
@@ -229,7 +226,7 @@
           </div>
           <button
             class="btn-start"
-            onclick="window.location = 'student/luyen-tap.html'"
+            onclick="window.location = 'student/chat.html'"
           >
             <i class="fas fa-play"></i> Bắt đầu học ngay →
           </button>
@@ -238,7 +235,7 @@
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-label">Lượt luyện tập</div>
+            <div class="stat-label">Lượt Kiểm tra</div>
             <div class="stat-value" id="statLearned">—</div>
             <div class="stat-unit">lượt</div>
           </div>
@@ -250,7 +247,7 @@
           <div class="stat-card">
             <div class="stat-label">Điểm TB</div>
             <div class="stat-value" id="statAvg">—</div>
-            <div class="stat-unit">thi thử</div>
+            <div class="stat-unit">Kiểm tra</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Thời gian học</div>
@@ -277,22 +274,13 @@
               <div class="quick-sub">Hỏi đáp <span data-subject-name>Môn học</span></div>
             </div>
           </a>
-          <a href="student/luyen-tap.html" class="quick-card">
-            <div class="quick-icon" style="background: var(--primary-bg)">
-              <i class="fas fa-book-open" style="color: var(--primary)"></i>
-            </div>
-            <div>
-              <div class="quick-title">Luyện tập</div>
-              <div class="quick-sub">Quiz trắc nghiệm</div>
-            </div>
-          </a>
           <a href="student/thi-thu.html" class="quick-card">
             <div class="quick-icon" style="background: #e3f2fd">
               <i class="fas fa-pencil-alt" style="color: #1565c0"></i>
             </div>
             <div>
-              <div class="quick-title">Thi thử</div>
-              <div class="quick-sub">TN + Vấn đáp AI</div>
+              <div class="quick-title">Kiểm tra</div>
+              <div class="quick-sub">TN + Tự luận AI</div>
             </div>
           </a>
           <a href="student/giang-bai.html" class="quick-card">
@@ -330,7 +318,7 @@
               "
               id="currentLesson"
             >
-              Điểm trung bình thi thử
+              Điểm trung bình Kiểm tra
             </div>
             <div class="prog-track" style="margin-bottom: 4px">
               <div class="prog-fill" id="progFill" style="width: 0%"></div>
@@ -348,7 +336,7 @@
             </div>
             <button
               class="btn btn-red btn-sm btn-full"
-              onclick="window.location = 'student/luyen-tap.html'"
+              onclick="window.location = 'student/chat.html'"
             >
               Tiếp tục học →
             </button>
@@ -452,13 +440,13 @@
           >
             <span
               class="search-tag"
-              onclick="window.location = 'student/luyen-tap.html'"
-              >Đạo đức cách mạng</span
+              onclick="window.location = 'student/chat.html'"
+              >Khái niệm cơ bản</span
             >
             <span
               class="search-tag"
-              onclick="window.location = 'student/luyen-tap.html'"
-              >Độc lập & CNXH</span
+              onclick="window.location = 'student/tien-do.html'"
+              >Tiến độ học tập</span
             >
             <span
               class="search-tag"
@@ -468,7 +456,7 @@
             <span
               class="search-tag"
               onclick="window.location = 'student/thi-thu.html'"
-              >Thi thử</span
+              >Kiểm tra</span
             >
             <span
               class="search-tag"
@@ -488,24 +476,6 @@
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px">
             <a
-              href="student/luyen-tap.html"
-              style="
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 10px;
-                background: var(--gray-50);
-                border-radius: 10px;
-                text-decoration: none;
-                color: var(--gray-700);
-              "
-            >
-              <i class="fas fa-book" style="color: var(--primary); width: 16px"></i
-              ><span style="font-size: 0.82rem; font-weight: 600"
-                >Luyện tập Quiz</span
-              >
-            </a>
-            <a
               href="student/thi-thu.html"
               style="
                 display: flex;
@@ -523,7 +493,7 @@
                 style="color: #1565c0; width: 16px"
               ></i
               ><span style="font-size: 0.82rem; font-weight: 600"
-                >Thi thử Trắc nghiệm + Vấn đáp</span
+                >Kiểm tra Trắc nghiệm + Tự luận</span
               >
             </a>
             <a
@@ -647,13 +617,13 @@
                 margin-bottom: 16px;
               "
             >
-              Bắt đầu với bài luyện tập đầu tiên nhé
+              Bắt đầu với AI Chat đầu tiên nhé
             </div>
             <button
               class="btn btn-red btn-full"
               onclick="
                 dismissOnboarding();
-                window.location = 'student/luyen-tap.html';
+                window.location = 'student/chat.html';
               "
             >
               Bắt đầu học ngay 🚀
@@ -742,7 +712,7 @@
         document.getElementById("badgeProgress").textContent =
           `${pr.totalStudyMinutes || 0} phút học`;
         document.getElementById("badgeLearned").textContent =
-          `${pr.totalAttempts || 0} lượt luyện tập`;
+          `${pr.totalAttempts || 0} lượt Kiểm tra`;
         // Rà soát Lần IV (2026-08-21) — ảnh đại diện header đồng bộ ngay với Hồ sơ (cai-dat.html);
         // xem renderHeaderProfileBtn() (api-client.js).
         renderHeaderProfileBtn("cai-dat.html");
@@ -805,7 +775,7 @@
           document.getElementById("badgeBest").textContent =
             `Điểm cao nhất: ${best.toFixed(1)}`;
         } else {
-          document.getElementById("badgeBest").textContent = "Chưa thi thử";
+          document.getElementById("badgeBest").textContent = "Chưa Kiểm tra";
         }
       }
 

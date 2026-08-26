@@ -11,7 +11,6 @@ public sealed class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbC
     public DbSet<OralResult> OralResults => Set<OralResult>();
     public DbSet<ExamResult> ExamResults => Set<ExamResult>();
     public DbSet<ExamSession> ExamSessions => Set<ExamSession>();
-    public DbSet<QuizResult> QuizResults => Set<QuizResult>();
     public DbSet<WrongAnswer> WrongAnswers => Set<WrongAnswer>();
     public DbSet<ExamSet> ExamSets => Set<ExamSet>();
     public DbSet<ExamVersion> ExamVersions => Set<ExamVersion>();
@@ -21,8 +20,6 @@ public sealed class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbC
     public DbSet<EssayQuestionLopVisibility> EssayQuestionLopVisibilities => Set<EssayQuestionLopVisibility>();
     public DbSet<ExamVersionLopVisibility> ExamVersionLopVisibilities => Set<ExamVersionLopVisibility>();
     public DbSet<OralQuestionLopVisibility> OralQuestionLopVisibilities => Set<OralQuestionLopVisibility>();
-    public DbSet<PracticeSet> PracticeSets => Set<PracticeSet>();
-    public DbSet<PracticeSetLopVisibility> PracticeSetLopVisibilities => Set<PracticeSetLopVisibility>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,7 +38,7 @@ public sealed class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbC
             entity.Property(q => q.Explanation).HasMaxLength(2000);
             entity.Property(q => q.SourceType).HasMaxLength(32).HasDefaultValue("Manual");
             entity.Property(q => q.Topic).HasMaxLength(128);
-            entity.Property(q => q.IsPublishedForPractice).HasDefaultValue(false);
+            entity.Property(q => q.IsPublished).HasDefaultValue(false);
             entity.HasIndex(q => q.Chapter);
             entity.HasIndex(q => q.Difficulty);
         });
@@ -104,15 +101,6 @@ public sealed class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbC
             entity.HasIndex(s => new { s.UserId, s.Kind, s.Status });
         });
 
-        modelBuilder.Entity<QuizResult>(entity =>
-        {
-            entity.ToTable("quiz_results");
-            entity.HasKey(r => r.Id);
-            entity.Property(r => r.Score).HasColumnType("decimal(4,2)");
-            entity.Property(r => r.Chapter).HasMaxLength(128);
-            entity.HasIndex(r => r.UserId);
-        });
-
         modelBuilder.Entity<WrongAnswer>(entity =>
         {
             entity.ToTable("wrong_answers");
@@ -159,8 +147,8 @@ public sealed class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbC
 
         // Việc 8 (2026-08-16) — 3 bảng nối "phạm vi hiển thị theo Lớp". LopId không có FK (soft-ref
         // sang auth-service.Lop, khác database schema) nhưng vẫn được index để lọc nhanh ở
-        // ListForPracticeAsync. Không dòng nào cho 1 Question/EssayQuestion/ExamVersion = toàn hệ
-        // thống (mặc định, tương thích ngược 100% với dữ liệu trước Việc 8).
+        // QuestionService.ListPublishedAsync. Không dòng nào cho 1 Question/EssayQuestion/
+        // ExamVersion = toàn hệ thống (mặc định, tương thích ngược 100% với dữ liệu trước Việc 8).
         modelBuilder.Entity<QuestionLopVisibility>(entity =>
         {
             entity.ToTable("question_lop_visibility");
@@ -194,22 +182,5 @@ public sealed class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbC
             entity.HasOne<OralQuestion>().WithMany().HasForeignKey(v => v.OralQuestionId).OnDelete(DeleteBehavior.Cascade);
         });
 
-        // Việc 4.4 Phần B (2026-08-20) — "Đề luyện tập" giáo viên tạo, xem remarks PracticeSet.cs.
-        modelBuilder.Entity<PracticeSet>(entity =>
-        {
-            entity.ToTable("practice_sets");
-            entity.HasKey(p => p.Id);
-            entity.Property(p => p.Ten).IsRequired().HasMaxLength(200);
-            entity.Property(p => p.Chapter).IsRequired().HasMaxLength(128);
-            entity.HasIndex(p => p.GiaoVienId);
-        });
-
-        modelBuilder.Entity<PracticeSetLopVisibility>(entity =>
-        {
-            entity.ToTable("practice_set_lop_visibility");
-            entity.HasKey(v => new { v.PracticeSetId, v.LopId });
-            entity.HasIndex(v => v.LopId);
-            entity.HasOne<PracticeSet>().WithMany().HasForeignKey(v => v.PracticeSetId).OnDelete(DeleteBehavior.Cascade);
-        });
     }
 }

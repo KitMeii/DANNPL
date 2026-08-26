@@ -108,29 +108,7 @@
         border-color: var(--primary);
         outline: none;
       }
-      .sort-btn-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        flex-shrink: 0;
-      }
-      .sort-btn {
-        padding: 8px 14px;
-        border-radius: 10px;
-        border: 1.5px solid var(--gray-200);
-        background: white;
-        font-size: 0.72rem;
-        font-weight: 700;
-        cursor: pointer;
-        color: var(--gray-600);
-      }
-      .sort-btn.active {
-        background: var(--primary-bg);
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-
-      /* Rà soát Lần V — bố cục CỘT (thay card rời rạc): .member-row-grid định nghĩa 6 cột dùng
+      /* Rà soát Lần V — bố cục CỘT (thay card rời rạc): .member-row-grid định nghĩa 5 cột dùng
       chung cho CẢ header lẫn từng dòng dữ liệu, đảm bảo luôn thẳng hàng. min-width ép cuộn ngang
       trên màn hẹp thay vì bóp méo cột. */
       .member-table-wrap {
@@ -144,10 +122,10 @@
       }
       .member-row-grid {
         display: grid;
-        grid-template-columns: 36px minmax(150px, 2fr) 108px 108px 84px 96px;
+        grid-template-columns: 36px minmax(150px, 2fr) 108px 108px 84px;
         align-items: center;
         gap: 8px;
-        min-width: 620px;
+        min-width: 540px;
       }
       .member-table-head {
         padding: 10px 16px;
@@ -257,11 +235,6 @@
         font-size: 1.05rem;
         font-weight: 700;
       }
-      .member-practice-score {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--gray-600);
-      }
       .cell-empty {
         color: var(--gray-300);
         font-size: 0.72rem;
@@ -316,11 +289,8 @@
         <a href="chat.html" class="nav-link"
           ><i class="fas fa-robot"></i><span>Chat AI</span></a
         >
-        <a href="luyen-tap.html" class="nav-link"
-          ><i class="fas fa-book"></i><span>Luyện tập</span></a
-        >
         <a href="thi-thu.html" class="nav-link"
-          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+          ><i class="fas fa-pencil-alt"></i><span>Kiểm tra</span></a
         >
         <a href="tien-do.html" class="nav-link"
           ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
@@ -367,17 +337,13 @@
               oninput="renderMembers()"
             />
             <!-- Rà soát Lần IV (2026-08-21) — ĐÃ QUY ƯỚC LẠI: Bảng xếp hạng chỉ xếp theo điểm CAO ->
-            THẤP (bỏ hẳn Tên A-Z và 2 chiều tăng dần cũ). Mặc định mở trang là "Thi thử" (điểm
+            THẤP (bỏ hẳn Tên A-Z và 2 chiều tăng dần cũ). Mặc định mở trang là "Kiểm tra" (điểm
             chính dùng để xếp hạng), STT luôn tính lại theo đúng thứ tự đang hiển thị (xem
             renderMembers() — i + 1 trên mảng đã filter+sort). -->
-            <div class="sort-btn-row">
-              <button class="sort-btn active" id="sortScoreDescBtn" onclick="setSort('score-desc')">Thi thử</button>
-              <button class="sort-btn" id="sortPracticeDescBtn" onclick="setSort('practice-desc')">Luyện tập</button>
-            </div>
           </div>
 
           <!-- Rà soát Lần V — chuyển từ card-list rời rạc sang bố cục CỘT thẳng hàng (STT/Học
-          viên/Cấp bậc/Chức vụ/Thi thử/Luyện tập), có header cột rõ ràng — nhìn chuyên nghiệp hơn
+          viên/Cấp bậc/Chức vụ/Kiểm tra), có header cột rõ ràng — nhìn chuyên nghiệp hơn
           hẳn khi Lớp có nhiều học viên, mỗi trường đều thẳng cột giữa các dòng. Cuộn ngang trên màn
           hẹp (min-width ép trên .member-row-grid) thay vì vỡ bố cục. -->
           <div class="member-table-wrap">
@@ -387,8 +353,7 @@
                 <div>Học viên</div>
                 <div>Cấp bậc</div>
                 <div>Chức vụ</div>
-                <div>Thi thử</div>
-                <div>Luyện tập</div>
+                <div>Kiểm tra</div>
               </div>
               <div class="member-list" id="memberList">
                 <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Đang tải...</div>
@@ -418,12 +383,10 @@
 
       // Việc C (2026-08-16) — thiết kế lại hoàn toàn: Khóa → Lớp → Thành viên (bỏ cấp Khóa khỏi UI
       // theo thiết kế đã duyệt — Teacher/Admin vào thẳng danh sách Lớp phẳng, Student vào thẳng lớp
-      // mình). Xếp hạng + tô màu theo Điểm TB THI THỬ (quyết định đã duyệt) — Điểm TB Luyện tập chỉ
-      // hiện phụ, không dùng để sort/tô màu.
+      // mình). Xếp hạng + tô màu theo Điểm TB Kiểm tra.
       let myUserId = null;
       let myRole = null;
       let currentMembers = [];
-      let currentSort = "score-desc";
 
       // 6 dải xếp loại đã duyệt — biên liền kề, không hở/chồng trong [0,10] (giả định điểm luôn
       // làm tròn 2 chữ số thập phân ở quiz-service, xem QuizStatsService).
@@ -526,8 +489,6 @@
         document.getElementById("memberList").innerHTML =
           '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Đang tải...</div>';
         document.getElementById("memberSearch").value = "";
-        currentSort = "score-desc";
-        updateSortButtons();
 
         // Việc IV (2026-08-20, rà soát Lần II mục 1.3) — hiện lại Khóa (bị bỏ khỏi UI ở Việc C chỉ
         // vì bỏ BƯỚC CHỌN Khóa trong điều hướng, không phải vì Khóa không cần hiện nữa) — tái dùng
@@ -547,17 +508,6 @@
         }
       }
 
-      function setSort(mode) {
-        currentSort = mode;
-        updateSortButtons();
-        renderMembers();
-      }
-
-      function updateSortButtons() {
-        document.getElementById("sortScoreDescBtn").classList.toggle("active", currentSort === "score-desc");
-        document.getElementById("sortPracticeDescBtn").classList.toggle("active", currentSort === "practice-desc");
-      }
-
       // Việc IV (2026-08-20) — copy nguyên logic màu/nhãn từ chucVuBadge() trong admin-common.js
       // (trang này không nạp file đó) để hiện badge Chức vụ nhất quán với Admin/Teacher.
       function chucVuBadgeLocal(chucVu) {
@@ -571,14 +521,9 @@
 
         let filtered = currentMembers.filter((m) => !search || (m.name || "").toLowerCase().includes(search));
 
-        // Rà soát Lần IV (2026-08-21) — chỉ còn 2 chế độ, LUÔN cao->thấp (đã bỏ Tên A-Z + 2 chiều
+        // Rà soát Lần IV (2026-08-21) — LUÔN cao->thấp theo điểm Kiểm tra (đã bỏ Tên A-Z + 2 chiều
         // tăng dần cũ). null/undefined (chưa có lượt nào) xếp CUỐI, không tính là 0 điểm.
         filtered = [...filtered].sort((a, b) => {
-          if (currentSort === "practice-desc") {
-            const av = a.avgPracticeScore === null || a.avgPracticeScore === undefined ? -1 : a.avgPracticeScore;
-            const bv = b.avgPracticeScore === null || b.avgPracticeScore === undefined ? -1 : b.avgPracticeScore;
-            return bv - av;
-          }
           const av = a.avgExamScore === null || a.avgExamScore === undefined ? -1 : a.avgExamScore;
           const bv = b.avgExamScore === null || b.avgExamScore === undefined ? -1 : b.avgExamScore;
           return bv - av;
@@ -600,7 +545,6 @@
               .join("")
               .toUpperCase();
             const examText = m.avgExamScore === null || m.avgExamScore === undefined ? "—" : m.avgExamScore.toFixed(1);
-            const practiceText = m.avgPracticeScore === null || m.avgPracticeScore === undefined ? null : m.avgPracticeScore.toFixed(1);
 
             // Việc IV (2026-08-20) — STT theo thứ tự đang hiển thị (đổi theo sort/tìm kiếm hiện
             // tại, giống cách STT hoạt động ở mọi bảng khác trong dự án — không phải hạng cố định
@@ -618,7 +562,6 @@
           <div>${m.capBac ? `<span class="capbac-badge">${escapeHtmlLocal(m.capBac)}</span>` : '<span class="cell-empty">—</span>'}</div>
           <div>${chucVuBadgeLocal(m.chucVu)}</div>
           <div class="member-exam-score" style="color:${band.text};">${examText}</div>
-          <div class="member-practice-score">${practiceText ?? '<span class="cell-empty">—</span>'}</div>
         </div>`;
           })
           .join("");

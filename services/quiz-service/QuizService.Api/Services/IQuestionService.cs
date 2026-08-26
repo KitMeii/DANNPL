@@ -11,10 +11,9 @@ public interface IQuestionService
 
     /// <summary>callerLopId = Lớp của người gọi (null nếu chưa gán Lớp) — Việc 8: câu hỏi có phạm
     /// vi giới hạn chỉ hiện nếu khớp đúng Lớp này; câu hỏi toàn hệ thống luôn hiện. KHÔNG lọc theo
-    /// người tạo — đây là luồng HỌC VIÊN luyện tập, khác hẳn ListAsync (GV quản lý ngân hàng của
-    /// mình), học viên vẫn cần thấy đủ câu hỏi giáo viên phụ trách lớp mình đã xuất bản dù câu đó
-    /// gốc do GV khác tạo (VD Admin tạo sẵn, hoặc trước khi có cách ly theo GV).</summary>
-    Task<IReadOnlyList<QuizQuestionResponse>> ListForPracticeAsync(string? chapter, Guid? callerLopId, CancellationToken ct);
+    /// người tạo — dùng để kiểm tra "câu nào đang xuất bản, học viên lớp X thấy được" (test lop-
+    /// visibility), độc lập với ListAsync (GV quản lý ngân hàng của mình).</summary>
+    Task<IReadOnlyList<QuizQuestionResponse>> ListPublishedAsync(string? chapter, Guid? callerLopId, CancellationToken ct);
 
     Task<QuestionResponse> CreateAsync(CreateQuestionRequest request, Guid createdBy, string callerRole, CancellationToken ct);
 

@@ -848,11 +848,8 @@
         <a href="chat.html" class="nav-link"
           ><i class="fas fa-robot"></i><span>Chat AI</span></a
         >
-        <a href="luyen-tap.html" class="nav-link"
-          ><i class="fas fa-book"></i><span>Luyện tập</span></a
-        >
         <a href="thi-thu.html" class="nav-link"
-          ><i class="fas fa-pencil-alt"></i><span>Thi thử</span></a
+          ><i class="fas fa-pencil-alt"></i><span>Kiểm tra</span></a
         >
         <a href="tien-do.html" class="nav-link"
           ><i class="fas fa-calendar-alt"></i><span>Tiến độ</span></a
@@ -2111,7 +2108,7 @@
 
       // Đây là câu hỏi kiểm tra hiểu bài nhẹ trong lúc nghe giảng (không phải bài thi có
       // điểm) nên dùng lại endpoint chatbot chung (/api/v1/ai/chat) thay vì cần một endpoint
-      // chấm điểm riêng — khác với vấn đáp thi thử (thi-thu.html), nơi điểm số thật sự được
+      // chấm điểm riêng — khác với Kiểm tra tự luận (thi-thu.html), nơi điểm số thật sự được
       // lưu vào kết quả học tập và bắt buộc phải qua /grade-oral có rubric rõ ràng.
       async function evaluateAnswer(question, hint, answer) {
         try {

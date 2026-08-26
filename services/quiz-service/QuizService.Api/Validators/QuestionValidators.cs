@@ -140,31 +140,6 @@ public sealed class UpdateOralQuestionLopVisibilityRequestValidator : AbstractVa
     }
 }
 
-/// <summary>Việc 4.4 Phần B (2026-08-20) — LopIds BẮT BUỘC ≥1, khác mọi Update*LopVisibilityRequest
-/// khác (chỉ NotNull) — quyết định nghiệp vụ đã chốt: đề luyện tập "toàn hệ thống" trùng với luyện
-/// tập ngẫu nhiên/theo chương đã có sẵn, không cần thiết.</summary>
-public sealed class CreatePracticeSetRequestValidator : AbstractValidator<CreatePracticeSetRequest>
-{
-    public CreatePracticeSetRequestValidator()
-    {
-        RuleFor(x => x.Ten).NotEmpty().MaximumLength(200);
-        RuleFor(x => x.Chapter).NotEmpty().MaximumLength(128);
-        RuleFor(x => x.LopIds).NotEmpty().WithMessage("Phải chọn ít nhất 1 Lớp để giao đề luyện tập.");
-    }
-}
-
-public sealed class SubmitQuizRequestValidator : AbstractValidator<SubmitQuizRequest>
-{
-    public SubmitQuizRequestValidator()
-    {
-        RuleFor(x => x.Answers).NotEmpty();
-        RuleForEach(x => x.Answers).ChildRules(answer =>
-        {
-            answer.RuleFor(a => a.SelectedOption).InclusiveBetween(0, 3);
-        });
-    }
-}
-
 public sealed class SubmitExamRequestValidator : AbstractValidator<SubmitExamRequest>
 {
     public SubmitExamRequestValidator()

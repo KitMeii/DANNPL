@@ -222,9 +222,6 @@ function showPanel(name) {
   }
   if (name === "questions") loadQuestions();
   if (name === "import" && typeof loadExamSetsList === "function") loadExamSetsList();
-  // Việc 4.4 Phần B (2026-08-20) — Teacher-only, định nghĩa trong <script> riêng của
-  // teacher/quan-ly-noi-dung.html, cùng convention guard typeof với loadExamSetsList ở trên.
-  if (name === "import" && typeof loadMyPracticeSets === "function") loadMyPracticeSets();
   // Việc 8 — render 1 lần duy nhất (không ghi đè lựa chọn dở dang của giáo viên mỗi lần chuyển
   // panel qua lại), khớp guard idempotent giống cách batchImportScopeContainer chỉ là 1 panel tĩnh
   // (không phải modal mở lại từ đầu như examGenScopeContainer).
@@ -235,7 +232,7 @@ function showPanel(name) {
       initScopePicker("batchImportScope");
     }
     // Việc 4.4 Phần A (2026-08-20) — cùng pattern batchImportScopeContainer ở trên, nhưng riêng
-    // cho import Excel Vấn đáp (khác ngân hàng TN, không dùng chung 1 picker).
+    // cho import Excel Tự luận (khác ngân hàng TN, không dùng chung 1 picker).
     const oralContainer = document.getElementById("oralImportScopeContainer");
     if (oralContainer && !oralContainer.innerHTML) {
       oralContainer.innerHTML = scopePickerHtml("oralImportScope");
@@ -278,8 +275,7 @@ function showPanel(name) {
 
 // ============================================================
 // OVERVIEW (Teacher only) — Gap 2: "Lớp tôi phụ trách" — roster + Chức vụ
-// (badge màu + select sửa) + điểm thi thử/luyện tập từng học viên + điểm TB
-// lớp (tách riêng, không gộp — cùng nguyên tắc dùng xuyên suốt dự án).
+// (badge màu + select sửa) + điểm Kiểm tra từng học viên + điểm TB lớp.
 // Xem loadAdminDashboard() trong admin/quan-tri-he-thong.html cho Admin — 2
 // dashboard đã tách hẳn, không còn dùng chung hàm/HTML này.
 //
@@ -384,14 +380,10 @@ function renderTeacherLopCard(lop, khoa, stats) {
         <span><i class="fas fa-chalkboard"></i> ${lop.ten} · Khóa ${khoa.ten || "?"} <span style="font-weight:400; color:var(--gray-500); font-size:0.78rem;">(${stats.tongHocVien} học viên)</span></span>
         <i class="fas fa-chevron-${expanded ? "up" : "down"}"></i>
       </div>
-      <div class="overview-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 14px;">
+      <div class="overview-grid" style="grid-template-columns: 1fr; margin-bottom: 14px;">
         <div class="ov-card">
           <div class="ov-value" style="color: #1565c0">${fmtScore(stats.diemTBThiThu)}</div>
-          <div class="ov-label">Điểm TB Thi thử (${stats.tongLuotThiThu} lượt)</div>
-        </div>
-        <div class="ov-card">
-          <div class="ov-value" style="color: #2e7d32">${fmtScore(stats.diemTBLuyenTap)}</div>
-          <div class="ov-label">Điểm TB Luyện tập (${stats.tongLuotLuyenTap} lượt)</div>
+          <div class="ov-label">Điểm TB Kiểm tra (${stats.tongLuotThiThu} lượt)</div>
         </div>
       </div>
       ${
@@ -411,8 +403,7 @@ function renderTeacherLopCard(lop, khoa, stats) {
             <tr>
               <th>Học viên</th>
               <th>Chức vụ</th>
-              <th>Thi thử</th>
-              <th>Luyện tập</th>
+              <th>Kiểm tra</th>
             </tr>
           </thead>
           <tbody id="teacherLopRosterRows-${lop.id}"></tbody>
@@ -436,7 +427,7 @@ function renderTeacherLopRosterPage(lopId) {
   const fmtScore = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(2));
 
   if (!hocVien.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="empty">Lớp chưa có học viên</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" class="empty">Lớp chưa có học viên</td></tr>';
     document.getElementById(`teacherLopRosterPag-${lopId}`).innerHTML = "";
     return;
   }
@@ -452,7 +443,6 @@ function renderTeacherLopRosterPage(lopId) {
       <td>${h.hoTen}</td>
       <td>${chucVuBadge(h.chucVu)}</td>
       <td>${fmtScore(h.diemThiThu)} <span style="color: var(--gray-400); font-size: 0.7rem;">(${h.soLuotThiThu} lượt)</span></td>
-      <td>${fmtScore(h.diemLuyenTap)} <span style="color: var(--gray-400); font-size: 0.7rem;">(${h.soLuotLuyenTap} lượt)</span></td>
     </tr>`,
     )
     .join("");
@@ -485,8 +475,8 @@ function changeTeacherLopRosterPage(lopId, page) {
 
 // Việc 7 (2026-08-16) — nâng cấp từ số liệu tĩnh sang biểu đồ trực quan, dùng ĐÚNG dữ liệu
 // stats.hocVien đã có sẵn (không gọi thêm API nào) — histogram phân bố điểm học viên (bar) + radar
-// tổng quan hiệu suất lớp (điểm TB Thi thử/Luyện tập + tỷ lệ tham gia). Lưu Chart instance theo id
-// để destroy() trước khi vẽ lại — tránh cảnh báo "Canvas is already in use" khi loadOverview() chạy
+// tổng quan hiệu suất lớp (điểm TB Kiểm tra + tỷ lệ tham gia). Lưu Chart instance theo id để
+// destroy() trước khi vẽ lại — tránh cảnh báo "Canvas is already in use" khi loadOverview() chạy
 // lại (đổi lớp, quay lại Dashboard).
 let lopChartInstances = {};
 
@@ -494,10 +484,8 @@ function drawLopCharts(lopId, stats) {
   const buckets = ["0-2", "2-4", "4-6", "6-8", "8-10"];
   const bucketIndex = (score) => Math.min(4, Math.max(0, Math.floor(score / 2)));
   const examBuckets = [0, 0, 0, 0, 0];
-  const practiceBuckets = [0, 0, 0, 0, 0];
   for (const h of stats.hocVien) {
     if (h.diemThiThu !== null && h.diemThiThu !== undefined) examBuckets[bucketIndex(h.diemThiThu)]++;
-    if (h.diemLuyenTap !== null && h.diemLuyenTap !== undefined) practiceBuckets[bucketIndex(h.diemLuyenTap)]++;
   }
 
   const histId = `lopHistogram-${lopId}`;
@@ -509,8 +497,7 @@ function drawLopCharts(lopId, stats) {
       data: {
         labels: buckets,
         datasets: [
-          { label: "Thi thử", data: examBuckets, backgroundColor: "#1565c0" },
-          { label: "Luyện tập", data: practiceBuckets, backgroundColor: "#2e7d32" },
+          { label: "Kiểm tra", data: examBuckets, backgroundColor: "#1565c0" },
         ],
       },
       options: {
@@ -523,7 +510,7 @@ function drawLopCharts(lopId, stats) {
   }
 
   const total = stats.hocVien.length;
-  const participated = stats.hocVien.filter((h) => (h.soLuotThiThu || 0) > 0 || (h.soLuotLuyenTap || 0) > 0).length;
+  const participated = stats.hocVien.filter((h) => (h.soLuotThiThu || 0) > 0).length;
   const participationRate = total > 0 ? Math.round((participated / total) * 100) : 0;
 
   const radarId = `lopRadar-${lopId}`;
@@ -533,12 +520,12 @@ function drawLopCharts(lopId, stats) {
     lopChartInstances[radarId] = new Chart(radarCanvas, {
       type: "radar",
       data: {
-        labels: ["Điểm TB Thi thử", "Điểm TB Luyện tập", "Tỷ lệ tham gia"],
+        labels: ["Điểm TB Kiểm tra", "Tỷ lệ tham gia"],
         datasets: [
           {
             // Quy điểm (thang 0-10) về cùng trục 0-100 với tỷ lệ tham gia (%) để radar cân đối —
             // tooltip bên dưới hiện lại giá trị thật, không phải giá trị đã quy đổi.
-            data: [Number(stats.diemTBThiThu || 0) * 10, Number(stats.diemTBLuyenTap || 0) * 10, participationRate],
+            data: [Number(stats.diemTBThiThu || 0) * 10, participationRate],
             backgroundColor: "rgba(27, 94, 32, 0.2)",
             borderColor: "#1b5e20",
           },
@@ -552,7 +539,7 @@ function drawLopCharts(lopId, stats) {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: (ctx) => (ctx.dataIndex < 2 ? `${(ctx.raw / 10).toFixed(2)}/10` : `${ctx.raw}%`),
+              label: (ctx) => (ctx.dataIndex < 1 ? `${(ctx.raw / 10).toFixed(2)}/10` : `${ctx.raw}%`),
             },
           },
         },
@@ -634,7 +621,7 @@ function questionCardsHtml(list) {
   return list
     .map((q, i) => {
       const opts = [q.optionA, q.optionB, q.optionC, q.optionD].filter(Boolean);
-      const publishBadge = q.isPublishedForPractice
+      const publishBadge = q.isPublished
         ? `<span class="q-opt" style="background:#e8f5e9;color:#2e7d32;">✓ Đã xuất bản</span>`
         : `<span class="q-opt" style="background:#fff3e0;color:#e65100;">Chưa xuất bản</span>`;
       // Việc 8 — badge phạm vi hiển thị: rỗng = toàn hệ thống (mặc định/cũ), có phần tử = giới hạn.
@@ -652,7 +639,7 @@ function questionCardsHtml(list) {
           ${q.explanation ? `<div style="font-size:0.72rem;color:var(--gray-500);margin-top:4px;">💡 ${escapeHtml(q.explanation)}</div>` : ""}
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-          <button onclick="toggleQuestionPublish('${q.id}')" style="background:none;border:none;cursor:pointer;color:${q.isPublishedForPractice ? "#e65100" : "#2e7d32"};padding:4px;" title="${q.isPublishedForPractice ? "Gỡ xuất bản" : "Xuất bản cho học viên luyện tập"}" aria-label="${q.isPublishedForPractice ? "Gỡ xuất bản câu hỏi" : "Xuất bản câu hỏi"} ${i + 1}"><i class="fas fa-${q.isPublishedForPractice ? "eye-slash" : "eye"}"></i></button>
+          <button onclick="toggleQuestionPublish('${q.id}')" style="background:none;border:none;cursor:pointer;color:${q.isPublished ? "#e65100" : "#2e7d32"};padding:4px;" title="${q.isPublished ? "Gỡ xuất bản" : "Xuất bản câu hỏi"}" aria-label="${q.isPublished ? "Gỡ xuất bản câu hỏi" : "Xuất bản câu hỏi"} ${i + 1}"><i class="fas fa-${q.isPublished ? "eye-slash" : "eye"}"></i></button>
           <button onclick='openEditLopVisibilityModal("question", "${q.id}", ${JSON.stringify(lopIds)})' style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" title="Sửa phạm vi hiển thị" aria-label="Sửa phạm vi hiển thị câu hỏi ${i + 1}"><i class="fas fa-users"></i></button>
           <button onclick="deleteQuestionRow('${q.id}')" style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" title="Xóa" aria-label="Xóa câu hỏi"><i class="fas fa-trash"></i></button>
         </div>
@@ -900,7 +887,7 @@ function registerExamVersions(examSet) {
 function versionCardHtml(v) {
   const isOral = v.kind === "Oral";
   const count = isOral ? v.oralQuestions.length : v.questions.length;
-  const countLabel = isOral ? `${count} câu vấn đáp` : `${count} câu trắc nghiệm`;
+  const countLabel = isOral ? `${count} câu tự luận` : `${count} câu trắc nghiệm`;
   const badgeStyle = v.isPublished ? "background:#e8f5e9;color:#2e7d32;" : "background:#fff3e0;color:#e65100;";
   const badgeText = v.isPublished ? "✓ Đã xuất bản" : "Chưa xuất bản";
   const toggleLabel = v.isPublished ? "Hủy xuất bản" : "Xuất bản";
@@ -954,7 +941,7 @@ async function toggleVersionPublish(versionId, maDe) {
     } else {
       const result = await publishExamVersion(versionId);
       entry.isPublished = true;
-      showToast(`Đã xuất bản mã đề ${maDe} cho học viên luyện tập (${result.publishedCount} câu)`, "success");
+      showToast(`Đã xuất bản mã đề ${maDe} cho học viên (${result.publishedCount} câu)`, "success");
     }
     examVersionsById.set(versionId, entry);
     const badge = document.getElementById(`examVersionBadge-${versionId}`);
@@ -988,7 +975,7 @@ async function exportExamVersionToWord(versionId, maDe) {
 
 // ════════════════════════════════════════════
 // VIỆC 5 (2026-08-16) — "Bộ đề TN mới" / "Bộ đề VĐ mới" từ ngân hàng câu hỏi CÓ SẴN, không sinh AI
-// mới. Nguồn TN CHỈ lấy câu isPublishedForPractice=true (tránh publish ngược câu chưa duyệt qua
+// mới. Nguồn TN CHỈ lấy câu isPublished=true (tránh publish ngược câu chưa duyệt qua
 // PublishVersionAsync — đã duyệt thiết kế). Nguồn VĐ lấy toàn bộ ngân hàng (OralQuestion không có
 // publish-gate). Dùng lại đúng generateExamSetVersions()/generateOralExamSetVersions() —
 // ExamSetService.GenerateAsync không quan tâm nguồn gốc PoolQuestionIds, không cần endpoint riêng
@@ -1014,7 +1001,7 @@ function openBankExamSetModal(mode) {
   sel.innerHTML = '<option value="">Tất cả chương</option>' + chapters.map((c) => `<option value="${c}">${c}</option>`).join("");
 
   document.getElementById("bankExamSetPoolInfo").textContent =
-    `${eligibleList.length} câu ${isOral ? "vấn đáp" : "đã xuất bản"} khả dụng trong ngân hàng.`;
+    `${eligibleList.length} câu ${isOral ? "tự luận" : "đã xuất bản"} khả dụng trong ngân hàng.`;
 
   document.getElementById("bankExamSetScopeContainer").innerHTML = scopePickerHtml("bankExamSetScope");
   initScopePicker("bankExamSetScope");
@@ -1022,12 +1009,12 @@ function openBankExamSetModal(mode) {
   openModal("bankExamSetModal");
 }
 
-/** Nguồn TN: chỉ câu đã xuất bản (isPublishedForPractice). Nguồn VĐ: toàn bộ ngân hàng — không có
+/** Nguồn TN: chỉ câu đã xuất bản (isPublished). Nguồn Tự luận: toàn bộ ngân hàng — không có
  * cột publish để lọc. Dùng allQuestions/allOralQ đã cache sẵn từ loadQuestions()/loadOralQuestions()
- * (panel Câu hỏi TN/VĐ luôn load trước khi nút này bấm được), không fetch lại. */
+ * (panel Câu hỏi TN/Tự luận luôn load trước khi nút này bấm được), không fetch lại. */
 function bankExamSetEligibleList() {
   if (bankExamSetMode === "oral") return allOralQ;
-  return allQuestions.filter((q) => q.isPublishedForPractice);
+  return allQuestions.filter((q) => q.isPublished);
 }
 
 async function submitBankExamSet() {
@@ -1053,7 +1040,7 @@ async function submitBankExamSet() {
     // duyệt) — dù backend cũng chặn y hệt, chặn sớm ở đây tránh 1 round-trip mạng vô ích.
     statusEl.style.color = "#c62828";
     statusEl.textContent =
-      `Ngân hàng chỉ có ${poolIds.length} câu ${isOral ? "vấn đáp" : "đã xuất bản"}${chapter ? " ở chương này" : ""} — không đủ ${targetCount} câu yêu cầu.`;
+      `Ngân hàng chỉ có ${poolIds.length} câu ${isOral ? "tự luận" : "đã xuất bản"}${chapter ? " ở chương này" : ""} — không đủ ${targetCount} câu yêu cầu.`;
     return;
   }
 
@@ -1169,11 +1156,11 @@ async function deleteQuestionRow(id) {
   loadQuestions();
 }
 
-/** C3 — bấm để xuất bản/gỡ xuất bản 1 câu cho luyện tập học viên (toggle). */
+/** C3 — bấm để xuất bản/gỡ xuất bản 1 câu hỏi (toggle). */
 async function toggleQuestionPublish(id) {
   try {
     const updated = await publishQuestion(id);
-    showToast(updated.isPublishedForPractice ? "Đã xuất bản cho học viên" : "Đã gỡ xuất bản", "success");
+    showToast(updated.isPublished ? "Đã xuất bản cho học viên" : "Đã gỡ xuất bản", "success");
   } catch (err) {
     showToast("Lỗi: " + err.message, "error");
   }
@@ -1188,7 +1175,7 @@ async function loadOralQuestions() {
     allOralQ = await listOralQuestionsBank();
   } catch (err) {
     allOralQ = [];
-    showToast("Lỗi tải câu hỏi vấn đáp: " + err.message, "error");
+    showToast("Lỗi tải câu hỏi tự luận: " + err.message, "error");
   }
   // Việc 4 — dropdown lọc chương, giống hệt qChapter bên panel Câu hỏi TN.
   const chapters = [...new Set(allOralQ.map((q) => q.chapter).filter(Boolean))];
@@ -1220,8 +1207,8 @@ function oralCardsHtml(list) {
           <div style="font-size:0.75rem;color:var(--gray-600);margin-top:6px;background:var(--gray-50);padding:8px;border-radius:6px;"><strong>Đáp án chuẩn:</strong> ${escapeHtml(q.expectedAnswer || "—")}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-          <button onclick='openEditLopVisibilityModal("oralQuestion", "${q.id}", ${JSON.stringify(lopIds)})' style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" title="Sửa phạm vi hiển thị" aria-label="Sửa phạm vi hiển thị câu hỏi vấn đáp ${i + 1}"><i class="fas fa-users"></i></button>
-          <button onclick="deleteOralQ('${q.id}')" style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" aria-label="Xóa câu hỏi vấn đáp"><i class="fas fa-trash"></i></button>
+          <button onclick='openEditLopVisibilityModal("oralQuestion", "${q.id}", ${JSON.stringify(lopIds)})' style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" title="Sửa phạm vi hiển thị" aria-label="Sửa phạm vi hiển thị câu hỏi tự luận ${i + 1}"><i class="fas fa-users"></i></button>
+          <button onclick="deleteOralQ('${q.id}')" style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;" aria-label="Xóa câu hỏi tự luận"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     </div>`;
@@ -1240,7 +1227,7 @@ function renderOralQuestions(list) {
   const el = document.getElementById("oralList");
   if (!list.length) {
     el.innerHTML =
-      '<div class="empty"><i class="fas fa-comments"></i><br>Chưa có câu hỏi vấn đáp</div>';
+      '<div class="empty"><i class="fas fa-comments"></i><br>Chưa có câu hỏi tự luận</div>';
     return;
   }
 
@@ -1252,7 +1239,7 @@ function renderOralQuestions(list) {
   }
 
   el.innerHTML = renderChapterGroups(list, {
-    typeLabel: "Vấn đáp",
+    typeLabel: "Tự luận",
     expandedSet: oralExpandedChapters,
     toggleFnName: "toggleOralGroup",
     cardsHtmlFn: oralCardsHtml,
@@ -1292,7 +1279,7 @@ async function saveOralQuestion() {
     showToast("Lỗi: " + err.message, "error");
     return;
   }
-  showToast("Đã thêm câu hỏi vấn đáp!", "success");
+  showToast("Đã thêm câu hỏi tự luận!", "success");
   closeModal("oralModal");
   document.getElementById("oral-chapter").value = "";
   document.getElementById("oral-q").value = "";
@@ -1301,7 +1288,7 @@ async function saveOralQuestion() {
 }
 
 async function deleteOralQ(id) {
-  if (!confirm("Xóa câu hỏi vấn đáp này?")) return;
+  if (!confirm("Xóa câu hỏi tự luận này?")) return;
   try {
     await deleteOralQuestion(id);
     showToast("Đã xóa", "success");
@@ -1316,15 +1303,15 @@ async function importOralExcel(e) {
   if (!file) return;
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer);
-  const wsName = wb.SheetNames.find((n) => n.includes("VẤN ĐÁP")) || wb.SheetNames[0];
+  const wsName = wb.SheetNames.find((n) => n.includes("TỰ LUẬN") || n.includes("VẤN ĐÁP")) || wb.SheetNames[0];
   const ws = wb.Sheets[wsName];
   const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
 
   const oqs = rows
-    .filter((r) => r.cau_hoi || r["Câu hỏi vấn đáp"])
+    .filter((r) => r.cau_hoi || r["Câu hỏi tự luận"] || r["Câu hỏi vấn đáp"])
     .map((r) => ({
       chapter: r.chuong || r["Chương/Phần"] || "Chung",
-      questionText: r.cau_hoi || r["Câu hỏi vấn đáp"],
+      questionText: r.cau_hoi || r["Câu hỏi tự luận"] || r["Câu hỏi vấn đáp"],
       expectedAnswer: r.dap_an_chuan || r["Đáp án chuẩn"] || "",
       difficulty: parseInt(r.do_kho || r["Độ khó (1/2/3)"] || 2),
     }))
@@ -1332,9 +1319,9 @@ async function importOralExcel(e) {
 
   const status = document.getElementById("oralImportStatus");
   const inserted = await batchInsertOral(oqs);
-  status.textContent = `✅ Đã import ${inserted}/${oqs.length} câu hỏi vấn đáp!`;
+  status.textContent = `✅ Đã import ${inserted}/${oqs.length} câu hỏi tự luận!`;
   status.style.color = "#2e7d32";
-  showToast(`Import ${inserted} câu vấn đáp!`, "success");
+  showToast(`Import ${inserted} câu tự luận!`, "success");
   loadOralQuestions();
 }
 
@@ -1476,8 +1463,8 @@ let batchRunning = false;
 let importPurposeStaging = []; // [{file, id, status, count, ext}] — pdf/docx/txt chờ chọn mục đích
 
 // Việc III (2026-08-20) — bỏ hẳn Excel khỏi luồng import câu hỏi TN (chỉ giữ Word + PDF + Text),
-// theo đúng yêu cầu rà soát Lần II mục 1.7. Excel Vấn đáp (importOralExcel, khối riêng "Import câu
-// hỏi vấn đáp từ Excel") KHÔNG bị đụng — khác định dạng cột, ngoài phạm vi yêu cầu này.
+// theo đúng yêu cầu rà soát Lần II mục 1.7. Excel Tự luận (importOralExcel, khối riêng "Import câu
+// hỏi tự luận từ Excel") KHÔNG bị đụng — khác định dạng cột, ngoài phạm vi yêu cầu này.
 function addBatchFiles(files) {
   const needsPurpose = [];
   for (const f of files) {
@@ -1744,7 +1731,7 @@ async function importPDFBatch(file) {
  *
  * QUAN TRỌNG: PHẢI gắn sourceType: "AiGenerated" ở đây — nếu thiếu, backend áp default
  * SourceType="Manual" (tham số mặc định trên CreateQuestionRequest), khiến câu hỏi AI sinh chưa
- * ai xem qua bị QuestionService.CreateAsync coi như đã "xuất bản" luôn (IsPublishedForPractice =
+ * ai xem qua bị QuestionService.CreateAsync coi như đã "xuất bản" luôn (IsPublished =
  * SourceType=="Manual") — lọt thẳng qua cơ chế kiểm duyệt C3, học viên thấy ngay không cần giáo
  * viên xuất bản. Phát hiện qua audit thực tế 2026-08-15 (đã xác nhận bằng test qua API thật, xem
  * lịch sử commit) — materialId (nếu có, khi gọi từ handleMaterialUpload) được gắn kèm để nhất
@@ -1822,7 +1809,7 @@ async function batchInsertOral(rows) {
       await createOralQuestion({ ...row, lopIds });
       ok++;
     } catch (err) {
-      console.warn("Bỏ qua câu vấn đáp lỗi:", row.questionText, err.message);
+      console.warn("Bỏ qua câu tự luận lỗi:", row.questionText, err.message);
     }
   }
   return ok;

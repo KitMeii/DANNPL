@@ -12,7 +12,7 @@ public sealed class FakeQuizStatsClient : IQuizStatsClient
     public Task<IReadOnlyList<RemoteUserScore>> GetScoresByUsersAsync(IReadOnlyList<Guid> userIds, CancellationToken ct)
     {
         IReadOnlyList<RemoteUserScore> result = userIds
-            .Select(id => Scores.TryGetValue(id, out var score) ? score : new RemoteUserScore(id, null, 0, null, 0))
+            .Select(id => Scores.TryGetValue(id, out var score) ? score : new RemoteUserScore(id, null, 0))
             .ToList();
         return Task.FromResult(result);
     }

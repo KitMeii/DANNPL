@@ -170,8 +170,8 @@ public sealed class AdminEndpointsTests : IClassFixture<AdminApiFactory>
         _factory.AuthClient.Lops[lop1] = new RemoteLop(lop1, "Lớp 1", khoaId, teacherWithLop);
         _factory.AuthClient.Lops[lop2] = new RemoteLop(lop2, "Lớp 2", khoaId, teacherWithLop);
 
-        _factory.QuizStatsClient.Scores[student1] = new RemoteUserScore(student1, 8m, 2, 6m, 3);
-        _factory.QuizStatsClient.Scores[student2] = new RemoteUserScore(student2, 10m, 1, null, 0);
+        _factory.QuizStatsClient.Scores[student1] = new RemoteUserScore(student1, 8m, 2);
+        _factory.QuizStatsClient.Scores[student2] = new RemoteUserScore(student2, 10m, 1);
         // student3: không seed -> FakeQuizStatsClient tự trả null/0, đúng hành vi "chưa làm bài nào"
 
         _factory.StatsClient.ContentCountsByCreator[teacherWithLop] = new ContentCounts(QuestionCount: 12, MaterialCount: 3);
@@ -189,7 +189,6 @@ public sealed class AdminEndpointsTests : IClassFixture<AdminApiFactory>
         Assert.Equal(2, withLop.LopCount);
         Assert.Equal(3, withLop.TotalStudents);
         Assert.Equal(9m, withLop.AvgExamScore); // (8+10)/2, student3 không có điểm exam nên bị loại khỏi trung bình
-        Assert.Equal(6m, withLop.AvgPracticeScore); // chỉ student1 có điểm practice
         Assert.Equal(12, withLop.QuestionCount);
         Assert.Equal(3, withLop.MaterialCount);
 
@@ -197,7 +196,6 @@ public sealed class AdminEndpointsTests : IClassFixture<AdminApiFactory>
         Assert.Equal(0, withoutLop.LopCount);
         Assert.Equal(0, withoutLop.TotalStudents);
         Assert.Null(withoutLop.AvgExamScore);
-        Assert.Null(withoutLop.AvgPracticeScore);
         Assert.Equal(0, withoutLop.QuestionCount);
         Assert.Equal(0, withoutLop.MaterialCount);
     }
@@ -231,8 +229,8 @@ public sealed class AdminEndpointsTests : IClassFixture<AdminApiFactory>
         _factory.AuthClient.Lops[strongLop] = new RemoteLop(strongLop, "Lớp B Giỏi", khoaId, teacherId);
         _factory.AuthClient.Lops[weakLop] = new RemoteLop(weakLop, "Lớp A Yếu", khoaId, teacherId);
 
-        _factory.QuizStatsClient.Scores[strongStudent] = new RemoteUserScore(strongStudent, 9m, 3, 9.5m, 3);
-        _factory.QuizStatsClient.Scores[weakStudent] = new RemoteUserScore(weakStudent, 3m, 3, 2m, 3);
+        _factory.QuizStatsClient.Scores[strongStudent] = new RemoteUserScore(strongStudent, 9m, 3);
+        _factory.QuizStatsClient.Scores[weakStudent] = new RemoteUserScore(weakStudent, 3m, 3);
 
         var response = await _client.SendAsync(WithAuth(HttpMethod.Get, $"/api/v1/admin/stats/teachers/{teacherId}/lop-quality", TestTokens.Admin()));
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -244,12 +242,10 @@ public sealed class AdminEndpointsTests : IClassFixture<AdminApiFactory>
         var strong = list.Single(l => l.LopId == strongLop);
         Assert.Equal(1, strong.StudentCount);
         Assert.Equal(9m, strong.AvgExamScore);
-        Assert.Equal(9.5m, strong.AvgPracticeScore);
 
         var weak = list.Single(l => l.LopId == weakLop);
         Assert.Equal(1, weak.StudentCount);
         Assert.Equal(3m, weak.AvgExamScore);
-        Assert.Equal(2m, weak.AvgPracticeScore);
     }
 
     [Fact]

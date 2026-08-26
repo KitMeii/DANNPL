@@ -17,10 +17,10 @@ public sealed class LopKhoaStatsService(IAuthAdminClient authClient, IQuizStatsC
 
         var students = await authClient.ListHocVienAsync(lopId, ct);
         var scores = await GetScoresAsync(students, ct);
-        var (avgExam, totalExam, avgPractice, totalPractice) = Aggregate(scores);
+        var (avgExam, totalExam) = Aggregate(scores);
         var hocVien = BuildHocVienList(students, scores);
 
-        return new LopDiemTrungBinhResponse(lop.Id, lop.Ten, students.Count, avgExam, totalExam, avgPractice, totalPractice, hocVien);
+        return new LopDiemTrungBinhResponse(lop.Id, lop.Ten, students.Count, avgExam, totalExam, hocVien);
     }
 
     public async Task<KhoaDiemTrungBinhResponse> GetKhoaStatsAsync(Guid khoaId, CancellationToken ct)
@@ -28,9 +28,9 @@ public sealed class LopKhoaStatsService(IAuthAdminClient authClient, IQuizStatsC
         var khoa = await authClient.GetKhoaAsync(khoaId, ct);
         var students = await authClient.ListUsersAsync(Roles.Student, null, khoaId, ct);
         var scores = await GetScoresAsync(students, ct);
-        var (avgExam, totalExam, avgPractice, totalPractice) = Aggregate(scores);
+        var (avgExam, totalExam) = Aggregate(scores);
 
-        return new KhoaDiemTrungBinhResponse(khoa.Id, khoa.Ten, students.Count, avgExam, totalExam, avgPractice, totalPractice);
+        return new KhoaDiemTrungBinhResponse(khoa.Id, khoa.Ten, students.Count, avgExam, totalExam);
     }
 
     private async Task<IReadOnlyList<RemoteUserScore>> GetScoresAsync(IReadOnlyList<RemoteUser> students, CancellationToken ct) =>
@@ -43,27 +43,24 @@ public sealed class LopKhoaStatsService(IAuthAdminClient authClient, IQuizStatsC
             .Select(s =>
             {
                 byUser.TryGetValue(s.Id, out var sc);
-                return new HocVienDiemResponse(s.Id, s.Name, s.ChucVu, sc?.AvgExamScore, sc?.ExamAttempts ?? 0, sc?.AvgPracticeScore, sc?.PracticeAttempts ?? 0);
+                return new HocVienDiemResponse(s.Id, s.Name, s.ChucVu, sc?.AvgExamScore, sc?.ExamAttempts ?? 0);
             })
             .OrderBy(h => h.HoTen)
             .ToList();
     }
 
-    private static (decimal? AvgExam, int TotalExam, decimal? AvgPractice, int TotalPractice) Aggregate(IReadOnlyList<RemoteUserScore> scores)
+    private static (decimal? AvgExam, int TotalExam) Aggregate(IReadOnlyList<RemoteUserScore> scores)
     {
         if (scores.Count == 0)
         {
-            return (null, 0, null, 0);
+            return (null, 0);
         }
 
         var examScores = scores.Where(s => s.AvgExamScore is not null).Select(s => s.AvgExamScore!.Value).ToList();
-        var practiceScores = scores.Where(s => s.AvgPracticeScore is not null).Select(s => s.AvgPracticeScore!.Value).ToList();
 
         var avgExam = examScores.Count > 0 ? Math.Round(examScores.Average(), 2) : (decimal?)null;
-        var avgPractice = practiceScores.Count > 0 ? Math.Round(practiceScores.Average(), 2) : (decimal?)null;
         var totalExam = scores.Sum(s => s.ExamAttempts);
-        var totalPractice = scores.Sum(s => s.PracticeAttempts);
 
-        return (avgExam, totalExam, avgPractice, totalPractice);
+        return (avgExam, totalExam);
     }
 }

@@ -47,11 +47,11 @@ public sealed class GradingTests : IClassFixture<QuizApiFactory>
     }
 
     [Fact]
-    public async Task Practice_questions_endpoint_never_exposes_the_answer_key()
+    public async Task Published_questions_endpoint_never_exposes_the_answer_key()
     {
         await CreateQuestionAsync("Câu hỏi bí mật?", correctAnswer: 2);
 
-        var request = WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/practice", TestTokens.Student());
+        var request = WithAuth(HttpMethod.Get, "/api/v1/quiz/questions/published", TestTokens.Student());
         var response = await _client.SendAsync(request);
         var raw = await response.Content.ReadAsStringAsync();
 
@@ -61,18 +61,18 @@ public sealed class GradingTests : IClassFixture<QuizApiFactory>
     }
 
     [Fact]
-    public async Task Practice_submit_grades_from_stored_answer_key_not_client_input()
+    public async Task Exam_submit_grades_from_stored_answer_key_not_client_input()
     {
         var q1 = await CreateQuestionAsync("Q1?", correctAnswer: 1);
         var q2 = await CreateQuestionAsync("Q2?", correctAnswer: 3);
 
         // Client answers Q1 correctly and Q2 incorrectly. There is no "score" field the client
         // could send to fake a result — the request only carries the selected options.
-        var request = WithAuth(HttpMethod.Post, "/api/v1/quiz/practice/submit", TestTokens.Student());
-        request.Content = JsonContent.Create(new SubmitQuizRequest("1", [
+        var request = WithAuth(HttpMethod.Post, "/api/v1/quiz/exams/submit", TestTokens.Student());
+        request.Content = JsonContent.Create(new SubmitExamRequest([
             new SubmitAnswerItem(q1.Id, 1),
             new SubmitAnswerItem(q2.Id, 0),
-        ]));
+        ], TimeSpentSeconds: 60));
 
         var response = await _client.SendAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -95,8 +95,8 @@ public sealed class GradingTests : IClassFixture<QuizApiFactory>
 
         for (var i = 0; i < 2; i++)
         {
-            var submitRequest = WithAuth(HttpMethod.Post, "/api/v1/quiz/practice/submit", studentToken);
-            submitRequest.Content = JsonContent.Create(new SubmitQuizRequest("1", [new SubmitAnswerItem(question.Id, 3)]));
+            var submitRequest = WithAuth(HttpMethod.Post, "/api/v1/quiz/exams/submit", studentToken);
+            submitRequest.Content = JsonContent.Create(new SubmitExamRequest([new SubmitAnswerItem(question.Id, 3)], TimeSpentSeconds: 60));
             await _client.SendAsync(submitRequest);
         }
 
@@ -111,8 +111,8 @@ public sealed class GradingTests : IClassFixture<QuizApiFactory>
     [Fact]
     public async Task Submit_with_unknown_question_id_returns_404()
     {
-        var request = WithAuth(HttpMethod.Post, "/api/v1/quiz/practice/submit", TestTokens.Student());
-        request.Content = JsonContent.Create(new SubmitQuizRequest("1", [new SubmitAnswerItem(Guid.NewGuid(), 0)]));
+        var request = WithAuth(HttpMethod.Post, "/api/v1/quiz/exams/submit", TestTokens.Student());
+        request.Content = JsonContent.Create(new SubmitExamRequest([new SubmitAnswerItem(Guid.NewGuid(), 0)], TimeSpentSeconds: 60));
 
         var response = await _client.SendAsync(request);
 
@@ -157,7 +157,7 @@ public sealed class GradingTests : IClassFixture<QuizApiFactory>
     [Fact]
     public async Task Unauthenticated_submit_returns_401()
     {
-        var response = await _client.PostAsJsonAsync("/api/v1/quiz/practice/submit", new SubmitQuizRequest(null, [new SubmitAnswerItem(Guid.NewGuid(), 0)]));
+        var response = await _client.PostAsJsonAsync("/api/v1/quiz/exams/submit", new SubmitExamRequest([new SubmitAnswerItem(Guid.NewGuid(), 0)], TimeSpentSeconds: 60));
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 

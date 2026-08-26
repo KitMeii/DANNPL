@@ -2,8 +2,6 @@ namespace QuizService.Api.Dtos;
 
 public sealed record SubmitAnswerItem(Guid QuestionId, int SelectedOption);
 
-public sealed record SubmitQuizRequest(string? Chapter, List<SubmitAnswerItem> Answers);
-
 // Việc 4.1 (2026-08-19) — SessionId tùy chọn: null giữ nguyên hành vi cũ (nộp không qua session,
 // vẫn hoạt động — tương thích ngược). Có giá trị thì gắn kết quả vào đúng phiên, tránh lazy-check
 // sau này chốt trùng (xem QuizAttemptService.SubmitExamAsync).
@@ -17,10 +15,10 @@ public sealed record SubmitResultResponse(decimal Score, int Correct, int Total,
 
 public sealed record WrongAnswerResponse(Guid QuestionId, string QuestionText, string? Chapter, int WrongCount, DateTime LastWrongAtUtc);
 
-/// <summary>One row of a student's own history — practice or exam, distinguished by Kind.
-/// Feeds tien-do.html's per-chapter breakdown and progress-service's leaderboard aggregate.
-/// IsAutoSubmitted (Việc 4.1) — always false for "practice" (QuizResult never has this concept);
-/// only "exam" rows can be true, meaning chống-thoát finalized it, not a manual Nộp.</summary>
+/// <summary>One row of a student's own Kiểm tra history. Feeds tien-do.html's per-chapter
+/// breakdown and progress-service's leaderboard aggregate. Kind is always "exam" (kept as a field
+/// for API shape stability — the "practice" kind existed before Luyện tập was removed).
+/// IsAutoSubmitted (Việc 4.1) — true means chống-thoát finalized it, not a manual Nộp.</summary>
 public sealed record MyResultResponse(Guid Id, string Kind, string? Chapter, decimal Score, int Correct, int Total, DateTime CreatedAtUtc, bool IsAutoSubmitted = false);
 
 public sealed record SubmitOralRequest(Guid QuestionId, string MainAnswer, List<string>? FollowupAnswers, Guid? SessionId = null);

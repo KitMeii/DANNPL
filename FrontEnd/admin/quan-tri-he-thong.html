@@ -833,7 +833,7 @@
                   <div class="ov-value" id="adm-ov-oral" style="color: #6a1b9a">
                     —
                   </div>
-                  <div class="ov-label">Câu hỏi vấn đáp</div>
+                  <div class="ov-label">Câu hỏi tự luận</div>
                 </div>
                 <div class="ov-card">
                   <div class="ov-icon" style="background: #fff8e1">
@@ -906,15 +906,14 @@
                           <th>Giáo viên</th>
                           <th>Số lớp</th>
                           <th>Tổng học viên</th>
-                          <th>Điểm TB Thi thử</th>
-                          <th>Điểm TB Luyện tập</th>
+                          <th>Điểm TB Kiểm tra</th>
                           <th>Câu hỏi đã tạo</th>
                           <th>Tài liệu đã tạo</th>
                         </tr>
                       </thead>
                       <tbody id="adm-teacher-rows">
                         <tr>
-                          <td colspan="7" class="empty">
+                          <td colspan="6" class="empty">
                             <i class="fas fa-spinner fa-spin"></i>Đang tải...
                           </td>
                         </tr>
@@ -994,7 +993,7 @@
                   margin-bottom: 10px;
                 "
               >
-                Xếp hạng theo điểm trung bình (Thi thử/Luyện tập) của các Lớp
+                Xếp hạng theo điểm trung bình Kiểm tra của các Lớp
                 giáo viên đang phụ trách. Bấm vào 1 dòng để xem chi tiết từng
                 Lớp.
               </div>
@@ -1015,16 +1014,10 @@
                   onchange="sortAdminTeacherLeaderboardBySelect()"
                 >
                   <option value="avgExam-desc">
-                    Điểm TB Thi thử: Cao → Thấp
+                    Điểm TB Kiểm tra: Cao → Thấp
                   </option>
                   <option value="avgExam-asc">
-                    Điểm TB Thi thử: Thấp → Cao
-                  </option>
-                  <option value="avgPractice-desc">
-                    Điểm TB Luyện tập: Cao → Thấp
-                  </option>
-                  <option value="avgPractice-asc">
-                    Điểm TB Luyện tập: Thấp → Cao
+                    Điểm TB Kiểm tra: Thấp → Cao
                   </option>
                   <option value="name-asc">Tên: A → Z</option>
                   <option value="name-desc">Tên: Z → A</option>
@@ -1054,21 +1047,10 @@
                           style="text-align: center; width: 16%"
                           onclick="sortAdminTeacherLeaderboard('avgExam')"
                         >
-                          Điểm TB Thi thử
+                          Điểm TB Kiểm tra
                           <span
                             class="sort-icon"
                             id="sort-icon-teacherLb-avgExam"
-                          ></span>
-                        </th>
-                        <th
-                          class="sortable"
-                          style="text-align: center; width: 16%"
-                          onclick="sortAdminTeacherLeaderboard('avgPractice')"
-                        >
-                          Điểm TB Luyện tập
-                          <span
-                            class="sort-icon"
-                            id="sort-icon-teacherLb-avgPractice"
                           ></span>
                         </th>
                         <th style="width: 16%">Thao tác</th>
@@ -1076,7 +1058,7 @@
                     </thead>
                     <tbody id="teacherLbRows">
                       <tr>
-                        <td colspan="7" class="empty">
+                        <td colspan="6" class="empty">
                           <i class="fas fa-spinner fa-spin"></i>Đang tải...
                         </td>
                       </tr>
@@ -1400,17 +1382,7 @@
                     >
                       —
                     </div>
-                    <div class="ov-label">Điểm TB Thi thử (khóa)</div>
-                  </div>
-                  <div class="ov-card">
-                    <div
-                      class="ov-value"
-                      id="khoaStatLuyenTap"
-                      style="color: #2e7d32"
-                    >
-                      —
-                    </div>
-                    <div class="ov-label">Điểm TB Luyện tập (khóa)</div>
+                    <div class="ov-label">Điểm TB Kiểm tra (khóa)</div>
                   </div>
                   <div class="ov-card">
                     <div
@@ -1483,21 +1455,10 @@
                             style="text-align: center; width: 13%"
                             onclick="sortLopBy('tbThiThu')"
                           >
-                            Điểm TB Thi thử
+                            Điểm TB Kiểm tra
                             <span
                               class="sort-icon"
                               id="sort-icon-lop-tbThiThu"
-                            ></span>
-                          </th>
-                          <th
-                            class="sortable"
-                            style="text-align: center; width: 13%"
-                            onclick="sortLopBy('tbLuyenTap')"
-                          >
-                            Điểm TB Luyện tập
-                            <span
-                              class="sort-icon"
-                              id="sort-icon-lop-tbLuyenTap"
                             ></span>
                           </th>
                           <th style="width: 16%">Thao tác</th>
@@ -1505,7 +1466,7 @@
                       </thead>
                       <tbody id="lopRows">
                         <tr>
-                          <td colspan="9" class="empty">
+                          <td colspan="8" class="empty">
                             <i class="fas fa-spinner fa-spin"></i>Đang tải...
                           </td>
                         </tr>
@@ -1936,7 +1897,7 @@
                     onclick="clearOralQuestions()"
                     style="color: var(--danger); border-color: var(--danger)"
                   >
-                    <i class="fas fa-trash"></i> Xóa câu hỏi vấn đáp
+                    <i class="fas fa-trash"></i> Xóa câu hỏi tự luận
                   </button>
                 </div>
               </div>
@@ -2960,20 +2921,14 @@
                   <th>Cấp bậc</th>
                   <th>Chức vụ</th>
                   <th class="sortable" onclick="sortLopDetailBy('diemThiThu')">
-                    Thi thử
-                  </th>
-                  <th
-                    class="sortable"
-                    onclick="sortLopDetailBy('diemLuyenTap')"
-                  >
-                    Luyện tập
+                    Kiểm tra
                   </th>
                   <th></th>
                 </tr>
               </thead>
               <tbody id="lopDetailStudentRows">
                 <tr>
-                  <td colspan="7" class="empty">
+                  <td colspan="6" class="empty">
                     <i class="fas fa-spinner fa-spin"></i>Đang tải...
                   </td>
                 </tr>
@@ -3249,7 +3204,7 @@
           const teachers = await adminStatsTeachers();
           if (!teachers.length) {
             tbody.innerHTML = stateRow(
-              7,
+              6,
               "empty",
               "Chưa có giáo viên nào trong hệ thống",
             );
@@ -3266,12 +3221,11 @@
             <td>${t.lopCount}</td>
             <td>${t.totalStudents}</td>
             <td>${fmtScore(t.avgExamScore)}</td>
-            <td>${fmtScore(t.avgPracticeScore)}</td>
             <td>${t.questionCount}</td>
             <td>${t.materialCount}</td>
           </tr>
           <tr id="teacherLopDetailRow-${t.teacherId}" style="display:none;">
-            <td colspan="7" style="background:var(--gray-50);padding:10px 16px;">
+            <td colspan="6" style="background:var(--gray-50);padding:10px 16px;">
               <div id="teacherLopDetail-${t.teacherId}"></div>
             </td>
           </tr>`,
@@ -3279,7 +3233,7 @@
             .join("");
         } catch (err) {
           tbody.innerHTML = stateRow(
-            7,
+            6,
             "error",
             `Lỗi tải dữ liệu giáo viên: ${err.message}`,
           );
@@ -3317,7 +3271,7 @@
             v === null || v === undefined ? "—" : Number(v).toFixed(2);
           container.innerHTML = lops.length
             ? `<table class="data-table" style="margin:0;">
-                <thead><tr><th>Lớp</th><th>Học viên</th><th>Điểm TB Thi thử</th><th>Điểm TB Luyện tập</th><th></th></tr></thead>
+                <thead><tr><th>Lớp</th><th>Học viên</th><th>Điểm TB Kiểm tra</th><th></th></tr></thead>
                 <tbody>
                   ${lops
                     .map(
@@ -3327,7 +3281,6 @@
                     <td style="font-weight:600;">${l.lopTen}</td>
                     <td>${l.studentCount}</td>
                     <td>${fmtScore(l.avgExamScore)}</td>
-                    <td>${fmtScore(l.avgPracticeScore)}</td>
                     <td><i class="fas fa-chevron-right" style="color:var(--gray-400);"></i></td>
                   </tr>`,
                     )
@@ -4119,10 +4072,9 @@
             lopCount: r.lopCount,
             totalStudents: r.totalStudents,
             avgExam: r.avgExamScore,
-            avgPractice: r.avgPracticeScore,
           }));
         } catch (err) {
-          tbody.innerHTML = stateRow(7, "error", `Lỗi: ${err.message}`);
+          tbody.innerHTML = stateRow(6, "error", `Lỗi: ${err.message}`);
           return;
         }
         syncTeacherLbSortSelect();
@@ -4154,7 +4106,7 @@
 
         if (!list.length) {
           tbody.innerHTML = stateRow(
-            7,
+            6,
             "empty",
             "Không có giảng viên nào khớp",
           );
@@ -4169,7 +4121,6 @@
         <td style="text-align: center">${t.lopCount}</td>
         <td style="text-align: center">${t.totalStudents}</td>
         <td style="text-align: center; color: var(--primary); font-weight: 600">${t.avgExam != null ? t.avgExam.toFixed(2) : "—"}</td>
-        <td style="text-align: center; color: #2e7d32; font-weight: 600">${t.avgPractice != null ? t.avgPractice.toFixed(2) : "—"}</td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="openTeacherLbDetail('${t.teacherId}', '${t.name.replace(/'/g, "\\'")}')">
             <i class="fas fa-eye"></i> Xem chi tiết
@@ -4181,7 +4132,6 @@
         updateSortIcons("teacherLb", teacherLbState, [
           "name",
           "avgExam",
-          "avgPractice",
         ]);
       }
 
@@ -4240,7 +4190,7 @@
           listEl.innerHTML = `
             <div class="data-table-wrap"><div style="overflow-x: auto">
             <table class="data-table">
-              <thead><tr><th>Lớp</th><th style="text-align:center">Sĩ số</th><th style="text-align:center">TB Thi thử</th><th style="text-align:center">TB Luyện tập</th><th>Thao tác</th></tr></thead>
+              <thead><tr><th>Lớp</th><th style="text-align:center">Sĩ số</th><th style="text-align:center">TB Kiểm tra</th><th>Thao tác</th></tr></thead>
               <tbody>
                 ${lops
                   .map(
@@ -4249,7 +4199,6 @@
                   <td style="font-weight:600">${l.lopTen}</td>
                   <td style="text-align:center">${l.studentCount}</td>
                   <td style="text-align:center; color: var(--primary); font-weight:600">${l.avgExamScore != null ? l.avgExamScore.toFixed(2) : "—"}</td>
-                  <td style="text-align:center; color: #2e7d32; font-weight:600">${l.avgPracticeScore != null ? l.avgPracticeScore.toFixed(2) : "—"}</td>
                   <td><button class="btn btn-outline btn-sm" onclick="showTeacherLbLopRow('${l.lopId}', '${l.lopTen.replace(/'/g, "\\'")}')">Xem BXH</button></td>
                 </tr>`,
                   )
@@ -4283,7 +4232,7 @@
           listEl.innerHTML = `
             <div class="data-table-wrap"><div style="overflow-x: auto">
             <table class="data-table">
-              <thead><tr><th style="text-align:center;width:48px">Hạng</th><th>Họ tên</th><th style="text-align:center">TB Thi thử</th><th style="text-align:center">TB Luyện tập</th></tr></thead>
+              <thead><tr><th style="text-align:center;width:48px">Hạng</th><th>Họ tên</th><th style="text-align:center">TB Kiểm tra</th></tr></thead>
               <tbody>
                 ${members
                   .map(
@@ -4292,7 +4241,6 @@
                   <td style="text-align:center; font-weight:700; color: ${i < 3 ? "var(--primary)" : "var(--gray-400)"}">${i + 1}</td>
                   <td style="font-weight:600">${m.name}</td>
                   <td style="text-align:center; color: var(--primary); font-weight:600">${m.avgExamScore != null ? m.avgExamScore.toFixed(2) : "—"}</td>
-                  <td style="text-align:center; color: #2e7d32; font-weight:600">${m.avgPracticeScore != null ? m.avgPracticeScore.toFixed(2) : "—"}</td>
                 </tr>`,
                   )
                   .join("")}
@@ -4967,7 +4915,7 @@
       }
 
       async function clearOralQuestions() {
-        if (!confirm("⚠️ Xóa TẤT CẢ câu hỏi vấn đáp?")) return;
+        if (!confirm("⚠️ Xóa TẤT CẢ câu hỏi tự luận?")) return;
         const list = await listOralQuestionsBank();
         const results = await Promise.allSettled(
           list.map((q) => deleteOralQuestion(q.id)),
@@ -4980,7 +4928,7 @@
             "error",
           );
         } else {
-          showToast("Đã xóa câu hỏi vấn đáp", "success");
+          showToast("Đã xóa câu hỏi tự luận", "success");
         }
       }
 
@@ -5110,10 +5058,6 @@
           const stats = await adminStatsKhoa(currentKhoaId);
           document.getElementById("khoaStatTB").textContent =
             stats.diemTBThiThu != null ? stats.diemTBThiThu.toFixed(2) : "—";
-          document.getElementById("khoaStatLuyenTap").textContent =
-            stats.diemTBLuyenTap != null
-              ? stats.diemTBLuyenTap.toFixed(2)
-              : "—";
           document.getElementById("khoaStatHocVien").textContent =
             stats.tongHocVien;
         } catch (err) {
@@ -5132,7 +5076,7 @@
       async function renderLopTable() {
         if (!currentLopList.length) {
           document.getElementById("lopRows").innerHTML = stateRow(
-            9,
+            8,
             "empty",
             'Chưa có Lớp nào trong Khóa này — bấm "Thêm Lớp" để tạo mới',
           );
@@ -5156,7 +5100,7 @@
           // Bảng vẫn hiện được với GV/điểm để trống nếu lỗi phụ này — không chặn xem danh sách Lớp.
         }
 
-        // Gộp thành dữ liệu "phẳng" (id/ten/gvName/siSo/tbThiThu/tbLuyenTap) để paginateAndSort có
+        // Gộp thành dữ liệu "phẳng" (id/ten/gvName/siSo/tbThiThu) để paginateAndSort có
         // thể sort trực tiếp trên field hiển thị, không cần biết cấu trúc l/s gốc.
         lopTableRows = currentLopList.map((l, i) => {
           const s = statsList[i];
@@ -5167,7 +5111,6 @@
             gvName: l.giaoVienId ? teacherMap[l.giaoVienId] || null : null,
             siSo: s ? s.tongHocVien : null,
             tbThiThu: s && s.diemTBThiThu != null ? s.diemTBThiThu : null,
-            tbLuyenTap: s && s.diemTBLuyenTap != null ? s.diemTBLuyenTap : null,
           };
         });
         renderLopTablePage();
@@ -5188,8 +5131,6 @@
             const namHoc =
               r.namHoc || '<span style="color: var(--gray-400)">—</span>';
             const tbThiThu = r.tbThiThu != null ? r.tbThiThu.toFixed(2) : "—";
-            const tbLuyenTap =
-              r.tbLuyenTap != null ? r.tbLuyenTap.toFixed(2) : "—";
             const siSo = r.siSo != null ? r.siSo : "—";
             return `
       <tr>
@@ -5200,7 +5141,6 @@
         <td>${gvName}</td>
         <td style="text-align: center">${siSo}</td>
         <td style="text-align: center; color: var(--primary); font-weight: 600">${tbThiThu}</td>
-        <td style="text-align: center; color: #2e7d32; font-weight: 600">${tbLuyenTap}</td>
         <td>
           <!-- Rà soát Lần XIII (2026-08-21) — 4 nút trước đây nhồi chung 1 dòng, tràn/vỡ cột (nút
           "Xóa toàn bộ dữ liệu" bị bóp chữ-từng-chữ). Xếp 3 dòng theo mức độ quan trọng, cùng pattern
@@ -5239,7 +5179,6 @@
           "gvName",
           "siSo",
           "tbThiThu",
-          "tbLuyenTap",
         ]);
       }
 
@@ -5418,8 +5357,8 @@
           const c = result.counts;
           document.getElementById("lopDestroyCountsList").innerHTML = `
             <li>${c.studentsCount} tài khoản học viên</li>
-            <li>${c.quizResultsCount} kết quả luyện tập, ${c.examResultsCount} kết quả thi thử, ${c.examSessionsCount} phiên thi</li>
-            <li>${c.oralResultsCount} kết quả vấn đáp, ${c.wrongAnswersCount} câu sai đã lưu</li>
+            <li>${c.examResultsCount} kết quả Kiểm tra, ${c.examSessionsCount} phiên thi</li>
+            <li>${c.oralResultsCount} kết quả tự luận, ${c.wrongAnswersCount} câu sai đã lưu</li>
             <li>${c.questionVisibilityCount + c.essayQuestionVisibilityCount + c.examVersionVisibilityCount} phạm vi hiển thị câu hỏi/mã đề riêng của lớp</li>
             <li>${c.studentProgressCount} tiến độ học tập, ${c.studyLogsCount} nhật ký học tập</li>
             <li>${c.activityLogsCount} nhật ký hoạt động lớp</li>
@@ -5571,8 +5510,6 @@
               capBac: s.capBac,
               diemThiThu: d ? d.diemThiThu : null,
               soLuotThiThu: d ? d.soLuotThiThu : 0,
-              diemLuyenTap: d ? d.diemLuyenTap : null,
-              soLuotLuyenTap: d ? d.soLuotLuyenTap : 0,
             };
           });
           lopDetailState = { sortKey: null, sortDir: "asc" };
@@ -5589,7 +5526,7 @@
             });
         } catch (err) {
           document.getElementById("lopDetailStudentRows").innerHTML = stateRow(
-            7,
+            6,
             "error",
             `Lỗi: ${err.message}`,
           );
@@ -5637,12 +5574,12 @@
         }
 
         if (!currentLopDetailRoster.length) {
-          tbody.innerHTML = stateRow(7, "empty", "Lớp chưa có học viên");
+          tbody.innerHTML = stateRow(6, "empty", "Lớp chưa có học viên");
           return;
         }
         if (!list.length) {
           tbody.innerHTML = stateRow(
-            7,
+            6,
             "empty",
             "Không tìm thấy học viên khớp từ khóa",
           );
@@ -5668,7 +5605,6 @@
           </select>
         </td>
         <td>${fmtScore(s.diemThiThu)} <span style="color: var(--gray-400); font-size: 0.75rem">(${s.soLuotThiThu} lượt)</span></td>
-        <td>${fmtScore(s.diemLuyenTap)} <span style="color: var(--gray-400); font-size: 0.75rem">(${s.soLuotLuyenTap} lượt)</span></td>
         <td>
           <button class="btn btn-outline btn-sm" style="color: var(--danger)" onclick="removeStudentFromLop('${s.id}')">Gỡ</button>
         </td>
@@ -5740,7 +5676,7 @@
     </script>
 
     <!-- Rà soát Lần XII (2026-08-21) — xóa hẳn bottom-nav (leftover giống lỗi đã sửa ở Teacher page
-    Lần VI: lộ nguyên 7 tab học viên — Chat AI/Luyện tập/Thi thử/Giảng bài — Admin không cần bị dẫn
+    Lần VI: lộ nguyên 7 tab học viên — Chat AI/Kiểm tra/Giảng bài — Admin không cần bị dẫn
     sang giao diện học viên qua thanh này). Sidebar là điều hướng chính; mục "Trang chủ" riêng (nhóm
     "Hệ thống") đã đủ cho nhu cầu ghé index.html, xem Rà soát Lần XIII. -->
   </body>

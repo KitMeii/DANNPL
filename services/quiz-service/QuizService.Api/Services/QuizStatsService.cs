@@ -18,26 +18,16 @@ public sealed class QuizStatsService(QuizDbContext db, IAuthQuizClient authClien
             .Select(g => new { UserId = g.Key, Avg = g.Average(r => r.Score), Count = g.Count() })
             .ToListAsync(ct);
 
-        var practiceStats = await db.QuizResults
-            .Where(r => distinctIds.Contains(r.UserId))
-            .GroupBy(r => r.UserId)
-            .Select(g => new { UserId = g.Key, Avg = g.Average(r => r.Score), Count = g.Count() })
-            .ToListAsync(ct);
-
         var examByUser = examStats.ToDictionary(x => x.UserId);
-        var practiceByUser = practiceStats.ToDictionary(x => x.UserId);
 
         var summaries = distinctIds.Select(id =>
         {
             examByUser.TryGetValue(id, out var exam);
-            practiceByUser.TryGetValue(id, out var practice);
 
             return new UserScoreSummary(
                 id,
                 exam is null ? null : Math.Round(exam.Avg, 2),
-                exam?.Count ?? 0,
-                practice is null ? null : Math.Round(practice.Avg, 2),
-                practice?.Count ?? 0);
+                exam?.Count ?? 0);
         }).ToList();
 
         return new ScoresByUsersResponse(summaries);
@@ -77,7 +67,7 @@ public sealed class QuizStatsService(QuizDbContext db, IAuthQuizClient authClien
             .Select(r =>
             {
                 scoresByUser.TryGetValue(r.Id, out var s);
-                return new LopLeaderboardEntryResponse(r.Id, r.Name, r.ChucVu, r.CapBac, r.AvatarUrl, s?.AvgExamScore, s?.ExamAttempts ?? 0, s?.AvgPracticeScore, s?.PracticeAttempts ?? 0);
+                return new LopLeaderboardEntryResponse(r.Id, r.Name, r.ChucVu, r.CapBac, r.AvatarUrl, s?.AvgExamScore, s?.ExamAttempts ?? 0);
             })
             .OrderBy(e => e.Name)
             .ToList();

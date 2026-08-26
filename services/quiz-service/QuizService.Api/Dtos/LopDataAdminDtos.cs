@@ -6,8 +6,6 @@ namespace QuizService.Api.Dtos;
 /// LopId) TRƯỚC khi gọi sang đây — quiz-service không tự tra cứu Lớp/roster (không có dữ liệu đó).</summary>
 public sealed record LopDataRequest(IReadOnlyList<Guid> UserIds, Guid LopId);
 
-public sealed record QuizResultDump(Guid Id, Guid UserId, string? Chapter, decimal Score, int Correct, int Total, DateTime CreatedAtUtc);
-
 public sealed record ExamResultDump(Guid Id, Guid UserId, decimal Score, bool IsAutoSubmitted, Guid? ExamSessionId, DateTime CreatedAtUtc);
 
 public sealed record ExamSessionDump(Guid Id, Guid UserId, string Kind, string Status, DateTime StartedAtUtc, int ExpectedDurationSeconds, Guid? ExamResultId);
@@ -20,7 +18,6 @@ public sealed record WrongAnswerDump(Guid UserId, Guid QuestionId, int WrongCoun
 /// sung an toàn #2 của user — "BACKUP PHẢI ĐẦY ĐỦ ĐỂ KHÔI PHỤC THỦ CÔNG"). Không có PasswordHash gì
 /// ở đây (quiz-service vốn không lưu), nên không cần lọc gì thêm.</summary>
 public sealed record LopDataDumpResponse(
-    IReadOnlyList<QuizResultDump> QuizResults,
     IReadOnlyList<ExamResultDump> ExamResults,
     IReadOnlyList<ExamSessionDump> ExamSessions,
     IReadOnlyList<OralResultDump> OralResults,
@@ -30,7 +27,6 @@ public sealed record LopDataDumpResponse(
     IReadOnlyList<Guid> ExamVersionVisibilityIds);
 
 public sealed record LopDataDeleteResponse(
-    int QuizResultsDeleted,
     int ExamResultsDeleted,
     int ExamSessionsDeleted,
     int OralResultsDeleted,

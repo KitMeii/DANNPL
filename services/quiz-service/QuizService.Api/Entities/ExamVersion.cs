@@ -20,7 +20,7 @@ public sealed class ExamVersion
     /// <summary>Thêm sau audit "Việc 1" (rủi ro cascade-delete): đánh dấu mã đề này đã được giáo
     /// viên chủ động xuất bản (PublishVersionAsync) hay chưa. Cần field này để QuestionService biết
     /// chính xác "câu hỏi này có thuộc 1 mã đề ĐÃ xuất bản không" khi chặn xóa — trước đó không có
-    /// state riêng ở ExamVersion, chỉ suy ra qua Question.IsPublishedForPractice (không đủ chính
+    /// state riêng ở ExamVersion, chỉ suy ra qua Question.IsPublished (không đủ chính
     /// xác vì field đó có thể true do lý do khác, không liên quan mã đề này).</summary>
     public bool IsPublished { get; set; }
 }

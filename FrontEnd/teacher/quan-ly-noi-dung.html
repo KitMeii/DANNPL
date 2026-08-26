@@ -590,10 +590,10 @@
       }
       .lb-row-grid {
         display: grid;
-        grid-template-columns: 36px minmax(120px, 2fr) 100px 100px 120px 120px;
+        grid-template-columns: 36px minmax(120px, 2fr) 100px 100px 120px;
         align-items: center;
         gap: 8px;
-        min-width: 560px;
+        min-width: 440px;
       }
       .lb-table-head {
         padding: 10px 16px;
@@ -627,11 +627,6 @@
         font-size: 1.05rem;
         font-weight: 700;
         color: var(--primary);
-      }
-      .lb-score-practice {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #2e7d32;
       }
       .lb-cell-empty {
         color: var(--gray-300);
@@ -725,7 +720,7 @@
             <!-- Gap 2: đã tách hẳn khỏi bản Admin (từ Vấn đề 2 Giai đoạn 1, admin/quan-tri-he-thong.html
             có loadAdminDashboard() + panel-overview riêng, element id khác — comment "DÙNG CHUNG" cũ ở
             đây không còn đúng, panel-questions/panel-oral/panel-import/panel-materials bên dưới vẫn
-            dùng chung thật). Nội dung: "Lớp tôi phụ trách" — roster + Chức vụ + điểm thi thử/luyện tập
+            dùng chung thật). Nội dung: "Lớp tôi phụ trách" — roster + Chức vụ + điểm Kiểm tra
             từng học viên + điểm TB lớp, xem loadOverview()/renderTeacherLopCard() trong admin-common.js. -->
             <div class="panel active" id="panel-overview">
               <div class="page-title">📊 Lớp tôi phụ trách</div>
@@ -739,17 +734,10 @@
             <div class="panel" id="panel-questions">
               <div class="page-title">❓ Ngân hàng câu hỏi trắc nghiệm</div>
               <!-- Rà soát Lần VI (2026-08-21) — Ngân hàng câu hỏi bên dưới là NGUỒN CHUNG (theo
-              Chương), tự nó không thuộc riêng Thi thử hay Luyện tập. 2 nút này làm rõ 2 ĐẦU RA
-              khác nhau lấy từ cùng nguồn đó: "Bộ đề Thi thử" chọn cố định 1 tập câu (snapshot,
-              chấm vào Thi thử) — "Đề Luyện tập" lấy SỐNG theo Chương (không snapshot, chấm vào
-              Luyện tập, câu mới xuất bản tự động có mặt). Cả 2 đều đã tồn tại (Việc 2/Việc 4.4B),
-              chỉ gộp lối vào ngay đây cho rõ thay vì phải sang panel Import mới thấy. -->
+              Chương). "Bộ đề Kiểm tra" chọn cố định 1 tập câu (snapshot, chấm vào Kiểm tra). -->
               <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap">
                 <button class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary)" onclick="openBankExamSetModal('mcq')">
-                  <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Thi thử
-                </button>
-                <button class="btn btn-outline btn-sm" style="border-color: #e65100; color: #e65100" onclick="openCreatePracticeSetModal()">
-                  <i class="fas fa-clipboard-list"></i> 📝 Tạo Đề Luyện tập
+                  <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Kiểm tra
                 </button>
               </div>
               <div class="search-row">
@@ -798,13 +786,10 @@
             <!-- ======= ORAL QUESTIONS ======= -->
             <!-- Chỉ còn ở Teacher (panel Câu hỏi VĐ đã bị xóa khỏi admin/quan-tri-he-thong.html — VIỆC 3) -->
             <div class="panel" id="panel-oral">
-              <div class="page-title">🎤 Câu hỏi vấn đáp</div>
-              <!-- Rà soát Lần VI (2026-08-21) — Vấn đáp KHÔNG có chế độ Luyện tập (chỉ có Thi vấn
-              đáp) — khác Trắc nghiệm ở panel bên cạnh, nên chỉ 1 nút, gắn rõ nhãn "Thi thử" để
-              không hiểu nhầm là còn thiếu 1 nút Luyện tập. -->
+              <div class="page-title">📝 Câu hỏi tự luận</div>
               <div style="margin-bottom: 12px">
                 <button class="btn btn-outline btn-sm" style="border-color: var(--primary); color: var(--primary)" onclick="openBankExamSetModal('oral')">
-                  <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Thi Vấn đáp
+                  <i class="fas fa-layer-group"></i> 🎯 Tạo Bộ đề Tự luận
                 </button>
               </div>
               <div class="search-row">
@@ -953,7 +938,7 @@
                   <input class="form-input" id="poolChapter" placeholder="Chương/Phần cho pool câu hỏi" />
                   <!-- Việc III (2026-08-20) — ẩn input file gốc (nút "Choose File" tiếng Anh của
                   trình duyệt) bằng overlay trong suốt, cùng pattern .import-area đã dùng ở khối
-                  Import Vấn đáp — hiện tên file đã chọn bằng tiếng Việt thay thế. -->
+                  Import Tự luận — hiện tên file đã chọn bằng tiếng Việt thay thế. -->
                   <div class="import-area" style="padding: 14px; margin-bottom: 0">
                     <input type="file" id="poolFileInput" accept=".pdf" onchange="onPoolFileSelected(this)" />
                     <div style="font-size: 0.85rem; color: var(--gray-600)">
@@ -1012,38 +997,6 @@
                 </div>
               </div>
 
-              <!-- Việc 4.4 Phần B (2026-08-20) — Đề luyện tập: giáo viên gom câu hỏi CÓ SẴN theo
-              Chương thành 1 đề đặt tên, giao riêng cho Lớp — KHÁC "Bộ đề" ở trên (đó là bộ đề THI,
-              câu cố định + luồng chấm điểm Thi thử riêng). Đề luyện tập không snapshot câu — luôn
-              lấy "sống" theo đúng Chương tại thời điểm học viên vào làm, điểm ghi vào Luyện tập
-              (không phải Thi thử). -->
-              <div class="card" style="border: 2px solid #ffe0b2">
-                <div class="card-title" style="color: #e65100">
-                  <i class="fas fa-clipboard-list"></i> Đề luyện tập
-                  <button
-                    class="btn btn-outline btn-sm"
-                    style="margin-left: auto"
-                    onclick="loadMyPracticeSets()"
-                    aria-label="Làm mới danh sách đề luyện tập"
-                  >
-                    <i class="fas fa-sync"></i>
-                  </button>
-                </div>
-                <p style="font-size: 0.78rem; color: var(--gray-500); margin-bottom: 10px">
-                  Gom câu hỏi đã có trong ngân hàng theo 1 Chương thành 1 đề đặt tên, giao riêng cho
-                  Lớp — học viên Lớp đó thấy đề này ở trang Luyện tập. Câu mới xuất bản thêm vào
-                  Chương sẽ TỰ ĐỘNG xuất hiện, không cần tạo lại.
-                </p>
-                <button class="btn btn-red btn-sm" onclick="openCreatePracticeSetModal()">
-                  <i class="fas fa-plus"></i> Tạo đề luyện tập
-                </button>
-                <div id="practiceSetsListContainer" style="margin-top: 10px">
-                  <div style="text-align: center; padding: 16px; color: var(--gray-400)">
-                    Đang tải...
-                  </div>
-                </div>
-              </div>
-
               <!-- Text paste -->
               <div class="card">
                 <div class="card-title">
@@ -1084,18 +1037,18 @@
               <div class="card">
                 <div class="card-title">
                   <i class="fas fa-comments" style="color: #1565c0"></i>Import
-                  câu hỏi vấn đáp từ Excel
+                  câu hỏi tự luận từ Excel
                 </div>
                 <!-- Việc III (2026-08-20) — chuyển nút tải template về đây (trước ở khối "Import từ
                 file" đã bỏ Excel cho TN, xem card phía trên) — file mẫu vẫn còn dùng vì có sheet
-                "VẤN ĐÁP" riêng cho luồng import này. -->
+                "TỰ LUẬN" riêng cho luồng import này. -->
                 <div style="margin-bottom: 10px">
                   <a
                     href="../template_cau_hoi.xlsx"
                     class="btn btn-outline btn-sm"
                     id="dlTemplate"
                   >
-                    <i class="fas fa-download"></i> Tải template Excel mẫu (Vấn đáp)
+                    <i class="fas fa-download"></i> Tải template Excel mẫu (Tự luận)
                   </a>
                 </div>
                 <!-- Việc 4.4 Phần A (2026-08-20) -->
@@ -1112,10 +1065,10 @@
                     <i class="fas fa-file-excel"></i>
                   </div>
                   <div style="font-weight: 700; margin-bottom: 4px">
-                    Kéo thả file Excel (Sheet "VẤN ĐÁP")
+                    Kéo thả file Excel (Sheet "TỰ LUẬN")
                   </div>
                   <div style="font-size: 0.75rem; color: var(--gray-500)">
-                    Dùng sheet VẤN ĐÁP trong template đã tải về
+                    Dùng sheet TỰ LUẬN trong template đã tải về
                   </div>
                 </div>
                 <div
@@ -1277,10 +1230,6 @@
                   placeholder="🔍 Tìm theo tên lớp..."
                   oninput="renderTeacherLeaderboard()"
                 />
-                <div class="sort-btn-row">
-                  <button class="sort-btn active" id="lbSortExamBtn" onclick="setTeacherLeaderboardSort('exam')">Thi thử</button>
-                  <button class="sort-btn" id="lbSortPracticeBtn" onclick="setTeacherLeaderboardSort('practice')">Luyện tập</button>
-                </div>
               </div>
               <div id="leaderboardContent"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></div>
             </div>
@@ -1472,13 +1421,12 @@
                   <th>Email</th>
                   <th>Cấp bậc</th>
                   <th>Chức vụ</th>
-                  <th class="sortable" onclick="sortLopRosterBy('diemThiThu')">Thi thử</th>
-                  <th class="sortable" onclick="sortLopRosterBy('diemLuyenTap')">Luyện tập</th>
+                  <th class="sortable" onclick="sortLopRosterBy('diemThiThu')">Kiểm tra</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody id="lopRosterRows">
-                <tr><td colspan="8" class="empty"><i class="fas fa-spinner fa-spin"></i>Đang tải...</td></tr>
+                <tr><td colspan="7" class="empty"><i class="fas fa-spinner fa-spin"></i>Đang tải...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1512,38 +1460,6 @@
 
     <!-- Việc 4.2 (2026-08-19) — Tạo Lớp mới. Chọn Khóa có sẵn (Teacher không tạo được Khóa mới,
          vẫn Admin-only) + tên Lớp. Tạo xong tự động thành GV chủ nhiệm (xử lý ở backend). -->
-    <!-- Việc 4.4 Phần B (2026-08-20) — Tạo Đề luyện tập. -->
-    <div class="modal" id="createPracticeSetModal" aria-hidden="true">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="createPracticeSetModalTitle">
-        <div class="modal-header">
-          <h3 id="createPracticeSetModalTitle">Tạo đề luyện tập</h3>
-          <button class="modal-close" onclick="closeModal('createPracticeSetModal')" aria-label="Đóng">
-            ×
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Tên đề *</label>
-            <input class="form-input" id="practiceSetTenInput" placeholder="VD: Ôn tập giữa kỳ Chương 1" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Chương *</label>
-            <select class="form-input" id="practiceSetChapterSelect">
-              <option value="">Đang tải danh sách chương...</option>
-            </select>
-          </div>
-          <div id="practiceSetScopeContainer"></div>
-          <div style="font-size: 0.72rem; color: var(--gray-500); margin-bottom: 10px">
-            * Bắt buộc chọn ít nhất 1 Lớp — đề luyện tập chỉ dùng để giao riêng theo lớp.
-          </div>
-          <div id="createPracticeSetMsg" style="font-size: 0.78rem; color: var(--danger); margin-bottom: 8px; display: none"></div>
-          <button class="btn btn-red btn-full" id="createPracticeSetSaveBtn" onclick="saveCreatePracticeSet()">
-            <i class="fas fa-save"></i> Tạo đề
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div class="modal" id="createLopModal" aria-hidden="true">
       <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="createLopModalTitle">
         <div class="modal-header">
@@ -1636,7 +1552,7 @@
     <div class="modal" id="oralModal" aria-hidden="true">
       <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="oralModalTitle">
         <div class="modal-header">
-          <h3 id="oralModalTitle">Thêm câu hỏi vấn đáp</h3>
+          <h3 id="oralModalTitle">Thêm câu hỏi tự luận</h3>
           <button class="modal-close" onclick="closeModal('oralModal')" aria-label="Đóng">
             ×
           </button>
@@ -1656,7 +1572,7 @@
               class="form-input"
               id="oral-q"
               rows="3"
-              placeholder="Nhập câu hỏi vấn đáp..."
+              placeholder="Nhập câu hỏi tự luận..."
             ></textarea>
           </div>
           <div class="form-group">
@@ -1920,8 +1836,7 @@
                   <th>Số lượng HV</th>
                   <th>Khóa</th>
                   <th>Niên khóa</th>
-                  <th>Điểm TB Thi thử</th>
-                  <th>Điểm TB Luyện tập</th>
+                  <th>Điểm TB Kiểm tra</th>
                   <th style="text-align:right">Thao tác</th>
                 </tr>
               </thead>
@@ -1936,7 +1851,6 @@
                   <td id="lopCrudKhoa-${l.id}">…</td>
                   <td>${l.namHoc || '<span style="color: var(--gray-400)">—</span>'}</td>
                   <td id="lopCrudThiThu-${l.id}" style="color: var(--primary); font-weight: 600">…</td>
-                  <td id="lopCrudLuyenTap-${l.id}" style="color: #2e7d32; font-weight: 600">…</td>
                   <td style="text-align:right; white-space: nowrap; min-width: 190px;">
                     <!-- Rà soát Lần VI (2026-08-21) — trước 3 nút xếp 1 hàng, tràn khỏi cột (phải
                     cuộn ngang mới bấm được). Xếp 2 dòng: "Thành viên" (thao tác chính) riêng 1 dòng
@@ -1978,12 +1892,10 @@
             const stats = await adminStatsLop(l.id);
             const siSoEl = document.getElementById(`lopCrudSiSo-${l.id}`);
             const thiThuEl = document.getElementById(`lopCrudThiThu-${l.id}`);
-            const luyenTapEl = document.getElementById(`lopCrudLuyenTap-${l.id}`);
             if (siSoEl) siSoEl.textContent = stats.tongHocVien;
             if (thiThuEl) thiThuEl.textContent = stats.diemTBThiThu != null ? stats.diemTBThiThu.toFixed(2) : "—";
-            if (luyenTapEl) luyenTapEl.textContent = stats.diemTBLuyenTap != null ? stats.diemTBLuyenTap.toFixed(2) : "—";
           } catch {
-            ["lopCrudSiSo", "lopCrudThiThu", "lopCrudLuyenTap"].forEach((prefix) => {
+            ["lopCrudSiSo", "lopCrudThiThu"].forEach((prefix) => {
               const el = document.getElementById(`${prefix}-${l.id}`);
               if (el) el.textContent = "—";
             });
@@ -2116,144 +2028,19 @@
       }
 
       // ════════════════════════════════════════════
-      // VIỆC 4.4 PHẦN B (2026-08-20) — ĐỀ LUYỆN TẬP: giáo viên gom câu hỏi có sẵn theo Chương
-      // thành 1 đề đặt tên, giao riêng theo Lớp. Picker Lớp tái dùng scopePickerHtml/initScopePicker
-      // (admin-common.js, Việc 8) nhưng BẮT BUỘC chọn ≥1 Lớp (validate ở đây + backend) — khác mọi
-      // nơi khác dùng picker này (ở đó "Toàn hệ thống" là lựa chọn hợp lệ).
-      // ════════════════════════════════════════════
-
-      async function openCreatePracticeSetModal() {
-        document.getElementById("practiceSetTenInput").value = "";
-        document.getElementById("createPracticeSetMsg").style.display = "none";
-        const sel = document.getElementById("practiceSetChapterSelect");
-        sel.innerHTML = `<option value="">Đang tải danh sách chương...</option>`;
-
-        const scopeContainer = document.getElementById("practiceSetScopeContainer");
-        if (!scopeContainer.innerHTML) {
-          scopeContainer.innerHTML = scopePickerHtml("practiceSetScope", "Giao cho Lớp *");
-        }
-        // Đề luyện tập không có lựa chọn "Toàn hệ thống" — ẩn hẳn radio đó, chỉ còn 1 chế độ
-        // "Chỉ Lớp cụ thể" luôn hiện sẵn danh sách chọn (khác mọi nơi khác dùng picker này).
-        openModal("createPracticeSetModal");
-        await initScopePicker("practiceSetScope");
-        const allModeLabel = document.querySelector(`input[name="practiceSetScopeMode"][value="all"]`)?.closest("label");
-        if (allModeLabel) allModeLabel.style.display = "none";
-        const lopRadio = document.querySelector(`input[name="practiceSetScopeMode"][value="lop"]`);
-        if (lopRadio) {
-          lopRadio.checked = true;
-          toggleScopePickerMode("practiceSetScope");
-        }
-
-        try {
-          const chapters = await listPracticeSetChapters();
-          sel.innerHTML = chapters.length
-            ? chapters.map((c) => `<option value="${c.chapter}">${c.chapter} (${c.publishedQuestionCount} câu)</option>`).join("")
-            : `<option value="">Chưa có chương nào đã xuất bản câu hỏi</option>`;
-        } catch (err) {
-          sel.innerHTML = `<option value="">Lỗi tải danh sách chương</option>`;
-        }
-      }
-
-      async function saveCreatePracticeSet() {
-        const ten = document.getElementById("practiceSetTenInput").value.trim();
-        const chapter = document.getElementById("practiceSetChapterSelect").value;
-        const lopIds = getScopePickerLopIds("practiceSetScope");
-        const msg = document.getElementById("createPracticeSetMsg");
-        msg.style.display = "none";
-
-        if (!ten || !chapter) {
-          msg.textContent = "Vui lòng nhập Tên đề và chọn Chương.";
-          msg.style.display = "block";
-          return;
-        }
-        if (!lopIds.length) {
-          msg.textContent = "Vui lòng chọn ít nhất 1 Lớp để giao đề.";
-          msg.style.display = "block";
-          return;
-        }
-
-        const btn = document.getElementById("createPracticeSetSaveBtn");
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
-        try {
-          await createPracticeSet(ten, chapter, lopIds);
-          closeModal("createPracticeSetModal");
-          showToast("✓ Đã tạo đề luyện tập", "success");
-          loadMyPracticeSets();
-        } catch (err) {
-          msg.textContent = "Lỗi: " + err.message;
-          msg.style.display = "block";
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fas fa-save"></i> Tạo đề';
-        }
-      }
-
-      async function loadMyPracticeSets() {
-        const container = document.getElementById("practiceSetsListContainer");
-        if (!container) return;
-        container.innerHTML = '<div style="text-align: center; padding: 16px; color: var(--gray-400)"><i class="fas fa-spinner fa-spin"></i></div>';
-        let sets;
-        try {
-          sets = await listMyPracticeSets();
-        } catch (err) {
-          container.innerHTML = `<div class="empty">Lỗi tải đề luyện tập: ${err.message}</div>`;
-          return;
-        }
-
-        if (!sets.length) {
-          container.innerHTML = `<div class="empty">Chưa có đề luyện tập nào — bấm "Tạo đề luyện tập" ở trên để bắt đầu.</div>`;
-          return;
-        }
-
-        container.innerHTML = `
-          <table class="data-table">
-            <thead><tr><th>Tên đề</th><th>Chương</th><th>Số câu</th><th>Số Lớp</th><th></th></tr></thead>
-            <tbody>
-              ${sets
-                .map(
-                  (s) => `
-                <tr>
-                  <td>${s.ten}</td>
-                  <td>${s.chapter}</td>
-                  <td>${s.questionCount}</td>
-                  <td>${s.lopIds.length}</td>
-                  <td style="text-align:right"><button class="btn btn-outline btn-sm" style="color: var(--danger)" onclick="deletePracticeSetWithConfirm('${s.id}', '${s.ten.replace(/'/g, "\\'")}')">Xóa</button></td>
-                </tr>`,
-                )
-                .join("")}
-            </tbody>
-          </table>`;
-      }
-
-      async function deletePracticeSetWithConfirm(id, ten) {
-        if (!confirm(`Xóa đề luyện tập "${ten}"? Học viên sẽ không còn thấy đề này nữa.`)) return;
-        try {
-          await deletePracticeSet(id);
-          showToast("✓ Đã xóa đề luyện tập", "success");
-          loadMyPracticeSets();
-        } catch (err) {
-          showToast("Lỗi: " + err.message, "error");
-        }
-      }
-
-      // ════════════════════════════════════════════
       // Rà soát Lần VI (2026-08-21) — BẢNG XẾP HẠNG LỚP: xếp hạng CÁC LỚP GV phụ trách theo điểm
-      // TB (Thi thử/Luyện tập), khác hẳn bản cũ (Việc 4.2, xếp HỌC VIÊN trong 1 Lớp — trùng lặp
+      // TB Kiểm tra, khác hẳn bản cũ (Việc 4.2, xếp HỌC VIÊN trong 1 Lớp — trùng lặp
       // với chính student/xep-hang.html của học viên đó xem). Tái dùng adminStatsLop()/
       // authGetKhoa() — đúng nguồn dữ liệu đã dùng ở bảng "Quản lý Lớp" (loadLopCrud), RBAC đã có
       // sẵn cho Teacher (ownership check ở service).
       // ════════════════════════════════════════════
 
       let teacherLbRows = [];
-      let teacherLbSort = "exam";
 
       async function loadTeacherLeaderboard() {
         const content = document.getElementById("leaderboardContent");
         content.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
         document.getElementById("leaderboardSearchInput").value = "";
-        teacherLbSort = "exam";
-        updateTeacherLbSortButtons();
 
         let myLop;
         try {
@@ -2281,7 +2068,6 @@
                 khoaTen: khoa.ten || "?",
                 siSo: stats ? stats.tongHocVien : null,
                 diemTBThiThu: stats && stats.diemTBThiThu != null ? stats.diemTBThiThu : null,
-                diemTBLuyenTap: stats && stats.diemTBLuyenTap != null ? stats.diemTBLuyenTap : null,
               };
             }),
           );
@@ -2292,17 +2078,6 @@
         renderTeacherLeaderboard();
       }
 
-      function setTeacherLeaderboardSort(mode) {
-        teacherLbSort = mode;
-        updateTeacherLbSortButtons();
-        renderTeacherLeaderboard();
-      }
-
-      function updateTeacherLbSortButtons() {
-        document.getElementById("lbSortExamBtn").classList.toggle("active", teacherLbSort === "exam");
-        document.getElementById("lbSortPracticeBtn").classList.toggle("active", teacherLbSort === "practice");
-      }
-
       function renderTeacherLeaderboard() {
         const content = document.getElementById("leaderboardContent");
         const q = (document.getElementById("leaderboardSearchInput").value || "").trim().toLowerCase();
@@ -2311,9 +2086,8 @@
         // Luôn xếp CAO -> THẤP (cùng quy ước đã chốt ở student/xep-hang.html) — null (chưa có
         // lượt nào) xếp cuối, không tính là 0 điểm.
         list.sort((a, b) => {
-          const key = teacherLbSort === "practice" ? "diemTBLuyenTap" : "diemTBThiThu";
-          const av = a[key] == null ? -1 : a[key];
-          const bv = b[key] == null ? -1 : b[key];
+          const av = a.diemTBThiThu == null ? -1 : a.diemTBThiThu;
+          const bv = b.diemTBThiThu == null ? -1 : b.diemTBThiThu;
           return bv - av;
         });
 
@@ -2335,8 +2109,7 @@
                 <div>Lớp</div>
                 <div>Khóa</div>
                 <div>Số lượng HV</div>
-                <div>Điểm TB Thi thử</div>
-                <div>Điểm TB Luyện tập</div>
+                <div>Điểm TB Kiểm tra</div>
               </div>
               ${list
                 .map(
@@ -2347,7 +2120,6 @@
                 <div>${r.khoaTen}</div>
                 <div>${r.siSo != null ? r.siSo : "—"}</div>
                 <div class="lb-score-exam">${fmt(r.diemTBThiThu)}</div>
-                <div class="lb-score-practice">${fmt(r.diemTBLuyenTap)}</div>
               </div>`,
                 )
                 .join("")}
@@ -2375,7 +2147,7 @@
           `<i class="fas fa-user-friends"></i> Thành viên lớp ${l ? l.ten : ""}`;
         document.getElementById("lopRosterSearchInput").value = "";
         document.getElementById("lopRosterRows").innerHTML =
-          '<tr><td colspan="8" class="empty"><i class="fas fa-spinner fa-spin"></i>Đang tải...</td></tr>';
+          '<tr><td colspan="7" class="empty"><i class="fas fa-spinner fa-spin"></i>Đang tải...</td></tr>';
         openModal("lopRosterModal");
 
         try {
@@ -2387,12 +2159,10 @@
               ...s,
               diemThiThu: d ? d.diemThiThu : null,
               soLuotThiThu: d ? d.soLuotThiThu : 0,
-              diemLuyenTap: d ? d.diemLuyenTap : null,
-              soLuotLuyenTap: d ? d.soLuotLuyenTap : 0,
             };
           });
         } catch (err) {
-          document.getElementById("lopRosterRows").innerHTML = `<tr><td colspan="8" class="empty">Lỗi tải danh sách thành viên: ${err.message}</td></tr>`;
+          document.getElementById("lopRosterRows").innerHTML = `<tr><td colspan="7" class="empty">Lỗi tải danh sách thành viên: ${err.message}</td></tr>`;
           return;
         }
         lopRosterState = { sortKey: null, sortDir: "asc" };
@@ -2430,11 +2200,11 @@
         }
 
         if (!lopRosterList.length) {
-          tbody.innerHTML = '<tr><td colspan="8" class="empty">Lớp chưa có học viên</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="empty">Lớp chưa có học viên</td></tr>';
           return;
         }
         if (!list.length) {
-          tbody.innerHTML = '<tr><td colspan="8" class="empty">Không tìm thấy học viên khớp từ khóa</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="empty">Không tìm thấy học viên khớp từ khóa</td></tr>';
           return;
         }
         const fmtScore = (v) => (v == null ? "—" : Number(v).toFixed(2));
@@ -2458,7 +2228,6 @@
               </select>
             </td>
             <td>${fmtScore(s.diemThiThu)} <span style="color: var(--gray-400); font-size: 0.68rem">(${s.soLuotThiThu} lượt)</span></td>
-            <td>${fmtScore(s.diemLuyenTap)} <span style="color: var(--gray-400); font-size: 0.68rem">(${s.soLuotLuyenTap} lượt)</span></td>
             <td><button class="btn btn-outline btn-sm" style="color: var(--danger)" onclick="removeMemberFromLop('${s.id}')">Gỡ</button></td>
           </tr>`,
           )
@@ -2653,8 +2422,8 @@
       document.addEventListener("DOMContentLoaded", init);
     </script>
 
-    <!-- Rà soát Lần VI (2026-08-21) — xóa hẳn bottom-nav (trước lộ nguyên 7 tab học viên: Trang
-    chủ/Chat AI/Luyện tập/Thi thử/Tiến độ/Bảng XH/Giảng bài — Giảng viên không cần và không nên bị
+    <!-- Rà soát Lần VI (2026-08-21) — xóa hẳn bottom-nav (trước lộ nguyên tab học viên: Trang
+    chủ/Chat AI/Kiểm tra/Tiến độ/Bảng XH/Giảng bài — Giảng viên không cần và không nên bị
     dẫn sang giao diện học viên qua đây). Sidebar bên trên đã là điều hướng DUY NHẤT và đầy đủ. -->
   </body>
 </html>

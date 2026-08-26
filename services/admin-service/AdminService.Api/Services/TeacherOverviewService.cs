@@ -64,14 +64,12 @@ public sealed class TeacherOverviewService(
                 .ToList();
 
             var examScores = teacherScores.Where(s => s!.AvgExamScore is not null).Select(s => s!.AvgExamScore!.Value).ToList();
-            var practiceScores = teacherScores.Where(s => s!.AvgPracticeScore is not null).Select(s => s!.AvgPracticeScore!.Value).ToList();
             var avgExam = examScores.Count > 0 ? Math.Round(examScores.Average(), 2) : (decimal?)null;
-            var avgPractice = practiceScores.Count > 0 ? Math.Round(practiceScores.Average(), 2) : (decimal?)null;
 
             contentByCreator.TryGetValue(teacher.Id, out var content);
 
             result.Add(new TeacherOverviewResponse(
-                teacher.Id, teacher.Name, lops.Count, studentIds.Count, avgExam, avgPractice,
+                teacher.Id, teacher.Name, lops.Count, studentIds.Count, avgExam,
                 content?.QuestionCount ?? 0, content?.MaterialCount ?? 0));
         }
 
@@ -115,10 +113,8 @@ public sealed class TeacherOverviewService(
             var roster = rosterByLop[lop.Id];
             var scores = roster.Select(u => scoresByUserId.GetValueOrDefault(u.Id)).Where(s => s is not null).ToList();
             var examScores = scores.Where(s => s!.AvgExamScore is not null).Select(s => s!.AvgExamScore!.Value).ToList();
-            var practiceScores = scores.Where(s => s!.AvgPracticeScore is not null).Select(s => s!.AvgPracticeScore!.Value).ToList();
             var avgExam = examScores.Count > 0 ? Math.Round(examScores.Average(), 2) : (decimal?)null;
-            var avgPractice = practiceScores.Count > 0 ? Math.Round(practiceScores.Average(), 2) : (decimal?)null;
-            return new LopQualityResponse(lop.Id, lop.Ten, roster.Count, avgExam, avgPractice);
+            return new LopQualityResponse(lop.Id, lop.Ten, roster.Count, avgExam);
         }).ToList();
     }
 }

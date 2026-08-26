@@ -40,7 +40,6 @@ builder.Services.AddScoped<IWordExportService, WordExportService>();
 builder.Services.AddScoped<IExamSetService, ExamSetService>();
 builder.Services.AddScoped<ILopScopeGuard, LopScopeGuard>();
 builder.Services.AddScoped<ILopDataAdminService, LopDataAdminService>();
-builder.Services.AddScoped<IPracticeSetService, PracticeSetService>();
 
 var authServiceBaseUrl = builder.Configuration.GetValue("Services:Auth:BaseUrl", "http://auth-service:8080")!;
 builder.Services.AddHttpClient<IAuthQuizClient, HttpAuthQuizClient>(client =>
@@ -86,7 +85,6 @@ app.MapOralQuestionEndpoints();
 app.MapAttemptEndpoints();
 app.MapStatsEndpoints();
 app.MapLopDataAdminEndpoints();
-app.MapPracticeSetEndpoints();
 app.MapSharedHealthChecks();
 
 if (builder.Configuration.GetValue("Database:AutoMigrate", app.Environment.IsDevelopment()))

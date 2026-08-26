@@ -31,9 +31,10 @@ public sealed class Question
 
     public string? Topic { get; set; }
 
-    /// <summary>Chỉ câu hỏi đã xuất bản mới xuất hiện ở luyện tập học viên (ListForPracticeAsync).
+    /// <summary>Câu đã xuất bản mới được đưa vào mã đề Kiểm tra (ExamSetService.GenerateAsync) và
+    /// mới cho phép xóa tự do (QuestionService.DeleteAsync chặn xóa câu thuộc mã đề đã publish).
     /// Manual (giáo viên tự soạn) mặc định true — giữ nguyên trải nghiệm cũ. AiGenerated/Imported
     /// mặc định false — cần giáo viên chủ động bấm "Xuất bản" sau khi kiểm duyệt (C3), tránh câu
     /// hỏi AI sinh nhưng chưa qua kiểm chất lượng vô tình lộ ra cho học viên làm bài.</summary>
-    public bool IsPublishedForPractice { get; set; }
+    public bool IsPublished { get; set; }
 }

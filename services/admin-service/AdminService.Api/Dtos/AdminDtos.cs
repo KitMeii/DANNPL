@@ -34,14 +34,14 @@ public sealed record SetConfigRequest(string Value);
 public sealed record SystemOverviewResponse(int TotalStudents, int TotalTeachers, int TotalAdmins, int TotalMaterials, int TotalQuestions, int TotalOralQuestions);
 
 /// <summary>Việc 7 (2026-08-16) — Dashboard "Theo dõi Giáo viên". Danh sách phẳng, sắp xếp theo
-/// tên (KHÔNG theo điểm/hiệu suất) — cố ý không phải bảng xếp hạng, chỉ liệt kê thông tin. AvgExam/
-/// AvgPractice null nghĩa là học viên của giáo viên đó chưa có lượt làm bài nào loại đó.</summary>
-public sealed record TeacherOverviewResponse(Guid TeacherId, string Name, int LopCount, int TotalStudents, decimal? AvgExamScore, decimal? AvgPracticeScore, int QuestionCount, int MaterialCount);
+/// tên (KHÔNG theo điểm/hiệu suất) — cố ý không phải bảng xếp hạng, chỉ liệt kê thông tin. AvgExam
+/// null nghĩa là học viên của giáo viên đó chưa có lượt Kiểm tra nào.</summary>
+public sealed record TeacherOverviewResponse(Guid TeacherId, string Name, int LopCount, int TotalStudents, decimal? AvgExamScore, int QuestionCount, int MaterialCount);
 
 /// <summary>Số câu hỏi theo Chương (toàn hệ thống) — cho biểu đồ cột "Câu hỏi theo Chương".</summary>
 public sealed record ChapterQuestionCountResponse(string Chapter, int Count);
 
 /// <summary>Việc D (2026-08-16) — chi tiết TỪNG Lớp của 1 giáo viên (khác TeacherOverviewResponse
-/// vốn gộp chung mọi Lớp thành 1 con số duy nhất, không thấy Lớp nào đang yếu). AvgExam/AvgPractice
-/// null = Lớp đó chưa có học viên nào làm bài loại đó.</summary>
-public sealed record LopQualityResponse(Guid LopId, string LopTen, int StudentCount, decimal? AvgExamScore, decimal? AvgPracticeScore);
+/// vốn gộp chung mọi Lớp thành 1 con số duy nhất, không thấy Lớp nào đang yếu). AvgExam null = Lớp
+/// đó chưa có học viên nào Kiểm tra.</summary>
+public sealed record LopQualityResponse(Guid LopId, string LopTen, int StudentCount, decimal? AvgExamScore);
